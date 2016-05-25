@@ -38,9 +38,9 @@ class Person
 	rdf_type 'http://schema.org/Person'
 
 	field :name, 'http://schema.org/name'
-    field :party, 'http://data.parliament.uk/schema/parl#party'
+  field :party, 'http://data.parliament.uk/schema/parl#party'
 
-    linked_to :hasRegisteredInterests, 'http://data.parliament.uk/schema/parl#hasRegisteredInterest', class_name: 'RegisteredInterest', multivalued: true
+  linked_to :hasRegisteredInterests, 'http://data.parliament.uk/schema/parl#hasRegisteredInterest', class_name: 'RegisteredInterest', multivalued: true
 end
 
 class RegisteredInterest
