@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   	# render :text => "hello world controller"
 
-  	kirsty = Person.find('http://data.parliament.uk/members/4355')
+  	# kirsty = Person.find('http://data.parliament.uk/members/4355')
   	# kirsty = Person.first
   	# kirsty = Person.where(:name => 'Earl of Oxford and Asquith').first
   	# kirsty = Person.all.limit(1)
@@ -16,10 +16,11 @@ class ApplicationController < ActionController::Base
   	# kirsty = Person.where(:hasRegisteredInterests => .any? { |e|  })
 
   	# render :text => kirsty.resources[0]
-  	render :text => kirsty.hasRegisteredInterests.first.belongsTo
+  	# render :text => kirsty.hasRegisteredInterests.first.belongsTo
 
 
-
+    question = WrittenQuestion.find('http://data.parliament.uk/resource/10000000-0000-0000-0000-000000000003')
+    render :text => question
 
 
 
@@ -30,6 +31,14 @@ class ApplicationController < ActionController::Base
   	# m=Member.find('')
   	# ts=m.questions.map { |q| q.subject }
   end
+end
+
+
+class WrittenQuestion
+  include Tripod::Resource
+
+  rdf_type 'http://data.parliament.uk/schema/parl#WrittenParliamentaryQuestion'
+
 end
 
 class Person
