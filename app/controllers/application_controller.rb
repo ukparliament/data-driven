@@ -19,9 +19,19 @@ class ApplicationController < ActionController::Base
   	# render :text => kirsty.hasRegisteredInterests.first.belongsTo
 
 
-    question = WrittenQuestion.find('http://data.parliament.uk/resource/10000000-0000-0000-0000-000000000003')
-    render :text => question
+    # question = WrittenQuestion.find('http://data.parliament.uk/resource/10000000-0000-0000-0000-000000000003')
 
+    # person = Person.where("<http://data.parliament.uk/resource/73800000-0000-0000-0000-000000000001> ?p ?o").first(:return_graph => false)
+    person = Person.find('http://data.parliament.uk/resource/73800000-0000-0000-0000-000000000001')
+    # person = Person.where(name: 'Lord Alton of Liverpool').first
+
+    # subject = Subject.find('http://data.parliament.uk/resource/29677800-0000-0000-0000-000000000002')
+    # subject = Subject.where(label: 'Politics and government').first
+
+    # render :text => person.writtenQuestions.first.subjects.first
+
+    # render text: person.writtenQuestions.first.subjects
+    render text: person
 
 
   	# c=Concept.find('')
@@ -38,7 +48,18 @@ class WrittenQuestion
   include Tripod::Resource
 
   rdf_type 'http://data.parliament.uk/schema/parl#WrittenParliamentaryQuestion'
+  linked_to :tablingMember, 'http://data.parliament.uk/schema/parl#tablingMember',class_name: 'Person'
+  linked_to :subjects, 'http://purl.org/dc/terms/subject', class_name: 'Subject', multivalued: true
 
+end
+
+class Subject
+  include Tripod::Resource
+
+  rdf_type 'http://www.w3.org/2004/02/skos/core#Concept'
+
+  field :label, 'http://www.w3.org/2004/02/skos/core#prefLabel'
+  linked_from :writtenQuestions, :subjects, class_name: 'WrittenQuestion', multivalued: true
 end
 
 class Person
@@ -47,9 +68,11 @@ class Person
 	rdf_type 'http://schema.org/Person'
 
 	field :name, 'http://schema.org/name'
-  field :party, 'http://data.parliament.uk/schema/parl#party'
+  linked_to :image, 'http://schema.org/image', uri: true
 
-  linked_to :hasRegisteredInterests, 'http://data.parliament.uk/schema/parl#hasRegisteredInterest', class_name: 'RegisteredInterest', multivalued: true
+  linked_from :writtenQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
+
+  # linked_to :hasRegisteredInterests, 'http://data.parliament.uk/schema/parl#hasRegisteredInterest', class_name: 'RegisteredInterest', multivalued: true
 end
 
 class RegisteredInterest
