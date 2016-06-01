@@ -1,0 +1,11 @@
+<h1>Concepts</h1>
+
+<ul>
+	<% @concepts.each do |concept| %>
+		<li>
+			<%= link_to concept_path(concept.id) do %>
+				<%= concept.label %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>

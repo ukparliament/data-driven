@@ -26,9 +26,9 @@ Rails.application.routes.draw do
   #     end
   #   end
 
-  resources :subjects, only: [:index, :show]
+  resources :concepts, only: [:index, :show]
 
-  resources :members, only: [:index, :show]
+  resources :people, only: [:index, :show]
 
   # Example resource route with sub-resources:
   #   resources :products do
