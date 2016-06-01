@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   def index
 
-    @subjects = Subject.all.limit(50).resources
+    # @subjects = Subject.all.limit(50).resources
 
   	# render :text => "hello world controller"
   	# kirsty = Person.find('http://data.parliament.uk/members/4355')

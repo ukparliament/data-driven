@@ -1,0 +1,11 @@
+<h1><%= @member.name %></h1>
+<h2>Subjects</h2>
+<ul>
+	<% @subjects.each do |subject| %>
+		<li>
+			<%= link_to subject_path(subject.id) do %>
+				<%= subject.label %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>
