@@ -9,4 +9,17 @@ class Concept
   def id 
   	self.uri.to_s.split("/").last
   end
+
+  def self.most_popular_by_question
+  	Concept.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
+						SELECT ?uri
+						WHERE {
+						    ?question dcterms:subject ?uri
+						}
+						GROUP BY ?uri
+						ORDER BY DESC(COUNT(?question))
+						LIMIT 50
+						")
+  end
+
 end

@@ -1,5 +1,10 @@
 class ConceptsController < ApplicationController
+
 	def index
+		@concepts = Concept.most_popular_by_question
+	end
+
+	def all
 		@concepts = Concept.all.limit(50).resources
 	end
 
