@@ -1,9 +1,11 @@
 <h2>Concepts</h2>
 
 <ul>
-	<% @subjects.each do |s| %>
+	<% @subjects.each do |subject| %>
 		<li>
-			<%= s.label %>
+			<%= link_to subject_members_path(subject.id) do %>
+				<%= subject.label %>
+			<% end %>
 		</li>
 	<% end %>
 </ul>

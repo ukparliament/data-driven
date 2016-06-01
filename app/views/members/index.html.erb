@@ -1,0 +1,10 @@
+<h2>Members</h2>
+<ul>
+	<% @members.each do |member| %>
+		<li>
+			<%= link_to member_subjects_path(member.id) do %>
+				<%= member.name %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>

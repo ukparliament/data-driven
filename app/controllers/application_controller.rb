@@ -40,27 +40,6 @@ class ApplicationController < ActionController::Base
 end
 
 
-class WrittenQuestion
-  include Tripod::Resource
-
-  rdf_type 'http://data.parliament.uk/schema/parl#WrittenParliamentaryQuestion'
-  linked_to :tablingMember, 'http://data.parliament.uk/schema/parl#tablingMember',class_name: 'Person'
-  linked_to :subjects, 'http://purl.org/dc/terms/subject', class_name: 'Subject', multivalued: true
-
-end
-
-class Person
-	include Tripod::Resource
-
-	rdf_type 'http://schema.org/Person'
-
-	field :name, 'http://schema.org/name'
-  field :image, 'http://schema.org/image', uri: true
-
-  linked_from :writtenQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
-
-  # linked_to :hasRegisteredInterests, 'http://data.parliament.uk/schema/parl#hasRegisteredInterest', class_name: 'RegisteredInterest', multivalued: true
-end
 
 # class RegisteredInterest
 # 	include Tripod::Resource
