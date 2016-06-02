@@ -12,7 +12,6 @@ class ConceptsController < ApplicationController
 		concept_id = params[:id]
 		concept_uri = "http://data.parliament.uk/resource/#{concept_id}"
 		@concept = Concept.find(concept_uri)
-		@tabling_members = Person.find_by_sparql("SELECT DISTINCT ?uri WHERE {?question <http://data.parliament.uk/schema/parl#tablingMember> ?uri ;
-																    		    <http://purl.org/dc/terms/subject> <#{concept_uri}> .} LIMIT 100")
+		@tabling_members = Person.ordered_tabling_members_on_subject(concept_uri)
 	end
 end

@@ -1,6 +1,6 @@
 <img src="<%= @person.image.to_s %>" align='right'>
 <h1><%= @person.name %></h1>
-<h2>Subjects of questions tabled by this person</h2>
+<h2>Subjects of questions tabled by this person ordered by the number of questions tabled on each subject</h2>
 <ul>
 	<% @subjects.each do |concept| %>
 		<li>
