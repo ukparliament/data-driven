@@ -26,6 +26,10 @@ Rails.application.routes.draw do
   #     end
   #   end
 
+  resources :concepts, only: [:index, :show]
+
+  resources :people, only: [:index, :show]
+
   # Example resource route with sub-resources:
   #   resources :products do
   #     resources :comments, :sales

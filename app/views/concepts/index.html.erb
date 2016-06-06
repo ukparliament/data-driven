@@ -1,0 +1,12 @@
+<h1>Most popular concepts</h1>
+<h2>Concepts ordered by the number of questions tabled around them</h2>
+
+<ul>
+	<% @concepts.each do |concept| %>
+		<li>
+			<%= link_to concept_path(concept.id) do %>
+				<%= concept.label %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>

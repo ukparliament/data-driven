@@ -1,0 +1,10 @@
+<h1>Most active people based on how many questions they ask</h1>
+<ul>
+	<% @people.each do |person| %>
+		<li>
+			<%= link_to person_path(person.id) do %>
+				<%= person.name %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>

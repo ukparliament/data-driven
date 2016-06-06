@@ -11,6 +11,8 @@ require "action_view/railtie"
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
+require "rspec-rails"
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -32,6 +34,6 @@ module SparqlEndpoint
 end
 
 Tripod.configure do |config|
-  config.query_endpoint = 'http://40.121.84.199/repositories/TempWorker'
+  config.query_endpoint = 'http://data.ukpds.org//repositories/TempWorkerSimple'
   config.timeout_seconds = 30
 end
