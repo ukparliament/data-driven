@@ -1,0 +1,2 @@
+class OralQuestionsController < ApplicationController
+end

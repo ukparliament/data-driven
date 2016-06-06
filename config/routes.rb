@@ -30,6 +30,15 @@ Rails.application.routes.draw do
 
   resources :people, only: [:index, :show]
 
+  resources :written_questions, only: [:index, :show]
+
+  resources :oral_questions, only: [:index, :show]
+
+  resources :houses, only: [:index, :show]
+
+  resources :divisions, only: [:index, :show]
+
+
   # Example resource route with sub-resources:
   #   resources :products do
   #     resources :comments, :sales
