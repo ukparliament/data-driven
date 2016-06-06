@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
       #       LIMIT 50
       #       ")
 
-      # render :text => a.methods(false)
+      # render :text => a
 
     # @subjects = Subject.all.limit(50).resources
 

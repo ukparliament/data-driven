@@ -51,3 +51,5 @@ group :test do
 	gem 'factory_girl_rails'
 	gem 'webmock'
 end
+
+ruby "2.4.0"
