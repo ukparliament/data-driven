@@ -5,6 +5,18 @@ class ApplicationController < ActionController::Base
 
   def index
 
+      # a = Concept.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
+      #       SELECT ?uri (COUNT(?question) as ?count)
+      #       WHERE {
+      #           ?question dcterms:subject ?uri
+      #       }
+      #       GROUP BY ?uri
+      #       ORDER BY DESC(?count)
+      #       LIMIT 50
+      #       ")
+
+      # render :text => a.methods(false)
+
     # @subjects = Subject.all.limit(50).resources
 
   	# render :text => "hello world controller"
