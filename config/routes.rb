@@ -34,7 +34,10 @@ Rails.application.routes.draw do
 
   resources :oral_questions, only: [:index, :show]
 
-  resources :houses, only: [:index, :show]
+  resources :houses, only: [:index, :show] do
+    resources :written_questions, only: [:index]
+    resources :oral_questions, only: [:index]
+  end
 
   resources :divisions, only: [:index, :show]
 
