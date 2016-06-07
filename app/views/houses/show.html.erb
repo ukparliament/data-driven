@@ -1,0 +1,34 @@
+<h1><%= @house.label %></h1>
+
+<h2>Oral questions by <%= @house.label %></h2>
+<ul>
+	<% @oral_questions_by_house.each do |oral_question| %>
+		<li>
+			<%= link_to oral_question_path(oral_question.id) do %>
+				<%= oral_question.plain_text %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>
+
+<h2>Written questions by <%= @house.label %></h2>
+<ul>
+	<% @written_questions_by_house.each do |written_question| %>
+		<li>
+			<%= link_to written_question_path(written_question.id) do %>
+				<%= written_question.text %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>
+
+<h2>Divisions by <%= @house.label %></h2>
+<ul>
+	<% @divisions_by_house.each do |division| %>
+		<li>
+			<%= link_to division_path(division.id) do %>
+				<%= division.title %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>

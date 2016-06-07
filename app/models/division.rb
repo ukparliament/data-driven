@@ -13,4 +13,14 @@ class Division
   		self.uri.to_s.split('/').last
   	end
 
+  	def self.find_by_house(house_uri)
+  		Division.find_by_sparql("
+                                PREFIX parl: <http://data.parliament.uk/schema/parl#>
+                                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                                select ?uri where { 
+                                    ?uri rdf:type parl:Division;
+                                    parl:house <#{house_uri}>            
+                                } LIMIT 3")
+  	end
+
 end
