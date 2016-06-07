@@ -7,9 +7,9 @@ class ApplicationController < ActionController::Base
 
     # a = Concept.find('http://data.parliament.uk/resource/00093447-0000-0000-0000-000000000002')
 
-    a = OralQuestion.first.tablingMember
+    # a = OralQuestion.first.tablingMember
 
-    render :text => a
+    # render :text => a
 
 
 
