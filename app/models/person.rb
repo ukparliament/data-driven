@@ -7,6 +7,7 @@ class Person
   	field :image, 'http://schema.org/image', is_uri: true
 
   	linked_from :writtenQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
+  	linked_from :oralQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
 
   	def id 
   		self.uri.to_s.split("/").last
