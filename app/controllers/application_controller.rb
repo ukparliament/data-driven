@@ -5,6 +5,12 @@ class ApplicationController < ActionController::Base
 
   def index
 
+    # a = Concept.find('http://data.parliament.uk/resource/00093447-0000-0000-0000-000000000002')
+
+    # render :text => a
+
+
+
       # a = Concept.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
       #       SELECT ?uri (COUNT(?question) as ?count)
       #       WHERE {

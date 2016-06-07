@@ -34,6 +34,6 @@ module SparqlEndpoint
 end
 
 Tripod.configure do |config|
-  config.query_endpoint = 'http://data.ukpds.org//repositories/TempWorkerSimple'
+  config.query_endpoint = 'http://data.ukpds.org//repositories/TempWorkerSimple2'
   config.timeout_seconds = 30
 end
