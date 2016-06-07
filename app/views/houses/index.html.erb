@@ -1,0 +1,11 @@
+<h1>Houses</h1>
+
+<ul>
+	<% @houses.each do |house| %>
+		<li>
+			<%= link_to house_path(concept.id) do %>
+				<%= house.label %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>
