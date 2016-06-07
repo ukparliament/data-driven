@@ -25,6 +25,6 @@ class OralQuestion
                                 select ?uri where { 
                                     ?uri rdf:type parl:OralParliamentaryQuestion;
                                       parl:house <#{house_uri}>
-                                } LIMIT 3")
+                                }")
   end
 end

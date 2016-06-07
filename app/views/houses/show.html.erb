@@ -1,6 +1,8 @@
 <h1><%= @house.label %></h1>
 
-<h2>Oral questions by <%= @house.label %></h2>
+<%= link_to house_oral_questions_path(@house.id) do %>
+	<h2>Oral questions by <%= @house.label %></h2>
+<% end %>
 <ul>
 	<% @oral_questions_by_house.each do |oral_question| %>
 		<li>
