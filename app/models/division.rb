@@ -20,7 +20,7 @@ class Division
                                 select ?uri where { 
                                     ?uri rdf:type parl:Division;
                                     parl:house <#{house_uri}>            
-                                } LIMIT 3")
+                                }")
   	end
 
 end

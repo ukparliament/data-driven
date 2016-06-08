@@ -9,6 +9,6 @@ class HousesController < ApplicationController
 		@house = House.find(house_uri)
 		@oral_questions_by_house = OralQuestion.find_by_house(house_uri)[0..2]
 		@written_questions_by_house = WrittenQuestion.find_by_house(house_uri)[0..2]
-		@divisions_by_house = Division.find_by_house(house_uri)
+		@divisions_by_house = Division.find_by_house(house_uri)[0..2]
 	end
 end

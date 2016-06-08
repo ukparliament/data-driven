@@ -1,11 +1,3 @@
 <h1>Divisions</h1>
 
-<ul>
-	<% @divisions.each do |division| %>
-		<li>
-			<%= link_to division_path(division.id) do %>
-				<%= division.title %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+<%= render "divisions_list" %>
