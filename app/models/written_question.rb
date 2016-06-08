@@ -21,6 +21,6 @@ class WrittenQuestion
 	                                select ?uri where { 
 	                                    ?uri rdf:type parl:WrittenParliamentaryQuestion;
 	                                      parl:house <#{house_uri}>
-	                                } LIMIT 3")
+	                                } LIMIT 50")
 	end
 end

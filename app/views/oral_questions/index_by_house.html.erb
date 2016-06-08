@@ -1,11 +1,3 @@
 <h1>Oral questions by <%= @house.label %></h1>
 
-<ul>
-	<% @oral_questions.each do |oral_question| %>
-		<li>
-			<%= link_to oral_question_path(oral_question.id) do %>
-				<%= oral_question.plain_text %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+<%= render "oral_questions_list" %>

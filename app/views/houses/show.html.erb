@@ -13,7 +13,9 @@
 	<% end %>
 </ul>
 
-<h2>Written questions by <%= @house.label %></h2>
+<%= link_to house_written_questions_path(@house.id) do %>
+	<h2>Written questions by <%= @house.label %></h2>
+<% end %>
 <ul>
 	<% @written_questions_by_house.each do |written_question| %>
 		<li>
