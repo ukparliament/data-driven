@@ -4,6 +4,12 @@ class WrittenQuestionsController < ApplicationController
 		@written_questions = WrittenQuestion.all.limit(30).resources
 	end
 
+	def show
+		written_question_id = params
+		written_question_uri = "http://data.parliament.uk/resource/#{written_question_id}"
+		@written_question = WrittenQuestion.find(written_question_uri)
+	end
+
 	def index_by_house
 		house_id = params[:house_id]
 		house_uri = "http://data.parliament.uk/resource/#{house_id}"
