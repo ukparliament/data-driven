@@ -1,11 +1,3 @@
 <h1>Written questions</h1>
 
-<ul>
-	<% @written_questions.each do |written_question| %>
-		<li>
-			<%= link_to written_question_path(written_question.id) do %>
-				<%= written_question.text %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+<%= render "written_questions_list" %>
