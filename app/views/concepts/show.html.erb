@@ -1,11 +1,10 @@
 <h1><%= @concept.label %></h1>
-<h2>Members that have tabled questions with this subject ordered by the numbers of questions they have asked</h2>
-<ul>
-	<% @tabling_members.each do |person| %>
-		<li>
-			<%= link_to person_path(person.id) do %>
-				<%= person.name %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+<%= link_to concept_oral_questions_path(@concept.id) do %>
+	<h2>Oral questions related to this concept</h2>
+<% end %>
+<%= link_to concept_written_questions_path(@concept.id) do %>
+	<h2>Written questions related to this concept</h2>
+<% end %>
+<%= link_to concept_divisions_path(@concept.id) do %>
+	<h2>Divisions related to this concept</h2>
+<% end %>

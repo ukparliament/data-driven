@@ -26,7 +26,11 @@ Rails.application.routes.draw do
   #     end
   #   end
 
-  resources :concepts, only: [:index, :show]
+  resources :concepts, only: [:index, :show] do
+    get '/oral_questions(.:format)', to: 'oral_questions#index_by_concept', as: 'oral_questions'
+    get '/written_questions(.:format)', to: 'written_questions#index_by_concept', as: 'written_questions'
+    get '/divisions(.:format)', to: 'divisions#index_by_concept', as: 'divisions'
+  end
 
   resources :people, only: [:index, :show]
 

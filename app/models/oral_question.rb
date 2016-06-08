@@ -27,4 +27,15 @@ class OralQuestion
                                       parl:house <#{house_uri}>
                                 }")
   end
+
+  def self.find_by_concept(concept_uri)
+    OralQuestion.find_by_sparql("
+                                PREFIX parl: <http://data.parliament.uk/schema/parl#>
+                                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                                PREFIX dcterms: <http://purl.org/dc/terms/>
+                                select ?uri where { 
+                                    ?uri rdf:type parl:OralParliamentaryQuestion;
+                                      dcterms:subject <#{concept_uri}>
+                                }")
+  end
 end
