@@ -57,6 +57,12 @@ class ApplicationController < ActionController::Base
   	# m=Member.find('')
   	# ts=m.questions.map { |q| q.subject }
   end
+
+  protected
+  def resource_uri(id)
+    "http://data.parliament.uk/resource/#{id}"
+  end
+  
 end
 
 

@@ -1,0 +1,6 @@
+<h1>Oral question details</h1>
+
+<p>House: <%= @oral_question.house.label %></p>
+<p>Asked by: <%= @oral_question.tablingMember.name %></p>
+<p>Asked on: <%= @oral_question.date.strftime("%d %B %Y") %></p>
+<p>Text: <%= @oral_question.plain_text %></p>

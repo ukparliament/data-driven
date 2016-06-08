@@ -4,16 +4,19 @@ class OralQuestionsController < ApplicationController
 		@oral_questions = OralQuestion.all.limit(30).resources
 	end
 
+	def show
+		oral_question_uri = resource_uri(params[:id])
+		@oral_question = OralQuestion.find(oral_question_uri)
+	end
+
 	def index_by_house
-		house_id = params[:house_id]
-		house_uri = "http://data.parliament.uk/resource/#{house_id}"
+		house_uri = resource_uri(params[:house_id])
 		@house = House.find(house_uri)
 		@oral_questions = OralQuestion.find_by_house(house_uri)
 	end
 
 	def index_by_concept
-		concept_id = params[:concept_id]
-		concept_uri = "http://data.parliament.uk/resource/#{concept_id}"
+		concept_uri = resource_uri(params[:concept_id])
 		@concept = Concept.find(concept_uri)
 		@oral_questions = OralQuestion.find_by_concept(concept_uri)
 	end

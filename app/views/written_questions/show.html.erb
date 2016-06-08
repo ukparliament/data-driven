@@ -1,0 +1,6 @@
+<h1>Written question details</h1>
+
+<p>House: <%= @written_question.house.label %></p>
+<p>Asked by: <%= @written_question.tablingMember.name %></p>
+<p>Asked on: <%= @written_question.date.strftime("%d %B %Y") %></p>
+<p>Text: <%= @written_question.text %></p>
