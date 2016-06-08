@@ -32,11 +32,12 @@ Rails.application.routes.draw do
 
   resources :written_questions, only: [:index, :show]
 
-  resources :oral_questions, only: [:index, :show]
+  resources :oral_questions, only: [:index, :show] do
+  end
 
   resources :houses, only: [:index, :show] do
-    resources :written_questions, only: [:index]
-    resources :oral_questions, only: [:index]
+    get '/oral_questions(.:format)', to: 'oral_questions#index_by_house', as: 'oral_questions'
+    get '/written_questions(.:format)', to: 'written_questions#index_by_house', as: 'written_questions'
   end
 
   resources :divisions, only: [:index, :show]
