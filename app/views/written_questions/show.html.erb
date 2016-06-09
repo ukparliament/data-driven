@@ -1,6 +1,23 @@
 <h1>Written question details</h1>
+<dl>
+	<dt>House</dt>
+	<dd><%= @written_question.house.label %></dd>
+	<dt>Asked by</dt>
+	<dd><%= @written_question.tablingMember.name %></dd>
+	<dt>Asked on</dt>
+	<dd><%= @written_question.date.strftime("%d %B %Y") %></dd>
+	<dt>Text</dt>
+	<dd><%= @written_question.text %></dd>	
+</dl>
 
-<p>House: <%= @written_question.house.label %></p>
-<p>Asked by: <%= @written_question.tablingMember.name %></p>
-<p>Asked on: <%= @written_question.date.strftime("%d %B %Y") %></p>
-<p>Text: <%= @written_question.text %></p>
+<fieldset> 
+	<legend>Answer</legend>
+	<dl>
+		<dt>Answered by</dt>
+		<dd><%= @written_question.answer.tablingMember.name %></dd>
+		<dt>Answered on</dt>
+		<dd><%= @written_question.answer.date.strftime("%d %B %Y") %></dd>
+		<dt>Text</dt>
+		<dd><%= @written_question.answer.text %></dd>
+	</dl>
+</fieldset>
