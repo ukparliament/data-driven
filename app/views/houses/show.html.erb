@@ -3,38 +3,11 @@
 <%= link_to house_oral_questions_path(@house.id) do %>
 	<h2>Oral questions by <%= @house.label %></h2>
 <% end %>
-<ul>
-	<% @oral_questions_by_house.each do |oral_question| %>
-		<li>
-			<%= link_to oral_question_path(oral_question.id) do %>
-				<%= oral_question.plain_text %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
 
 <%= link_to house_written_questions_path(@house.id) do %>
 	<h2>Written questions by <%= @house.label %></h2>
 <% end %>
-<ul>
-	<% @written_questions_by_house.each do |written_question| %>
-		<li>
-			<%= link_to written_question_path(written_question.id) do %>
-				<%= written_question.text %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
 
 <%= link_to house_divisions_path(@house.id) do %>
 	<h2>Divisions by <%= @house.label %></h2>
 <% end %>
-<ul>
-	<% @divisions_by_house.each do |division| %>
-		<li>
-			<%= link_to division_path(division.id) do %>
-				<%= division.title %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>

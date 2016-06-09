@@ -10,7 +10,7 @@ class Concept
   	self.uri.to_s.split("/").last
   end
 
-  def self.most_popular_by_question
+  def self.most_popular_by_contribution
   	Concept.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
 						SELECT ?uri
 						WHERE {
