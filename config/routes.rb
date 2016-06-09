@@ -49,7 +49,9 @@ Rails.application.routes.draw do
     get '/divisions(.:format)', to: 'divisions#index_by_house', as: 'divisions'
   end
 
-  resources :divisions, only: [:index, :show]
+  resources :divisions, only: [:index, :show] do
+    get '/votes(.:format)', to:'votes#index_by_division', as: 'votes'
+  end
 
 
   # Example resource route with sub-resources:

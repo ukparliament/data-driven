@@ -8,6 +8,7 @@ class Division
 
   	linked_to :subjects, 'http://purl.org/dc/terms/subject', class_name: 'Concept', multivalued: true
   	linked_to :house, 'http://data.parliament.uk/schema/parl#house', class_name: 'House'
+    linked_to :votes, 'http://data.parliament.uk/schema/parl#Vote', class_name: 'Vote', multivalued: true
 
   	def id
   		self.uri.to_s.split('/').last
