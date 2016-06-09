@@ -4,7 +4,7 @@ class DivisionsController < ApplicationController
 	end
 
 	def index_by_house
-		house_uri = resource(params[:house_id])
+		house_uri = resource_uri(params[:house_id])
 		@house = House.find(house_uri)
 		@divisions = Division.find_by_house(house_uri)
 	end
