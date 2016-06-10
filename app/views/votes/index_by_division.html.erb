@@ -2,6 +2,6 @@
 
 <ul>
 	<% @votes.each do |vote| %>
-		<li><%= vote.member %></li>
+		<li><%= "#{vote.member.name}: #{vote.text}" %></li>
 	<% end %>
 </ul>

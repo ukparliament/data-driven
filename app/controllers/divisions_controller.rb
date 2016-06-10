@@ -19,7 +19,8 @@ class DivisionsController < ApplicationController
 		person_uri = resource_uri(params[:person_id])
 		@person = Person.find(person_uri)
 		@divisions = Division.find_by_person(person_uri)
-
+	end
+	
 	def show
 		division_uri = resource_uri(params[:id])
 		p division_uri
