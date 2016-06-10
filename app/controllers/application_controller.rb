@@ -1,6 +1,3 @@
-require 'sparql/client'
-require 'rdf'
-
 class ApplicationController < ActionController::Base
 
   # Prevent CSRF attacks by raising an exception.
@@ -8,7 +5,16 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def index
-  client = SPARQL::Client.new("http://data.ukpds.org//repositories/TempWorkerSimple2")
+    format([
+      houses: url_for(controller: 'houses', format: :json),
+      concepts: url_for(controller: 'concepts', format: :json),
+      oralQuestions: url_for(controller: 'oral_questions', format: :json),
+      writtenQuestions: url_for(controller: 'written_questions', format: :json),
+      divisions: url_for(controller: 'divisions', format: :json),
+      people: url_for(controller: 'people', format: :json),
+    ])
+
+  # client = SPARQL::Client.new("http://data.ukpds.org//repositories/TempWorkerSimple2")
   # query = sparql.select.where([:ss, :p, :o]).limit(10)
 #   query = sparql.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
 # PREFIX schema: <http://schema.org/>
@@ -19,36 +25,36 @@ class ApplicationController < ActionController::Base
 #     ?person schema:name ?name .
 # }")
 
-division_uri = 'http://data.parliament.uk/resource/00147668-0000-0000-0000-000000000000' 
-division_pattern = RDF::Query::Pattern.new(
-  :vote, 
-  'parl:division', 
-  RDF::URI.new(division_uri))
-value_pattern = RDF::Query::Pattern.new(
-  :vote, 
-  'parl:value', 
-  :value)
-member_pattern = RDF::Query::Pattern.new(
-  :vote, 
-  'parl:member', 
-  :person)
-name_pattern = RDF::Query::Pattern.new(
-  :person, 
-  'schema:name', 
-  :name)
+# division_uri = 'http://data.parliament.uk/resource/00147668-0000-0000-0000-000000000000' 
+# division_pattern = RDF::Query::Pattern.new(
+#   :vote, 
+#   'parl:division', 
+#   RDF::URI.new(division_uri))
+# value_pattern = RDF::Query::Pattern.new(
+#   :vote, 
+#   'parl:value', 
+#   :value)
+# member_pattern = RDF::Query::Pattern.new(
+#   :vote, 
+#   'parl:member', 
+#   :person)
+# name_pattern = RDF::Query::Pattern.new(
+#   :person, 
+#   'schema:name', 
+#   :name)
 
-query = client
-  .select
-  .prefix("parl:<http://data.parliament.uk/schema/parl#>")
-  .prefix("schema:<http://schema.org/>")
-  .select(:person, :name, :value)
-  .where(division_pattern, value_pattern, member_pattern, name_pattern)
+# query = client
+#   .select
+#   .prefix("parl:<http://data.parliament.uk/schema/parl#>")
+#   .prefix("schema:<http://schema.org/>")
+#   .select(:person, :name, :value)
+#   .where(division_pattern, value_pattern, member_pattern, name_pattern)
 
-query.each_solution do |solution|
-    p solution
-end
+# query.each_solution do |solution|
+#     p solution
+# end
 
-render :text => query
+# render :text => query
 
 
   # render :text => query
@@ -130,7 +136,16 @@ render :text => query
   def resource_uri(id)
     "http://data.parliament.uk/resource/#{id}"
   end
-  
+
+  def format(data)
+    respond_to do |format|
+      format.html
+      format.json { 
+        render json: data.to_json
+      }
+    end
+  end
+
 end
 
 

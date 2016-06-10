@@ -256,6 +256,7 @@ DEPENDENCIES
   factory_girl_rails
   jbuilder (~> 2.0)
   jquery-rails
+  nokogiri
   rails (= 4.2.6)
   rspec-rails
   sass-rails (~> 5.0)
