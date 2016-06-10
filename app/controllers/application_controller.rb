@@ -19,8 +19,30 @@ class ApplicationController < ActionController::Base
 #     ?person schema:name ?name .
 # }")
 
+division_uri = 'http://data.parliament.uk/resource/00147668-0000-0000-0000-000000000000' 
+division_pattern = RDF::Query::Pattern.new(
+  :vote, 
+  'parl:division', 
+  RDF::URI.new(division_uri))
+value_pattern = RDF::Query::Pattern.new(
+  :vote, 
+  'parl:value', 
+  :value)
+member_pattern = RDF::Query::Pattern.new(
+  :vote, 
+  'parl:member', 
+  :person)
+name_pattern = RDF::Query::Pattern.new(
+  :person, 
+  'schema:name', 
+  :name)
 
-query = client.select.prefix("parl:<http://data.parliament.uk/schema/parl#>").prefix("schema:<http://schema.org/>").select(:person, :name, :value).where(RDF::Query::Pattern.new(:vote, 'parl:division', RDF::URI.new('http://data.parliament.uk/resource/00147668-0000-0000-0000-000000000000')))
+query = client
+  .select
+  .prefix("parl:<http://data.parliament.uk/schema/parl#>")
+  .prefix("schema:<http://schema.org/>")
+  .select(:person, :name, :value)
+  .where(division_pattern, value_pattern, member_pattern, name_pattern)
 
 query.each_solution do |solution|
     p solution
