@@ -1,0 +1,6 @@
+<h1><%= @division.title %></h1>
+<p>House: <%= @division.house.label %></p>
+<p>Description: <%= @division.description %></p>
+<%= link_to division_votes_path(@division.id) do %>
+	Votes
+<% end %>

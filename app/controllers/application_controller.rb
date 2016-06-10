@@ -5,6 +5,9 @@ class ApplicationController < ActionController::Base
 
   def index
 
+    # division = Division.find('http://data.parliament.uk/resource/00147668-0000-0000-0000-000000000000')
+    # vote = division.votes.first
+    # render :text => vote.member
     # a = Concept.find('http://data.parliament.uk/resource/00093447-0000-0000-0000-000000000002')
 
     # a = OralQuestion.first.tablingMember
