@@ -1,7 +1,5 @@
-require 'sparql'
+require 'sparql/client'
 require 'rdf'
-require 'rdf/ntriples'
-include RDF
 
 class ApplicationController < ActionController::Base
 
@@ -10,9 +8,28 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def index
-  
+  client = SPARQL::Client.new("http://data.ukpds.org//repositories/TempWorkerSimple2")
+  # query = sparql.select.where([:ss, :p, :o]).limit(10)
+#   query = sparql.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
+# PREFIX schema: <http://schema.org/>
+# select ?person ?name ?value where { 
+#     ?vote parl:division <http://data.parliament.uk/resource/00147668-0000-0000-0000-000000000000>;
+#         parl:value ?value;
+#         parl:member ?person.
+#     ?person schema:name ?name .
+# }")
 
-    graph = RDF::Graph.load("http://data.ukpds.org//repositories/TempWorkerSimple2")
+
+query = client.select.prefix("parl:<http://data.parliament.uk/schema/parl#>").prefix("schema:<http://schema.org/>").select(:person, :name, :value).where(RDF::Query::Pattern.new(:vote, 'parl:division', RDF::URI.new('http://data.parliament.uk/resource/00147668-0000-0000-0000-000000000000')))
+
+query.each_solution do |solution|
+    p solution
+end
+
+render :text => query
+
+
+  # render :text => query
   #queryable = RDF::Repository.load("http://data.ukpds.org//repositories/TempWorkerSimple2")
 
 #   sse = SPARQL.parse("PREFIX parl: <http://data.parliament.uk/schema/parl#>
