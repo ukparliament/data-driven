@@ -1,6 +1,17 @@
 <h1>Oral question details</h1>
-
-<p>House: <%= @oral_question.house.label %></p>
-<p>Asked by: <%= @oral_question.tablingMember.name %></p>
-<p>Asked on: <%= @oral_question.date.strftime("%d %B %Y") %></p>
-<p>Text: <%= @oral_question.plain_text %></p>
+<dl>
+	<dt>House</dt>
+	<dd><%= link_to house_path(@oral_question.house.id) do %>
+			<%= @oral_question.house.label %>
+		<% end %>
+	</dd>
+	<dt>Asked by</dt>
+	<dd><%= link_to person_path(@oral_question.tablingMember.id) do %>
+			<%= @oral_question.tablingMember.name %>
+		<% end %>
+	</dd>
+	<dt>Asked on</dt>
+	<dd><%= @oral_question.date.strftime("%d %B %Y") %></dd>
+	<dt>Text</dt>
+	<dd><%= @oral_question.plain_text %></dd>	
+</dl>
