@@ -1,9 +1,31 @@
+require 'sparql'
+require 'rdf'
+require 'rdf/ntriples'
+include RDF
+
 class ApplicationController < ActionController::Base
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
   def index
+  
+
+    graph = RDF::Graph.load("http://data.ukpds.org//repositories/TempWorkerSimple2")
+  #queryable = RDF::Repository.load("http://data.ukpds.org//repositories/TempWorkerSimple2")
+
+#   sse = SPARQL.parse("PREFIX parl: <http://data.parliament.uk/schema/parl#>
+# PREFIX schema: <http://schema.org/>
+# select ?person ?name ?value where { 
+#     ?vote parl:division <http://data.parliament.uk/resource/00147668-0000-0000-0000-000000000000>;
+#         parl:value ?value;
+#         parl:member ?person.
+#     ?person schema:name ?name .
+# }")
+#   sse.execute(queryable) do |result|
+#     p result
+#   end
 
     # division = Division.find('http://data.parliament.uk/resource/00147668-0000-0000-0000-000000000000')
     # vote = division.votes.first
