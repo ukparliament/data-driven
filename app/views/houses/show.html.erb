@@ -1,0 +1,13 @@
+<h1><%= @house.label %></h1>
+
+<%= link_to house_oral_questions_path(@house.id) do %>
+	<h2><%= @house.label %> oral questions</h2>
+<% end %>
+
+<%= link_to house_written_questions_path(@house.id) do %>
+	<h2><%= @house.label %> written questions</h2>
+<% end %>
+
+<%= link_to house_divisions_path(@house.id) do %>
+	<h2><%= @house.label %> divisions</h2>
+<% end %>

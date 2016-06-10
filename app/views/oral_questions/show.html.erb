@@ -1,0 +1,17 @@
+<h1>Oral question details</h1>
+<dl>
+	<dt>House</dt>
+	<dd><%= link_to house_path(@oral_question.house.id) do %>
+			<%= @oral_question.house.label %>
+		<% end %>
+	</dd>
+	<dt>Asked by</dt>
+	<dd><%= link_to person_path(@oral_question.tablingMember.id) do %>
+			<%= @oral_question.tablingMember.name %>
+		<% end %>
+	</dd>
+	<dt>Asked on</dt>
+	<dd><%= @oral_question.date.strftime("%d %B %Y") %></dd>
+	<dt>Text</dt>
+	<dd><%= @oral_question.plain_text %></dd>	
+</dl>

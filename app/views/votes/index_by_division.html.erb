@@ -1,0 +1,18 @@
+<h1><%= @data.first.division_title%></h1>
+
+<ul>
+	<% @data.each do |item|%>
+		<li>
+			<dl>
+				<dt>
+					<%= link_to person_path(item.person.to_s.split('/').last) do %>
+						<%= item.person_name %>
+					<% end %>
+				</dt>
+				<dd><%= item.vote_value%></dd>
+			</dl>
+		</li>
+	<% end %>
+</ul>
+
+

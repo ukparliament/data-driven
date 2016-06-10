@@ -7,6 +7,8 @@ class Person
   	field :image, 'http://schema.org/image', is_uri: true
 
   	linked_from :writtenQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
+  	linked_from :oralQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
+  	linked_from :votes, :votingMember, class_name: 'Vote'
 
   	def id 
   		self.uri.to_s.split("/").last
@@ -17,7 +19,7 @@ class Person
 							PREFIX parl: <http://data.parliament.uk/schema/parl#>
 							SELECT ?uri
 							WHERE {
-							    ?question parl:tablingMember ?uri;
+							    ?subject parl:member ?uri;
 							}
 							GROUP BY ?uri
 							ORDER BY DESC(COUNT(?question))

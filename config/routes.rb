@@ -26,17 +26,32 @@ Rails.application.routes.draw do
   #     end
   #   end
 
-  resources :concepts, only: [:index, :show]
+  resources :concepts, only: [:index, :show] do
+    get '/oral_questions(.:format)', to: 'oral_questions#index_by_concept', as: 'oral_questions'
+    get '/written_questions(.:format)', to: 'written_questions#index_by_concept', as: 'written_questions'
+    get '/divisions(.:format)', to: 'divisions#index_by_concept', as: 'divisions'
+  end
 
-  resources :people, only: [:index, :show]
+  resources :people, only: [:index, :show] do
+    get '/oral_questions(.:format)', to: 'oral_questions#index_by_person', as: 'oral_questions'
+    get '/written_questions(.:format)', to: 'written_questions#index_by_person', as: 'written_questions'
+    get '/votes(.:format)', to: 'votes#index_by_person', as: 'votes'
+
+  end
 
   resources :written_questions, only: [:index, :show]
 
   resources :oral_questions, only: [:index, :show]
 
-  resources :houses, only: [:index, :show]
+  resources :houses, only: [:index, :show] do
+    get '/oral_questions(.:format)', to: 'oral_questions#index_by_house', as: 'oral_questions'
+    get '/written_questions(.:format)', to: 'written_questions#index_by_house', as: 'written_questions'
+    get '/divisions(.:format)', to: 'divisions#index_by_house', as: 'divisions'
+  end
 
-  resources :divisions, only: [:index, :show]
+  resources :divisions, only: [:index, :show] do
+    get '/votes(.:format)', to:'votes#index_by_division', as: 'votes'
+  end
 
 
   # Example resource route with sub-resources:
