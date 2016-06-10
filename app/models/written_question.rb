@@ -10,8 +10,17 @@ class WrittenQuestion
   	linked_to :subjects, 'http://purl.org/dc/terms/subject', class_name: 'Concept', multivalued: true
   	linked_to :house, 'http://data.parliament.uk/schema/parl#house', class_name: 'House'
 
+  	linked_from :writtenAnswer, :writtenQuestion, class_name: 'WrittenAnswer'
+
   	def id
   		self.uri.to_s.split('/').last
+  	end
+
+  	def answer
+  		if(@answer == nil)
+  			@answer = self.writtenAnswer.first
+  		end
+  		@answer
   	end
 
   	def self.find_by_house(house_uri)
@@ -25,13 +34,13 @@ class WrittenQuestion
 	end
 
 	def self.find_by_concept(concept_uri)
-    WrittenQuestion.find_by_sparql("
-	                                PREFIX parl: <http://data.parliament.uk/schema/parl#>
-	                                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	                                PREFIX dcterms: <http://purl.org/dc/terms/>
-	                                select ?uri where { 
-	                                    ?uri rdf:type parl:WrittenParliamentaryQuestion;
-	                                      dcterms:subject <#{concept_uri}>
-	                                }")
-    end
+	    WrittenQuestion.find_by_sparql("
+		                                PREFIX parl: <http://data.parliament.uk/schema/parl#>
+		                                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		                                PREFIX dcterms: <http://purl.org/dc/terms/>
+		                                select ?uri where { 
+		                                    ?uri rdf:type parl:WrittenParliamentaryQuestion;
+		                                      dcterms:subject <#{concept_uri}>
+		                                }")
+	end
 end

@@ -11,6 +11,10 @@ class ApplicationController < ActionController::Base
 
     # render :text => a
 
+    # a = WrittenQuestion.find('http://data.parliament.uk/resource/00041303-0000-0000-0000-000000000000')
+
+    # render :text => a.writtenAnswer.text
+
 
 
       # a = Concept.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
