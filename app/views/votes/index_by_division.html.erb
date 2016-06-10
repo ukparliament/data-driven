@@ -1,3 +1,7 @@
 <h1><%= @division.title %> Votes</h1>
 
-<p><%= @votes %></p>
+<ul>
+	<% @votes.each do |vote| %>
+		<li><%= vote.text %></li>
+	<% end %>
+</ul>
