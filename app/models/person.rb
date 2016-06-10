@@ -8,6 +8,7 @@ class Person
 
   	linked_from :writtenQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
   	linked_from :oralQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
+  	linked_from :votes, :votingMember, class_name: 'Vote'
 
   	def id 
   		self.uri.to_s.split("/").last
