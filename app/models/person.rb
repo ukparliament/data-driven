@@ -18,7 +18,7 @@ class Person
 							PREFIX parl: <http://data.parliament.uk/schema/parl#>
 							SELECT ?uri
 							WHERE {
-							    ?question parl:tablingMember ?uri;
+							    ?subject parl:member ?uri;
 							}
 							GROUP BY ?uri
 							ORDER BY DESC(COUNT(?question))

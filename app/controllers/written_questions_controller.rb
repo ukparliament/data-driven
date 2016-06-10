@@ -21,4 +21,9 @@ class WrittenQuestionsController < ApplicationController
 		@written_questions = WrittenQuestion.find_by_concept(concept_uri)
 	end
 
+	def index_by_person
+		person_uri = resource_uri(params[:person_id])
+		@person = Person.find(person_uri)
+		@written_questions = WrittenQuestion.find_by_person(person_uri)
+	end
 end

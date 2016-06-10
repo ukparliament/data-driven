@@ -1,12 +1,14 @@
 <img src="<%= @person.image.to_s %>" align='right'>
 <h1><%= @person.name %></h1>
-<h2>Subjects of questions tabled by this person ordered by the number of questions tabled on each subject</h2>
-<ul>
-	<% @subjects.each do |concept| %>
-		<li>
-			<%= link_to concept_path(concept.id) do %>
-				<%= concept.label %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+
+<%= link_to person_oral_questions_path(@person.id) do %>
+	<h2>Oral questions</h2>
+<% end %>
+
+<%= link_to person_written_questions_path(@person.id) do %>
+	<h2>Written questions</h2>
+<% end %>
+
+<%= link_to person_divisions_path(@person.id) do %>
+	<h2>Divisions</h2>
+<% end %>

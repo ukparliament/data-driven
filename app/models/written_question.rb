@@ -25,12 +25,12 @@ class WrittenQuestion
 
   	def self.find_by_house(house_uri)
 	    WrittenQuestion.find_by_sparql("
-	                                PREFIX parl: <http://data.parliament.uk/schema/parl#>
-	                                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	                                select ?uri where { 
-	                                    ?uri rdf:type parl:WrittenParliamentaryQuestion;
-	                                      parl:house <#{house_uri}>
-	                                } LIMIT 50")
+	                            	    PREFIX parl: <http://data.parliament.uk/schema/parl#>
+	                            	    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	                            	    select ?uri where { 
+	                            	        ?uri rdf:type parl:WrittenParliamentaryQuestion;
+	                            	          parl:house <#{house_uri}>
+	                            	    } LIMIT 50")
 	end
 
 	def self.find_by_concept(concept_uri)
@@ -43,4 +43,15 @@ class WrittenQuestion
 		                                      dcterms:subject <#{concept_uri}>
 		                                }")
 	end
+
+	def self.find_by_person(person_uri)
+      	WrittenQuestion.find_by_sparql("
+                                PREFIX parl: <http://data.parliament.uk/schema/parl#>
+                                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                                PREFIX dcterms: <http://purl.org/dc/terms/>
+                                select ?uri where { 
+                                    ?uri rdf:type parl:WrittenParliamentaryQuestion;
+                                      parl:member <#{person_uri}>
+                                }")
+  	end
 end

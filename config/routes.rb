@@ -32,7 +32,12 @@ Rails.application.routes.draw do
     get '/divisions(.:format)', to: 'divisions#index_by_concept', as: 'divisions'
   end
 
-  resources :people, only: [:index, :show]
+  resources :people, only: [:index, :show] do
+    get '/oral-questions(.:format)', to: 'oral_questions#index_by_person', as: 'oral_questions'
+    get '/written-questions(.:format)', to: 'written_questions#index_by_person', as: 'written_questions'
+    get '/divisions(.:format)', to: 'divisions#index_by_person', as: 'divisions'
+
+  end
 
   resources :written_questions, only: [:index, :show]
 

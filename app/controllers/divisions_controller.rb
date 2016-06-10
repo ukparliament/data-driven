@@ -14,4 +14,10 @@ class DivisionsController < ApplicationController
 		@concept = Concept.find(concept_uri)
 		@divisions = Division.find_by_concept(concept_uri)
 	end
+
+	def index_by_person
+		person_uri = resource_uri(params[:person_id])
+		@person = Person.find(person_uri)
+		@divisions = Division.find_by_person(person_uri)
+	end
 end
