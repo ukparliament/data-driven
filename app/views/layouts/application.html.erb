@@ -17,9 +17,14 @@
 	  ga('send', 'pageview');
 
 	</script>
-	<a href="<%= url_for(:format => :json) %>">download</a>
 
-<%= yield %>
+	<%= link_to root_path do %>
+		Home
+	<% end %>
+
+	<a style="position: absolute; right: 0; border: 5px solid; padding: 10px" href="<%= url_for(:format => :json) %>">Download this data</a>
+
+	<%= yield %>
 
 </body>
 </html>

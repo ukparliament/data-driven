@@ -14,10 +14,6 @@ class OralQuestion
   	self.uri.to_s.split('/').last
   end
 
-  def plain_text
-  	self.text.tr('<p>', '').tr('</p>', '')
-  end
-
   def self.find_by_house(house_uri)
     OralQuestion.find_by_sparql("
                                 PREFIX parl: <http://data.parliament.uk/schema/parl#>

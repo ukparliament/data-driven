@@ -27,6 +27,6 @@
 		<dt>Answered on</dt>
 		<dd><%= @written_question.answer.date.strftime("%d %B %Y") %></dd>
 		<dt>Text</dt>
-		<dd><%= @written_question.answer.text %></dd>
+		<dd><%= strip_tags(@written_question.answer.text) %></dd>
 	</dl>
 </fieldset>

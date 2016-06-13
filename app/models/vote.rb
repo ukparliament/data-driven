@@ -57,10 +57,22 @@ class Vote
 		  RDF::URI.new(person_uri), 
 		  'schema:name', 
 		  :person_name)
+		vote_type_pattern = RDF::Query::Pattern.new(
+		  :vote, 
+		  'a', 
+		  RDF::URI.new('http://data.parliament.uk/schema/parl#Vote'))
 		vote_value_pattern = RDF::Query::Pattern.new(
 		  :vote, 
 		  'parl:value', 
 		  :vote_value)
+		vote_value_construct_pattern = RDF::Query::Pattern.new(
+		  :vote, 
+		  'parl:voteValue', 
+		  :vote_value)
+		division_title_construct_pattern = RDF::Query::Pattern.new(
+		  :vote, 
+		  'parl:divisionTitle', 
+		  :division_title)
 		division_pattern = RDF::Query::Pattern.new(
 		  :vote, 
 		  'parl:division', 
@@ -71,12 +83,12 @@ class Vote
 		  :division_title)
 
 		query = client
-		  .select
+		  .construct(person_name_pattern, vote_value_construct_pattern, division_title_construct_pattern)
+		  .where(person_name_pattern)
+		  .optional(vote_pattern, vote_type_pattern, vote_value_pattern, division_pattern, division_title_pattern)
 		  .prefix("parl:<http://data.parliament.uk/schema/parl#>")
 		  .prefix("schema:<http://schema.org/>")
 		  .prefix("dcterms:<http://purl.org/dc/terms/>")
-		  .select(:division, :division_title, :person_name, :vote_value)
-		  .where(vote_pattern, person_name_pattern, vote_value_pattern, division_pattern, division_title_pattern)
 
 		query.result	
 	end

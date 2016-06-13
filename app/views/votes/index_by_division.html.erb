@@ -9,7 +9,7 @@
 						<%= item.person_name %>
 					<% end %>
 				</dt>
-				<dd><%= item.vote_value%></dd>
+				<dd><%= item.vote_value == 'true' ? 'Content' : 'Not content' %></dd>
 			</dl>
 		</li>
 	<% end %>

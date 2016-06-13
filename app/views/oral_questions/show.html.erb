@@ -13,5 +13,5 @@
 	<dt>Asked on</dt>
 	<dd><%= @oral_question.date.strftime("%d %B %Y") %></dd>
 	<dt>Text</dt>
-	<dd><%= @oral_question.plain_text %></dd>	
+	<dd><%= strip_tags(@oral_question.text) %></dd>	
 </dl>

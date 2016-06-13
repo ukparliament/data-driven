@@ -2,7 +2,7 @@
 	<% @oral_questions.each do |oral_question| %>
 		<li>
 			<%= link_to oral_question_path(oral_question.id) do %>
-				<%= oral_question.plain_text %>
+				<%= strip_tags(oral_question.text) %>
 			<% end %>
 		</li>
 	<% end %>
