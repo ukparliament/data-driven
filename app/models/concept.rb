@@ -14,10 +14,10 @@ class Concept
   	Concept.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
 						SELECT ?uri
 						WHERE {
-						    ?question dcterms:subject ?uri
+						    ?contribution dcterms:subject ?uri
 						}
 						GROUP BY ?uri
-						ORDER BY DESC(COUNT(?question))
+						ORDER BY DESC(COUNT(?contribution))
 						LIMIT 50
 						")
   end

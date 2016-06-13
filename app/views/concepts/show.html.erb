@@ -1,10 +1,19 @@
 <h1><%= @concept.label %></h1>
+
+<ul>
+<li>
 <%= link_to concept_oral_questions_path(@concept.id) do %>
-	<h2>Oral questions related to this concept</h2>
+	Oral questions related to this concept
 <% end %>
+</li>
+<li>
 <%= link_to concept_written_questions_path(@concept.id) do %>
-	<h2>Written questions related to this concept</h2>
+	Written questions related to this concept
 <% end %>
+</li>
+<li>
 <%= link_to concept_divisions_path(@concept.id) do %>
-	<h2>Divisions related to this concept</h2>
+	Divisions related to this concept
 <% end %>
+</li>
+</ul>
