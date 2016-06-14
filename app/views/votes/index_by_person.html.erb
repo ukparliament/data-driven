@@ -4,7 +4,11 @@
 	<% @votes.each do |item|%>
 		<li>
 			<dl>
-				<dt><%= item[:division_title] %></dt>
+				<dt>
+					<%= link_to division_path(item[:division_id]) do %>
+						<%= item[:division_title] %> 
+					<% end %>
+				</dt>
 				<dd><%= item[:value] %></dd>
 			</dl>
 		</li>

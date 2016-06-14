@@ -29,13 +29,19 @@ class VotesController < ApplicationController
 				vote_statement.subject, 
 				RDF::URI.new('http://data.parliament.uk/schema/parl#divisionTitle'), 
 				:division_title)
+			division_pattern = RDF::Query::Pattern.new(
+				vote_statement.subject, 
+				RDF::URI.new('http://data.parliament.uk/schema/parl#division'), 
+				:division)
 
+			division_id = graph.first_object(division_pattern).to_s.split('/').last
 		 	division_title = graph.first_value(division_title_pattern)
 		 	vote_text = vote_statement.object == true ? 'Content' : 'Not content' 
 
 			{
 				:value => vote_text,
-				:division_title => division_title
+				:division_title => division_title,
+				:division_id => division_id
 			}
 		 end
 

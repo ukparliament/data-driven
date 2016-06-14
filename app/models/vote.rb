@@ -14,7 +14,7 @@ class Vote
 	end
 
 	def self.find_by_division(division_uri)
-		client = SPARQL::Client.new("http://data.ukpds.org//repositories/TempWorkerSimple2")
+		client = SPARQL::Client.new(DataDriven::Application.config.database)
 		division_pattern = RDF::Query::Pattern.new(
 		  :vote, 
 		  'parl:division', 
@@ -48,7 +48,7 @@ class Vote
 	end	
 
 	def self.find_by_person(person_uri)
-		client = SPARQL::Client.new("http://data.ukpds.org//repositories/TempWorkerSimple2")
+		client = SPARQL::Client.new(DataDriven::Application.config.database)
 		vote_pattern = RDF::Query::Pattern.new(
 		  :vote, 
 		  'parl:member', 
@@ -83,7 +83,7 @@ class Vote
 		  :division_title)
 
 		query = client
-		  .construct(person_name_pattern, vote_value_construct_pattern, division_title_construct_pattern)
+		  .construct(person_name_pattern, vote_value_construct_pattern, division_title_construct_pattern, division_pattern)
 		  .where(person_name_pattern)
 		  .optional(vote_pattern, vote_type_pattern, vote_value_pattern, division_pattern, division_title_pattern)
 		  .prefix("parl:<http://data.parliament.uk/schema/parl#>")
