@@ -38,4 +38,4 @@ after_install:
   
 notifications:
   slack: ukparliament:hWKdWMeZOVSiokWoz9GC6wK9
-  webhooks: https://registry.hub.docker.com/u/ukparliament/search-for-member/trigger/f2333d8f-1a43-487e-b63e-a556482ef87f/
+  webhooks: https://registry.hub.docker.com/u/ukparliament/sparql-exploration/trigger/ed5a3973-a46a-4eb8-bb31-78fcd3c3c419/
