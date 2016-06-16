@@ -7,7 +7,7 @@ class HousesController < ApplicationController
 
 	def show
 		house_uri = resource_uri(params[:id])
-		@house = House.find(house_uri)
+		@house = House.show(house_uri)
 		
 		format(@house)
 	end
