@@ -27,15 +27,15 @@ Rails.application.routes.draw do
   #   end
 
   resources :concepts, only: [:index, :show] do
-    get '/oral-questions(.:format)', to: 'oral_questions#index_by_concept', as: 'oral_questions'
-    get '/written-questions(.:format)', to: 'written_questions#index_by_concept', as: 'written_questions'
+    get '/oral_questions(.:format)', to: 'oral_questions#index_by_concept', as: 'oral_questions'
+    get '/written_questions(.:format)', to: 'written_questions#index_by_concept', as: 'written_questions'
     get '/divisions(.:format)', to: 'divisions#index_by_concept', as: 'divisions'
   end
 
   resources :people, only: [:index, :show] do
-    get '/oral-questions(.:format)', to: 'oral_questions#index_by_person', as: 'oral_questions'
-    get '/written-questions(.:format)', to: 'written_questions#index_by_person', as: 'written_questions'
-    get '/divisions(.:format)', to: 'divisions#index_by_person', as: 'divisions'
+    get '/oral_questions(.:format)', to: 'oral_questions#index_by_person', as: 'oral_questions'
+    get '/written_questions(.:format)', to: 'written_questions#index_by_person', as: 'written_questions'
+    get '/votes(.:format)', to: 'votes#index_by_person', as: 'votes'
 
   end
 
@@ -44,8 +44,8 @@ Rails.application.routes.draw do
   resources :oral_questions, only: [:index, :show]
 
   resources :houses, only: [:index, :show] do
-    get '/oral-questions(.:format)', to: 'oral_questions#index_by_house', as: 'oral_questions'
-    get '/written-questions(.:format)', to: 'written_questions#index_by_house', as: 'written_questions'
+    get '/oral_questions(.:format)', to: 'oral_questions#index_by_house', as: 'oral_questions'
+    get '/written_questions(.:format)', to: 'written_questions#index_by_house', as: 'written_questions'
     get '/divisions(.:format)', to: 'divisions#index_by_house', as: 'divisions'
   end
 
