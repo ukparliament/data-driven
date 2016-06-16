@@ -16,7 +16,7 @@ class OralQuestion
                               PREFIX dcterms: <http://purl.org/dc/terms/>
                               PREFIX parl: <http://data.parliament.uk/schema/parl#>
                               select ?text ?date ?house ?member ?house_label ?member_name where { 
-                                <http://data.parliament.uk/resource/00904130-0000-0000-0000-000000000003> schema:text ?text;
+                                <#{uri}> schema:text ?text;
                                               dcterms:date ?date;
                                               parl:house ?house;
                                               parl:member ?member .
@@ -53,7 +53,7 @@ class OralQuestion
                             PREFIX schema: <http://schema.org/>
                             select ?question ?text where { 
                                     ?question rdf:type parl:OralParliamentaryQuestion;
-                                              dcterms:subject <http://data.parliament.uk/resource/00402907-0000-0000-0000-000000000002>;
+                                              dcterms:subject <#{concept_uri}>;
                                               schema:text ?text .
                             }")
     self.serialize(result)
@@ -65,7 +65,7 @@ class OralQuestion
                             PREFIX schema: <http://schema.org/>
                             select ?question ?text where { 
                                     ?question rdf:type parl:OralParliamentaryQuestion;
-                                              parl:member <http://data.parliament.uk/resource/00000650-0000-0000-0000-000000000001>;
+                                              parl:member <#{person_uri}>;
                                               schema:text ?text .
                             }")
     self.serialize(result)
