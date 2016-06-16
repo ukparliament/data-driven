@@ -96,6 +96,7 @@ GEM
       backports
       json (>= 1.7.5)
       rdf (>= 1.0)
+    libv8 (3.16.14.15)
     link_header (0.0.8)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -110,6 +111,9 @@ GEM
     net-http-persistent (2.9.4)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
+    passenger (5.0.28)
+      rack
+      rake (>= 0.8.1)
     rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -162,6 +166,7 @@ GEM
       rdf (~> 1.99)
     rdoc (4.2.2)
       json (~> 1.4)
+    ref (2.0.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec-core (3.4.4)
@@ -212,6 +217,9 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sxp (0.1.5)
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
+      ref
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.4)
@@ -257,12 +265,14 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   nokogiri
+  passenger
   rails (= 4.2.6)
   rspec-rails
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   sparql
   spring
+  therubyracer
   tripod
   turbolinks
   uglifier (>= 1.3.0)
