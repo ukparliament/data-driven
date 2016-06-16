@@ -1,48 +1,77 @@
 class OralQuestion
-	include Tripod::Resource
+  @@client = SPARQL::Client.new(DataDriven::Application.config.database)
 
-	rdf_type 'http://data.parliament.uk/schema/parl#OralParliamentaryQuestion'
+	# include Tripod::Resource
 
-	field :text, 'http://schema.org/text'
-	field :date, 'http://purl.org/dc/terms/date'
+	# rdf_type 'http://data.parliament.uk/schema/parl#OralParliamentaryQuestion'
 
-	linked_to :tablingMember, 'http://data.parliament.uk/schema/parl#member',class_name: 'Person'
-  linked_to :subjects, 'http://purl.org/dc/terms/subject', class_name: 'Concept', multivalued: true
-  linked_to :house, 'http://data.parliament.uk/schema/parl#house', class_name: 'House'
+	# field :text, 'http://schema.org/text'
+	# field :date, 'http://purl.org/dc/terms/date'
 
-  def id
-  	self.uri.to_s.split('/').last
+	# linked_to :tablingMember, 'http://data.parliament.uk/schema/parl#member',class_name: 'Person'
+ #  linked_to :subjects, 'http://purl.org/dc/terms/subject', class_name: 'Concept', multivalued: true
+ #  linked_to :house, 'http://data.parliament.uk/schema/parl#house', class_name: 'House'
+
+  # def id
+  # 	self.uri.to_s.split('/').last
+  # end
+
+  def self.all
+    result = @@client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                            PREFIX schema: <http://schema.org/>
+                            PREFIX dcterms: <http://purl.org/dc/terms/>
+                            select ?question ?text ?date where { 
+                              ?question rdf:type <http://data.parliament.uk/schema/parl#OralParliamentaryQuestion>;
+                                        schema:text ?text;
+                                        dcterms:date ?date .
+                            }")
+    self.serialize(result)
   end
 
-  def self.find_by_house(house_uri)
-    OralQuestion.find_by_sparql("
-                                PREFIX parl: <http://data.parliament.uk/schema/parl#>
-                                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                                select ?uri where { 
-                                    ?uri rdf:type parl:OralParliamentaryQuestion;
-                                      parl:house <#{house_uri}>
-                                }")
+  # def self.find_by_house(house_uri)
+  #   OralQuestion.find_by_sparql("
+  #                               PREFIX parl: <http://data.parliament.uk/schema/parl#>
+  #                               PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  #                               select ?uri where { 
+  #                                   ?uri rdf:type parl:OralParliamentaryQuestion;
+  #                                     parl:house <#{house_uri}>
+  #                               }")
+  # end
+
+  # def self.find_by_concept(concept_uri)
+  #   OralQuestion.find_by_sparql("
+  #                               PREFIX parl: <http://data.parliament.uk/schema/parl#>
+  #                               PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  #                               PREFIX dcterms: <http://purl.org/dc/terms/>
+  #                               select ?uri where { 
+  #                                   ?uri rdf:type parl:OralParliamentaryQuestion;
+  #                                     dcterms:subject <#{concept_uri}>
+  #                               }")
+  # end
+
+  # def self.find_by_person(person_uri)
+  #   OralQuestion.find_by_sparql("
+  #                               PREFIX parl: <http://data.parliament.uk/schema/parl#>
+  #                               PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  #                               PREFIX dcterms: <http://purl.org/dc/terms/>
+  #                               select ?uri where { 
+  #                                   ?uri rdf:type parl:OralParliamentaryQuestion;
+  #                                     parl:member <#{person_uri}>
+  #                               }")
+  # end
+
+  private
+
+  def self.serialize(data, id=nil)
+    data.map do |solution| 
+      id ||= solution.question
+      Hashit.new(
+      {
+        :id => id.to_s.split("/").last,
+        :text => solution.text.to_s,
+        :date => solution.date.to_s
+      })
+    end
   end
 
-  def self.find_by_concept(concept_uri)
-    OralQuestion.find_by_sparql("
-                                PREFIX parl: <http://data.parliament.uk/schema/parl#>
-                                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                                PREFIX dcterms: <http://purl.org/dc/terms/>
-                                select ?uri where { 
-                                    ?uri rdf:type parl:OralParliamentaryQuestion;
-                                      dcterms:subject <#{concept_uri}>
-                                }")
-  end
-
-  def self.find_by_person(person_uri)
-    OralQuestion.find_by_sparql("
-                                PREFIX parl: <http://data.parliament.uk/schema/parl#>
-                                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                                PREFIX dcterms: <http://purl.org/dc/terms/>
-                                select ?uri where { 
-                                    ?uri rdf:type parl:OralParliamentaryQuestion;
-                                      parl:member <#{person_uri}>
-                                }")
-  end
 end
