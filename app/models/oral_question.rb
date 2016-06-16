@@ -53,25 +53,27 @@ class OralQuestion
 
   def self.find_by_house(house_uri)
     result = @@client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
-                                PREFIX schema: <http://schema.org/>
-                                select ?question ?text where { 
+                            PREFIX schema: <http://schema.org/>
+                            select ?question ?text where { 
                                     ?question rdf:type parl:OralParliamentaryQuestion;
                                               parl:house <#{house_uri}>;
                                               schema:text ?text .
-                                }")
+                            }")
     self.serialize(result)
   end
 
-  # def self.find_by_concept(concept_uri)
-  #   OralQuestion.find_by_sparql("
-  #                               PREFIX parl: <http://data.parliament.uk/schema/parl#>
-  #                               PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-  #                               PREFIX dcterms: <http://purl.org/dc/terms/>
-  #                               select ?uri where { 
-  #                                   ?uri rdf:type parl:OralParliamentaryQuestion;
-  #                                     dcterms:subject <#{concept_uri}>
-  #                               }")
-  # end
+  def self.find_by_concept(concept_uri)
+    result = @@client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
+                            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                            PREFIX dcterms: <http://purl.org/dc/terms/>
+                            PREFIX schema: <http://schema.org/>
+                            select ?question ?text where { 
+                                    ?question rdf:type parl:OralParliamentaryQuestion;
+                                              dcterms:subject <http://data.parliament.uk/resource/00402907-0000-0000-0000-000000000002>;
+                                              schema:text ?text .
+                            }")
+    self.serialize(result)
+  end
 
   # def self.find_by_person(person_uri)
   #   OralQuestion.find_by_sparql("
