@@ -7,8 +7,10 @@ class HousesController < ApplicationController
 
 	def show
 		house_uri = resource_uri(params[:id])
-		@house = House.find(house_uri)
+		data = House.find(house_uri)
+
+		@house = data[:hierarchy]
 		
-		format(@house)
+		format(data)
 	end
 end

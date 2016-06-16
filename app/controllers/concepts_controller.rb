@@ -1,9 +1,10 @@
 class ConceptsController < ApplicationController
 
 	def index
-		@concepts = Concept.most_popular_by_contribution
+		data = Concept.most_popular_by_contribution
 
-		format(@concepts)
+		@concepts = data[:hierarchy]
+		format(data)
 	end
 
 	def show
