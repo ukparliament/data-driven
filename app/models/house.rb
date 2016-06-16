@@ -1,8 +1,7 @@
-class House
-	@@client = SPARQL::Client.new(DataDriven::Application.config.database)
+class House < QueryObject
 
 	def self.all
-		result = @@client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		result = self.client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 								select ?house ?label where { 
 								?house rdf:type <http://data.parliament.uk/schema/parl#House>;
     	   								<http://www.w3.org/2000/01/rdf-schema#label> ?label .
@@ -11,7 +10,7 @@ class House
 	end
 
 	def self.find(uri)
-		result = @@client.query("select ?label where { 
+		result = self.client.query("select ?label where { 
 								<#{uri}> <http://www.w3.org/2000/01/rdf-schema#label> ?label .
 								}")
 		self.serialize(result, uri).first

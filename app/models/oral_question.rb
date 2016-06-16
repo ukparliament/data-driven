@@ -1,8 +1,7 @@
-class OralQuestion
-  @@client = SPARQL::Client.new(DataDriven::Application.config.database)
+class OralQuestion < QueryObject
 
   def self.all
-    result = @@client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    result = self.client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                             PREFIX schema: <http://schema.org/>
                             select ?question ?text where { 
                               ?question rdf:type <http://data.parliament.uk/schema/parl#OralParliamentaryQuestion>;
@@ -12,7 +11,7 @@ class OralQuestion
   end
 
   def self.find(uri)
-    result = @@client.query("PREFIX schema: <http://schema.org/>
+    result = self.client.query("PREFIX schema: <http://schema.org/>
                               PREFIX dcterms: <http://purl.org/dc/terms/>
                               PREFIX parl: <http://data.parliament.uk/schema/parl#>
                               select ?text ?date ?house ?member ?house_label ?member_name where { 
@@ -36,7 +35,7 @@ class OralQuestion
   end
 
   def self.find_by_house(house_uri)
-    result = @@client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
+    result = self.client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
                             PREFIX schema: <http://schema.org/>
                             select ?question ?text where { 
                                     ?question rdf:type parl:OralParliamentaryQuestion;
@@ -47,7 +46,7 @@ class OralQuestion
   end
 
   def self.find_by_concept(concept_uri)
-    result = @@client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
+    result = self.client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
                             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                             PREFIX dcterms: <http://purl.org/dc/terms/>
                             PREFIX schema: <http://schema.org/>
@@ -60,7 +59,7 @@ class OralQuestion
   end
 
   def self.find_by_person(person_uri)
-    result = @@client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
+    result = self.client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
                             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                             PREFIX schema: <http://schema.org/>
                             select ?question ?text where { 

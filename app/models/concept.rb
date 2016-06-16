@@ -1,18 +1,14 @@
-class Concept
-	@@client = SPARQL::Client.new(DataDriven::Application.config.database)
+class Concept < QueryObject
 
 	def self.most_popular_by_contribution
-	  	result = @@client.query("PREFIX dcterms: <http://purl.org/dc/terms/>
-							SELECT ?concept ?label
-							WHERE {
-							    ?contribution dcterms:subject ?concept .
-	    						?concept <http://www.w3.org/2004/02/skos/core#prefLabel> ?label .
-	        
-							}
-							GROUP BY ?concept ?label
-							ORDER BY DESC(COUNT(?contribution))
-							LIMIT 50
-							")
+	  	result = self.client.query("PREFIX dcterms: <http://purl.org/dc/terms/>
+								SELECT ?concept ?label
+								WHERE {?contribution dcterms:subject ?concept .
+	    								?concept <http://www.w3.org/2004/02/skos/core#prefLabel> ?label .
+										}
+								GROUP BY ?concept ?label
+								ORDER BY DESC(COUNT(?contribution))
+								LIMIT 50")
 	  	self.serialize(result)
 	end
 
@@ -31,7 +27,7 @@ class Concept
   # end
 
 	def self.find(uri)
-		result = @@client.query("select ?label where { 
+		result = self.client.query("select ?label where { 
 								<#{uri}> <http://www.w3.org/2004/02/skos/core#prefLabel> ?label .
 								}")
 		self.serialize(result, uri).first
