@@ -12,12 +12,13 @@ require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
 # require "rspec-rails"
-
+# DATABASE = 'http://graphdb.southcentralus.cloudapp.azure.com/repositories/Master01'
+DATABASE = 'http://data.ukpds.org/repositories/TempWorkerSimple2'
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module SparqlEndpoint
+module DataDriven
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -30,10 +31,13 @@ module SparqlEndpoint
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    config.database = DATABASE
   end
 end
 
 Tripod.configure do |config|
-  config.query_endpoint = 'http://data.ukpds.org//repositories/TempWorkerSimple2'
+  # config.query_endpoint = 'http://data.ukpds.org/repositories/TempWorkerSimple2'
+  config.query_endpoint = DATABASE
   config.timeout_seconds = 30
 end

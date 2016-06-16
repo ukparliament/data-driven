@@ -1,15 +1,15 @@
-<h1><%= @data.first.person_name%></h1>
+<h1><%= @person_name %></h1>
 
 <ul>
-	<% @data.each do |item|%>
+	<% @votes.each do |item|%>
 		<li>
 			<dl>
 				<dt>
-					<%= link_to division_path(item.division.to_s.split('/').last) do %>
-						<%= item.division_title %>
+					<%= link_to division_path(item[:division_id]) do %>
+						<%= item[:division_title] %> 
 					<% end %>
 				</dt>
-				<dd><%= item.vote_value%></dd>
+				<dd><%= item[:value] %></dd>
 			</dl>
 		</li>
 	<% end %>
