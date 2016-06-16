@@ -28,6 +28,29 @@ class OralQuestion
     self.serialize(result)
   end
 
+  def self.find(uri)
+    result = @@client.query("PREFIX schema: <http://schema.org/>
+                              PREFIX dcterms: <http://purl.org/dc/terms/>
+                              PREFIX parl: <http://data.parliament.uk/schema/parl#>
+                              select ?text ?date ?house ?member ?house_label ?member_name where { 
+                                <http://data.parliament.uk/resource/00904130-0000-0000-0000-000000000003> schema:text ?text;
+                                              dcterms:date ?date;
+                                              parl:house ?house;
+                                              parl:member ?member .
+                                ?house <http://www.w3.org/2000/01/rdf-schema#label> ?house_label .
+                                ?member schema:name ?member_name    
+                            }")
+    result.map do |solution| 
+      Hashit.new(
+      {
+        :id => uri.to_s.split("/").last,
+        :text => solution.text.to_s,
+        :date => solution.date.to_s.to_datetime,
+        :house => Hashit.new({ :id => solution.house.to_s.split("/").last, :label => solution.house_label.to_s }),
+        :tablingMember => Hashit.new({ :id => solution.member.to_s.split("/").last, :name => solution.member_name.to_s})
+      })
+    end.first
+  end
   # def self.find_by_house(house_uri)
   #   OralQuestion.find_by_sparql("
   #                               PREFIX parl: <http://data.parliament.uk/schema/parl#>
