@@ -1,6 +1,6 @@
 class HousesController < ApplicationController
 	def index 
-		@houses = House.all.resources
+		@houses = House.all
 
 		format(@houses)
 	end
