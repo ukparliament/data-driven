@@ -3,7 +3,6 @@ class House
 
 	def self.all
 		result = @@client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-							   PREFIX schema: <http://schema.org/>
 								select ?house ?label where { 
 								?house rdf:type <http://data.parliament.uk/schema/parl#House>;
     	   								<http://www.w3.org/2000/01/rdf-schema#label> ?label .
@@ -11,12 +10,9 @@ class House
 		self.serialize(result)
 	end
 
-	def self.show(uri)
-		result = @@client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-								PREFIX schema: <http://schema.org/>
-								select ?label where { 
-								<#{uri}> rdf:type <http://data.parliament.uk/schema/parl#House>;
-    	   								 <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+	def self.find(uri)
+		result = @@client.query("select ?label where { 
+								<#{uri}> <http://www.w3.org/2000/01/rdf-schema#label> ?label .
 								}")
 		self.serialize(result, uri).first
 	end
