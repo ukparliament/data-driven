@@ -4,9 +4,9 @@ class House
 	def self.all
 		result = @@client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 							   PREFIX schema: <http://schema.org/>
-								select ?house ?name where { 
+								select ?house ?label where { 
 								?house rdf:type <http://data.parliament.uk/schema/parl#House>;
-    	   								<http://www.w3.org/2000/01/rdf-schema#label> ?name .
+    	   								<http://www.w3.org/2000/01/rdf-schema#label> ?label .
 								}")
 		self.serialize(result)
 	end
@@ -14,9 +14,9 @@ class House
 	def self.show(uri)
 		result = @@client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 								PREFIX schema: <http://schema.org/>
-								select ?name where { 
+								select ?label where { 
 								<#{uri}> rdf:type <http://data.parliament.uk/schema/parl#House>;
-    	   								 <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+    	   								 <http://www.w3.org/2000/01/rdf-schema#label> ?label .
 								}")
 		self.serialize(result, uri).first
 	end
@@ -29,7 +29,7 @@ class House
 			Hashit.new(
 			{
 				:id => id.to_s.split("/").last,
-				:label => solution.name.to_s
+				:label => solution.label.to_s
 			})
 		end
 	end

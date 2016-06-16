@@ -1,40 +1,30 @@
 class Concept
-  include Tripod::Resource
+	@@client = SPARQL::Client.new(DataDriven::Application.config.database)
 
-  rdf_type 'http://www.w3.org/2004/02/skos/core#Concept'
+  # include Tripod::Resource
 
-  field :label, 'http://www.w3.org/2004/02/skos/core#prefLabel'
+  # rdf_type 'http://www.w3.org/2004/02/skos/core#Concept'
+
+  # field :label, 'http://www.w3.org/2004/02/skos/core#prefLabel'
   # linked_from :writtenQuestions, :subjects, class_name: 'WrittenQuestion', multivalued: true
 
-  def id 
-  	self.uri.to_s.split("/").last
-  end
+  # def id 
+  # 	self.uri.to_s.split("/").last
+  # end
 
   def self.most_popular_by_contribution
-  	# Concept.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
-			# 			SELECT ?uri
-			# 			WHERE {
-			# 			    ?contribution dcterms:subject ?uri
-			# 			}
-			# 			GROUP BY ?uri
-			# 			ORDER BY DESC(COUNT(?contribution))
-			# 			LIMIT 50
-			# 			")
-  	query = "PREFIX dcterms: <http://purl.org/dc/terms/>
-  	PREFIX parl: <http://data.parliament.uk/schema/parl#>
-		PREFIX schema: <http://schema.org/>
-		SELECT ?person ?name (COUNT(?contribution) as ?count)
-		WHERE {
-		    ?contribution parl:member ?person .
-		    ?person schema:name ?name
-		}
-		GROUP BY ?person ?name
-		ORDER BY DESC(?count)
-		LIMIT 100"
-
-	client = SPARQL::Client.new(DataDriven::Application.config.database)
-	
-	client.query(query, :content_type => 'application/sparql-results+json')
+  	result = @@client.query("PREFIX dcterms: <http://purl.org/dc/terms/>
+						SELECT ?concept ?label
+						WHERE {
+						    ?contribution dcterms:subject ?concept .
+    						?concept <http://www.w3.org/2004/02/skos/core#prefLabel> ?label .
+        
+						}
+						GROUP BY ?concept ?label
+						ORDER BY DESC(COUNT(?contribution))
+						LIMIT 50
+						")
+  	self.serialize(result)
   end
 
   def self.most_popular_by_question_for_tabling_member(person_uri)
@@ -51,4 +41,16 @@ class Concept
 						")
   end
 
+	private
+
+	def self.serialize(data, id=nil)
+		data.map do |solution| 
+			id ||= solution.concept
+			Hashit.new(
+			{
+				:id => id.to_s.split("/").last,
+				:label => solution.label.to_s
+			})
+		end
+	end
 end
