@@ -21,8 +21,20 @@
 	<%= link_to root_path do %>
 		Home
 	<% end %>
-
-	<a style="position: absolute; right: 0; border: 5px solid; padding: 10px" href="<%= url_for(:format => :json) %>">Download this data</a>
+	<fieldset style="position: absolute; right: 0; border: 5px solid; padding: 10px">
+		<legend>Download</legend>
+		<ul>
+			<li>
+				<a href="<%= url_for(:format => :json) %>">json</a>
+			</li>
+			<li>
+				<a href="<%= url_for(:format => :xml) %>">xml</a>
+			</li>
+			<li>
+				<a href="<%= url_for(:format => :rdf) %>">rdf</a>
+			</li>
+		</ul>
+	</fieldset>
 
 	<%= yield %>
 

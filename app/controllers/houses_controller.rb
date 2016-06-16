@@ -1,8 +1,8 @@
 class HousesController < ApplicationController
 	def index 
-		@houses = House.all
-
-		format(@houses)
+		data = House.all
+		@houses = data[:hierarchy]
+		format(data)
 	end
 
 	def show
