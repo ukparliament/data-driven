@@ -15,3 +15,15 @@
 	<dt>Text</dt>
 	<dd><%= strip_tags(@oral_question[:text]) %></dd>	
 </dl>
+<fieldset>
+	<legend>Subjects</legend>
+	<ul>
+		<% @oral_question[:subjects].each do |subject| %>
+			<li>
+				<%= link_to concept_path(subject[:id]) do %>
+					<%= subject[:label] %>
+				<% end %>
+			</li>
+		<% end %>
+	</ul>
+</fieldset>

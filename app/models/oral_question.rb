@@ -14,7 +14,17 @@ class OralQuestion < QueryObject
           schema:text ?text;
       }")
 
-    hierarchy = self.convert_to_hash(result)
+    questions = result.map do |statement| 
+      {
+        :id => self.get_id(statement.subject),
+        :text => statement.object.to_s
+      }
+    end
+
+    hierarchy = 
+    {
+      :questions => questions
+    }
 
     { :graph => result, :hierarchy => hierarchy }
   end
@@ -26,12 +36,16 @@ class OralQuestion < QueryObject
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       CONSTRUCT {
         <#{uri}>
           schema:text ?text;
           dcterms:date ?date;
           parl:house ?house;
-          parl:member ?member .
+          parl:member ?member;
+          dcterms:subject ?concept .
+        ?concept
+          skos:prefLabel ?concept_label .
         ?house 
           rdfs:label ?house_label .
         ?member 
@@ -42,7 +56,10 @@ class OralQuestion < QueryObject
           schema:text ?text;
           dcterms:date ?date;
           parl:house ?house;
-          parl:member ?member .
+          parl:member ?member;
+          dcterms:subject ?concept .
+        ?concept
+          skos:prefLabel ?concept_label .
         ?house 
           rdfs:label ?house_label .
         ?member 
@@ -81,9 +98,21 @@ class OralQuestion < QueryObject
         member,
         RDF::URI.new('http://schema.org/name'),
         :member_name)
+      subject_pattern = RDF::Query::Pattern.new(
+        :subject,
+        RDF::URI.new('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        :subject_label)
 
       house_label = result.first_literal(house_label_pattern).to_s
       member_name = result.first_literal(member_name_pattern).to_s
+      subject_statements = result.query(subject_pattern)
+
+      subjects = subject_statements.map do |statement|
+        {
+          :id => self.get_id(statement.subject),
+          :label => statement.object.to_s
+        }
+      end
 
       hierarchy = 
       {
@@ -92,10 +121,13 @@ class OralQuestion < QueryObject
         :date => date,
         :house => { 
             :id => self.get_id(house), 
-            :label => house_label },
+            :label => house_label
+        },
         :member => { 
           :id => self.get_id(member), 
-          :name => member_name}
+          :name => member_name
+        },
+        :subjects => subjects
       }
 
     { :graph => result, :hierarchy => hierarchy }
@@ -241,18 +273,4 @@ class OralQuestion < QueryObject
 
     { :graph => result, :hierarchy => hierarchy }
   end
-
-  private
-
-  def self.convert_to_hash(data)
-    data.map do |statement| 
-      {
-        :id => self.get_id(statement.subject),
-        :text => statement.object.to_s
-      }
-    end
-  end
-
-
-
 end
