@@ -1,29 +1,5 @@
 class WrittenQuestion < QueryObject
 
-  	# include Tripod::Resource
-
-  	# rdf_type 'http://data.parliament.uk/schema/parl#WrittenParliamentaryQuestion'
-
-	  # field :text, 'http://schema.org/text'
-	  # field :date, 'http://purl.org/dc/terms/date'
-
-	  # linked_to :tablingMember, 'http://data.parliament.uk/schema/parl#member',class_name: 'Person'
-  	# linked_to :subjects, 'http://purl.org/dc/terms/subject', class_name: 'Concept', multivalued: true
-  	# linked_to :house, 'http://data.parliament.uk/schema/parl#house', class_name: 'House'
-
-  	# linked_from :writtenAnswer, :writtenQuestion, class_name: 'WrittenAnswer'
-
-  	# def id
-  	# 	self.uri.to_s.split('/').last
-  	# end
-
-  	# def answer
-  	# 	if(@answer == nil)
-  	# 		@answer = self.writtenAnswer.first
-  	# 	end
-  	# 	@answer
-  	# end
-
     def self.all
       result = self.client.query("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                             PREFIX schema: <http://schema.org/>
@@ -52,25 +28,24 @@ class WrittenQuestion < QueryObject
                               ?answer_member schema:name ?answer_member_name .
                             }")
       result.map do |solution| 
-        Hashit.new(
         {
           :id => uri.to_s.split("/").last,
           :text => solution.text.to_s,
           :date => solution.date.to_s.to_datetime,
-          :house => Hashit.new({
+          :house => {
             :id => solution.house.to_s.split("/").last,
             :label => solution.house_label.to_s
-          }),
-          :tablingMember => Hashit.new({
+          },
+          :tablingMember => {
             :id => solution.question_member.to_s.split("/").last,
             :name => solution.question_member_name.to_s
-          }),
-          :answer => Hashit.new({ :id => solution.answer.to_s.split("/").last,
+          },
+          :answer => { :id => solution.answer.to_s.split("/").last,
                                   :date => solution.answer_date.to_s.to_datetime,
                                   :answer_text => solution.answer_text.to_s,
-                                  :tablingMember => Hashit.new({ :id => solution.answer_member, :name => solution.answer_member_name })
-                                })
-        })
+                                  :tablingMember => { :id => solution.answer_member, :name => solution.answer_member_name })
+                                }
+        }
       end.first
     end
 
@@ -110,11 +85,10 @@ class WrittenQuestion < QueryObject
   def self.serialize(data, id=nil)
     data.map do |solution| 
       id ||= solution.question
-      Hashit.new(
       {
         :id => id.to_s.split("/").last,
         :text => solution.text.to_s
-      })
+      }
     end
   end
 
