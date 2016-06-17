@@ -14,7 +14,7 @@ class OralQuestion < QueryObject
           schema:text ?text;
       }")
 
-    hierarchy = self.all_convert_to_hash(result)
+    hierarchy = self.convert_to_hash(result)
 
     { :graph => result, :hierarchy => hierarchy }
   end
@@ -50,8 +50,6 @@ class OralQuestion < QueryObject
       }
       ")
 
-
-    # hierarchy = result.map do |statement| 
       text_pattern = RDF::Query::Pattern.new(
         RDF::URI.new(uri),
         RDF::URI.new('http://schema.org/text'),
@@ -103,16 +101,51 @@ class OralQuestion < QueryObject
     { :graph => result, :hierarchy => hierarchy }
   end
 
-  # def self.find_by_house(house_uri)
-  #   result = self.client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
-  #                           PREFIX schema: <http://schema.org/>
-  #                           select ?question ?text where { 
-  #                                   ?question rdf:type parl:OralParliamentaryQuestion;
-  #                                             parl:house <#{house_uri}>;
-  #                                             schema:text ?text .
-  #                           }")
-  #   self.serialize(result)
-  # end
+  def self.find_by_house(house_uri)
+    result = self.query("
+      PREFIX parl: <http://data.parliament.uk/schema/parl#>
+      PREFIX schema: <http://schema.org/>
+      CONSTRUCT {
+         ?question 
+           schema:text ?text .
+         <#{house_uri}> 
+           rdfs:label ?label .
+      }
+      WHERE { 
+         ?question 
+           rdf:type parl:OralParliamentaryQuestion;
+           parl:house <#{house_uri}>;
+           schema:text ?text .
+         <#{house_uri}> rdfs:label ?label .
+      }")
+
+    house_label_pattern = RDF::Query::Pattern.new(
+      RDF::URI.new(house_uri),
+      RDF::URI.new('http://www.w3.org/2000/01/rdf-schema#label'),
+      :house_label)
+    questions_pattern = RDF::Query::Pattern.new(
+      :question,
+      RDF::URI.new('http://schema.org/text'),
+      :text)
+
+
+    house_label = result.first_literal(house_label_pattern).to_s
+    questions = result.query(questions_pattern).map do |statement| 
+      {
+        :id => self.get_id(statement.subject),
+        :text => statement.object.to_s
+      }
+    end
+
+    hierarchy = {
+      :house_id => self.get_id(house_uri),
+      :house_label => house_label,
+      :questions => questions
+    }
+
+    p hierarchy
+    { :graph => result, :hierarchy => hierarchy }
+  end
 
   # def self.find_by_concept(concept_uri)
   #   result = self.client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>
@@ -141,7 +174,7 @@ class OralQuestion < QueryObject
 
   private
 
-  def self.all_convert_to_hash(data)
+  def self.convert_to_hash(data)
     data.map do |statement| 
       {
         :id => self.get_id(statement.subject),

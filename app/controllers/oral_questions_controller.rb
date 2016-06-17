@@ -17,10 +17,10 @@ class OralQuestionsController < ApplicationController
 
 	def index_by_house
 		house_uri = resource_uri(params[:house_id])
-		@house = House.find(house_uri)
-		@oral_questions = OralQuestion.find_by_house(house_uri)
+		data = OralQuestion.find_by_house(house_uri)
+		@hierarchy = data[:hierarchy]
 		
-		format([@house, @oral_questions])
+		format(data)
 	end
 
 	def index_by_concept
