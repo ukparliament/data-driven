@@ -1,5 +1,6 @@
 class Concept < QueryObject
-
+	include Vocabulary
+	
 	def self.most_popular_by_contribution
 		result = self.query("
 			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -67,12 +68,12 @@ class Concept < QueryObject
 		graph.subjects(unique: true).map do |subject| 
 			label_pattern = RDF::Query::Pattern.new(
 		  		subject, 
-		  		RDF::URI.new('http://www.w3.org/2004/02/skos/core#prefLabel'), 
+		  		Skos.prefLabel, 
 		  		:label)
 			label = graph.first_literal(label_pattern)
 			count_pattern = RDF::Query::Pattern.new(
 		  		subject, 
-		  		RDF::URI.new('http://data.parliament.uk/schema/parl#count'), 
+		  		Parl.count, 
 		  		:count)
 			count = graph.first_literal(count_pattern)
 

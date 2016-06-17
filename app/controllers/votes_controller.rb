@@ -1,4 +1,5 @@
 class VotesController < ApplicationController
+	include Vocabulary
 
 	def index_by_division
 		division_uri = resource_uri(params[:division_id])
@@ -15,11 +16,11 @@ class VotesController < ApplicationController
 
 		person_name_pattern = RDF::Query::Pattern.new(
 		  RDF::URI.new(person_uri), 
-		  RDF::URI.new('http://schema.org/name'), 
+		  Schema.name, 
 		  :person_name)
 		vote_pattern = RDF::Query::Pattern.new(
 		  :vote, 
-		  RDF::URI.new('http://data.parliament.uk/schema/parl#voteValue'), 
+		  Parl.voteValue, 
 		  :vote_value)
 
 		 @person_name = graph.first_value(person_name_pattern)
@@ -27,11 +28,11 @@ class VotesController < ApplicationController
 		 @votes = graph.query(vote_pattern).map do |vote_statement|
 			division_title_pattern = RDF::Query::Pattern.new(
 				vote_statement.subject, 
-				RDF::URI.new('http://data.parliament.uk/schema/parl#divisionTitle'), 
+				Parl.divisionTitle, 
 				:division_title)
 			division_pattern = RDF::Query::Pattern.new(
 				vote_statement.subject, 
-				RDF::URI.new('http://data.parliament.uk/schema/parl#division'), 
+				Parl.division, 
 				:division)
 
 			division_id = graph.first_object(division_pattern).to_s.split('/').last

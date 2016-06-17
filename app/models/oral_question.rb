@@ -1,8 +1,8 @@
 class OralQuestion < QueryObject
+  include Vocabulary
 
   def self.all
     result = self.query("
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX schema: <http://schema.org/>
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       CONSTRUCT {
@@ -10,7 +10,7 @@ class OralQuestion < QueryObject
       }
       WHERE { 
         ?question 
-          rdf:type parl:OralParliamentaryQuestion;
+          a parl:OralParliamentaryQuestion;
           schema:text ?text;
       }")
 
@@ -34,7 +34,6 @@ class OralQuestion < QueryObject
       PREFIX schema: <http://schema.org/>
       PREFIX dcterms: <http://purl.org/dc/terms/>
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       CONSTRUCT {
@@ -69,19 +68,19 @@ class OralQuestion < QueryObject
 
       text_pattern = RDF::Query::Pattern.new(
         RDF::URI.new(uri),
-        RDF::URI.new('http://schema.org/text'),
+        Schema.text,
         :text)
       date_pattern = RDF::Query::Pattern.new(
         RDF::URI.new(uri),
-        RDF::URI.new('http://purl.org/dc/terms/date'),
+        Dcterms.date,
         :date)
       house_pattern = RDF::Query::Pattern.new(
         RDF::URI.new(uri),
-        RDF::URI.new('http://data.parliament.uk/schema/parl#house'),
+        Parl.house,
         :house)
       member_pattern = RDF::Query::Pattern.new(
         RDF::URI.new(uri),
-        RDF::URI.new('http://data.parliament.uk/schema/parl#member'),
+        Parl.member,
         :member)
       
       id = self.get_id(uri)
@@ -92,15 +91,15 @@ class OralQuestion < QueryObject
 
       house_label_pattern = RDF::Query::Pattern.new(
         house,
-        RDF::URI.new('http://www.w3.org/2000/01/rdf-schema#label'),
+        Rdfs.label,
         :house_label)
       member_name_pattern = RDF::Query::Pattern.new(
         member,
-        RDF::URI.new('http://schema.org/name'),
+        Schema.name,
         :member_name)
       subject_pattern = RDF::Query::Pattern.new(
         :subject,
-        RDF::URI.new('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        Skos.prefLabel,
         :subject_label)
 
       house_label = result.first_literal(house_label_pattern).to_s
@@ -153,11 +152,11 @@ class OralQuestion < QueryObject
 
     house_label_pattern = RDF::Query::Pattern.new(
       RDF::URI.new(house_uri),
-      RDF::URI.new('http://www.w3.org/2000/01/rdf-schema#label'),
+      Rdfs.label,
       :house_label)
     questions_pattern = RDF::Query::Pattern.new(
       :question,
-      RDF::URI.new('http://schema.org/text'),
+      Schema.text,
       :text)
 
 
@@ -202,11 +201,11 @@ class OralQuestion < QueryObject
 
     concept_label_pattern = RDF::Query::Pattern.new(
       RDF::URI.new(concept_uri),
-      RDF::URI.new('http://www.w3.org/2004/02/skos/core#prefLabel'),
+      Skos.prefLabel,
       :concept_label)
     questions_pattern = RDF::Query::Pattern.new(
       :question,
-      RDF::URI.new('http://schema.org/text'),
+      Schema.text,
       :text)
 
 
@@ -249,11 +248,11 @@ class OralQuestion < QueryObject
 
     person_name_pattern = RDF::Query::Pattern.new(
       RDF::URI.new(person_uri),
-      RDF::URI.new('http://schema.org/name'),
+      Schema.name,
       :name)
     questions_pattern = RDF::Query::Pattern.new(
       :question,
-      RDF::URI.new('http://schema.org/text'),
+      Schema.text,
       :text)
 
 
