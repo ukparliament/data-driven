@@ -19,29 +19,48 @@ class OralQuestion < QueryObject
     { :graph => result, :hierarchy => hierarchy }
   end
 
-  # def self.find(uri)
-  #   result = self.client.query("PREFIX schema: <http://schema.org/>
-  #                             PREFIX dcterms: <http://purl.org/dc/terms/>
-  #                             PREFIX parl: <http://data.parliament.uk/schema/parl#>
-  #                             select ?text ?date ?house ?member ?house_label ?member_name where { 
-  #                               <#{uri}> schema:text ?text;
-  #                                             dcterms:date ?date;
-  #                                             parl:house ?house;
-  #                                             parl:member ?member .
-  #                               ?house <http://www.w3.org/2000/01/rdf-schema#label> ?house_label .
-  #                               ?member schema:name ?member_name    
-  #                           }")
-  #   result.map do |solution| 
-  #     Hashit.new(
-  #     {
-  #       :id => uri.to_s.split("/").last,
-  #       :text => solution.text.to_s,
-  #       :date => solution.date.to_s.to_datetime,
-  #       :house => Hashit.new({ :id => solution.house.to_s.split("/").last, :label => solution.house_label.to_s }),
-  #       :tablingMember => Hashit.new({ :id => solution.member.to_s.split("/").last, :name => solution.member_name.to_s})
-  #     })
-  #   end.first
-  # end
+  def self.find(uri)
+    result = self.query("
+      PREFIX schema: <http://schema.org/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      PREFIX parl: <http://data.parliament.uk/schema/parl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      CONSTRUCT {
+        <#{uri}> 
+          schema:text ?text;
+          dcterms:date ?date;
+          parl:house ?house;
+          parl:member ?member .
+        ?house 
+          rdf:label ?house_label .
+        ?member 
+          schema:name ?member_name .
+      }
+      WHERE {
+        <#{uri}> 
+          schema:text ?text;
+          dcterms:date ?date;
+          parl:house ?house;
+          parl:member ?member .
+        ?house 
+          rdf:label ?house_label .
+        ?member 
+          schema:name ?member_name .
+      }
+      ")
+
+    hierarchy = result.map do |statement| 
+      {
+        :id => uri.to_s.split("/").last,
+        :text => solution.text.to_s,
+        :date => solution.date.to_s.to_datetime,
+        :house => Hashit.new({ :id => solution.house.to_s.split("/").last, :label => solution.house_label.to_s }),
+        :tablingMember => Hashit.new({ :id => solution.member.to_s.split("/").last, :name => solution.member_name.to_s})
+      }
+    end.first
+
+    { :graph => result, :hierarchy => hierarchy }
+  end
 
   # def self.find_by_house(house_uri)
   #   result = self.client.query("PREFIX parl: <http://data.parliament.uk/schema/parl#>

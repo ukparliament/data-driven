@@ -24,10 +24,28 @@ class Concept < QueryObject
 			}
 		")
 
-	  	hierarchy = self.convert_to_hash(result)
+	  	hierarchy = self.all_convert_to_hash(result)
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end
+
+	def self.find(uri)
+		result = self.query("
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+			CONSTRUCT {
+				<#{uri}>
+			        skos:prefLabel ?label ;
+			}
+			WHERE { 
+				<#{uri}> 
+					skos:prefLabel ?label .
+		}")
+		
+		hierarchy = self.find_convert_to_hash(result).first
+
+		{ :graph => result, :hierarchy => hierarchy }
+	end
+
 
   # def self.most_popular_by_question_for_tabling_member(person_uri)
   # 	Concept.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -43,16 +61,9 @@ class Concept < QueryObject
 		# 				")
   # end
 
-	def self.find(uri)
-		result = self.client.query("select ?label where { 
-								<#{uri}> <http://www.w3.org/2004/02/skos/core#prefLabel> ?label .
-								}")
-		self.serialize(result, uri).first
-	end
-
 	private
 
-	def self.convert_to_hash(graph)
+	def self.all_convert_to_hash(graph)
 		graph.subjects(unique: true).map do |subject| 
 			label_pattern = RDF::Query::Pattern.new(
 		  		subject, 
@@ -71,5 +82,14 @@ class Concept < QueryObject
 				:count => count.to_i
 			}
 		end
+	end
+
+	def self.find_convert_to_hash(graph)
+		graph.map do |statement| 
+      		{
+      		  :id => self.get_id(statement.subject),
+      		  :label => statement.object.to_s
+      		}
+    	end
 	end
 end
