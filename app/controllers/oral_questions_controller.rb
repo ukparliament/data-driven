@@ -1,9 +1,10 @@
 class OralQuestionsController < ApplicationController
 
 	def index
-		@oral_questions = OralQuestion.all
+		data = OralQuestion.all
+		@oral_questions = data[:hierarchy]
 
-		format(@oral_questions)
+		format(data)
 	end
 
 	def show
