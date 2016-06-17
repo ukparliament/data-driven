@@ -14,7 +14,7 @@ class OralQuestion < QueryObject
           schema:text ?text;
       }")
 
-    hierarchy = self.convert_to_hash(result)
+    hierarchy = self.all_convert_to_hash(result)
 
     { :graph => result, :hierarchy => hierarchy }
   end
@@ -25,16 +25,17 @@ class OralQuestion < QueryObject
       PREFIX dcterms: <http://purl.org/dc/terms/>
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       CONSTRUCT {
-        <#{uri}> 
+        <#{uri}>
           schema:text ?text;
           dcterms:date ?date;
           parl:house ?house;
           parl:member ?member .
         ?house 
-          rdf:label ?house_label .
+          rdfs:label ?house_label .
         ?member 
-          schema:name ?member_name .
+          schema:name ?member_label .
       }
       WHERE {
         <#{uri}> 
@@ -43,21 +44,61 @@ class OralQuestion < QueryObject
           parl:house ?house;
           parl:member ?member .
         ?house 
-          rdf:label ?house_label .
+          rdfs:label ?house_label .
         ?member 
-          schema:name ?member_name .
+          schema:name ?member_label .
       }
       ")
 
-    hierarchy = result.map do |statement| 
+
+    # hierarchy = result.map do |statement| 
+      text_pattern = RDF::Query::Pattern.new(
+        RDF::URI.new(uri),
+        RDF::URI.new('http://schema.org/text'),
+        :text)
+      date_pattern = RDF::Query::Pattern.new(
+        RDF::URI.new(uri),
+        RDF::URI.new('http://purl.org/dc/terms/date'),
+        :date)
+      house_pattern = RDF::Query::Pattern.new(
+        RDF::URI.new(uri),
+        RDF::URI.new('http://data.parliament.uk/schema/parl#house'),
+        :house)
+      member_pattern = RDF::Query::Pattern.new(
+        RDF::URI.new(uri),
+        RDF::URI.new('http://data.parliament.uk/schema/parl#member'),
+        :member)
+      
+      id = self.get_id(uri)
+      text = result.first_literal(text_pattern).to_s
+      date = result.first_literal(date_pattern).to_s.to_datetime
+      house = result.first_object(house_pattern)
+      member = result.first_object(member_pattern)
+
+      house_label_pattern = RDF::Query::Pattern.new(
+        house,
+        RDF::URI.new('http://www.w3.org/2000/01/rdf-schema#label'),
+        :house_label)
+      member_name_pattern = RDF::Query::Pattern.new(
+        member,
+        RDF::URI.new('http://schema.org/name'),
+        :member_name)
+
+      house_label = result.first_literal(house_label_pattern).to_s
+      member_name = result.first_literal(member_name_pattern).to_s
+
+      hierarchy = 
       {
-        :id => uri.to_s.split("/").last,
-        :text => solution.text.to_s,
-        :date => solution.date.to_s.to_datetime,
-        :house => Hashit.new({ :id => solution.house.to_s.split("/").last, :label => solution.house_label.to_s }),
-        :tablingMember => Hashit.new({ :id => solution.member.to_s.split("/").last, :name => solution.member_name.to_s})
+        :id => id,
+        :text => text,
+        :date => date,
+        :house => { 
+            :id => self.get_id(house), 
+            :label => house_label },
+        :member => { 
+          :id => self.get_id(member), 
+          :name => member_name}
       }
-    end.first
 
     { :graph => result, :hierarchy => hierarchy }
   end
@@ -100,7 +141,7 @@ class OralQuestion < QueryObject
 
   private
 
-  def self.convert_to_hash(data)
+  def self.all_convert_to_hash(data)
     data.map do |statement| 
       {
         :id => self.get_id(statement.subject),
@@ -108,5 +149,7 @@ class OralQuestion < QueryObject
       }
     end
   end
+
+
 
 end

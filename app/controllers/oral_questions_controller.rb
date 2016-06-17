@@ -9,9 +9,10 @@ class OralQuestionsController < ApplicationController
 
 	def show
 		oral_question_uri = resource_uri(params[:id])
-		@oral_question = OralQuestion.find(oral_question_uri)
+		data = OralQuestion.find(oral_question_uri)
+		@oral_question = data[:hierarchy]
 		
-		format(@oral_question)
+		format(data)
 	end
 
 	def index_by_house
