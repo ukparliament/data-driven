@@ -25,17 +25,17 @@ class OralQuestionsController < ApplicationController
 
 	def index_by_concept
 		concept_uri = resource_uri(params[:concept_id])
-		@concept = Concept.find(concept_uri)
-		@oral_questions = OralQuestion.find_by_concept(concept_uri)
+		data = OralQuestion.find_by_concept(concept_uri)
+		@hierarchy = data[:hierarchy]
 		
-		format([@concept, @oral_questions])
+		format(data)
 	end
 
 	def index_by_person
 		person_uri = resource_uri(params[:person_id])
-		@person = Person.find(person_uri)
-		@oral_questions = OralQuestion.find_by_person(person_uri)
+		data = OralQuestion.find_by_person(person_uri)
+		@hierarchy = data[:hierarchy]
 		
-		format([@person, @oral_questions])
+		format(data)
 	end
 end
