@@ -1,19 +1,19 @@
-<h1><%= @house.label %></h1>
+<h1><%= @house[:label] %></h1>
 
 <ul>
 <li>
-<%= link_to house_oral_questions_path(@house.id) do %>
-	<%= @house.label %> oral questions
+<%= link_to house_oral_questions_path(@house[:id]) do %>
+	<%= @house[:label] %> oral questions
 <% end %>
 </li>
 <li>
-<%= link_to house_written_questions_path(@house.id) do %>
-	<%= @house.label %> written questions
+<%= link_to house_written_questions_path(@house[:id]) do %>
+	<%= @house[:label] %> written questions
 <% end %>
 </li>
 <li>
-<%= link_to house_divisions_path(@house.id) do %>
-	<%= @house.label %> divisions
+<%= link_to house_divisions_path(@house[:id]) do %>
+	<%= @house[:label] %> divisions
 <% end %>
 </li>
 </ul>

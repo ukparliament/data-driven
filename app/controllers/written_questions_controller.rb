@@ -1,7 +1,7 @@
 class WrittenQuestionsController < ApplicationController
 
 	def index
-		@written_questions = WrittenQuestion.all.limit(30).resources
+		@written_questions = WrittenQuestion.all
 
 		format(@written_questions)
 	end

@@ -1,8 +1,8 @@
 <ul>
-	<% @oral_questions.each do |oral_question| %>
+	<% @hierarchy[:questions].each do |oral_question| %>
 		<li>
-			<%= link_to oral_question_path(oral_question.id) do %>
-				<%= strip_tags(oral_question.text) %>
+			<%= link_to oral_question_path(oral_question[:id]) do %>
+				<%= strip_tags(oral_question[:text]) %>
 			<% end %>
 		</li>
 	<% end %>

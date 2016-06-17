@@ -1,39 +1,41 @@
 class OralQuestionsController < ApplicationController
 
 	def index
-		@oral_questions = OralQuestion.all.limit(30).resources
+		data = OralQuestion.all
+		@hierarchy = data[:hierarchy]
 
-		format(@oral_questions)
+		format(data)
 	end
 
 	def show
 		oral_question_uri = resource_uri(params[:id])
-		@oral_question = OralQuestion.find(oral_question_uri)
+		data = OralQuestion.find(oral_question_uri)
+		@oral_question = data[:hierarchy]
 		
-		format(@oral_question)
+		format(data)
 	end
 
 	def index_by_house
 		house_uri = resource_uri(params[:house_id])
-		@house = House.find(house_uri)
-		@oral_questions = OralQuestion.find_by_house(house_uri)
+		data = OralQuestion.find_by_house(house_uri)
+		@hierarchy = data[:hierarchy]
 		
-		format([@house, @oral_questions])
+		format(data)
 	end
 
 	def index_by_concept
 		concept_uri = resource_uri(params[:concept_id])
-		@concept = Concept.find(concept_uri)
-		@oral_questions = OralQuestion.find_by_concept(concept_uri)
+		data = OralQuestion.find_by_concept(concept_uri)
+		@hierarchy = data[:hierarchy]
 		
-		format([@concept, @oral_questions])
+		format(data)
 	end
 
 	def index_by_person
 		person_uri = resource_uri(params[:person_id])
-		@person = Person.find(person_uri)
-		@oral_questions = OralQuestion.find_by_person(person_uri)
+		data = OralQuestion.find_by_person(person_uri)
+		@hierarchy = data[:hierarchy]
 		
-		format([@person, @oral_questions])
+		format(data)
 	end
 end
