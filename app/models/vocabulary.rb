@@ -120,4 +120,12 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}label")
 		end
 	end
+
+	class Rdf
+		@@prefix = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+
+		def self.type
+			RDF::URI.new("#{@@prefix}type")
+		end
+	end
 end
