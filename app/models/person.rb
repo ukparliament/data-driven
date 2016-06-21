@@ -47,18 +47,40 @@ class Person < QueryObject
 
   	end
 
-  	def self.ordered_tabling_members_on_subject(concept_uri)
-  		Person.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
-							PREFIX parl: <http://data.parliament.uk/schema/parl#>
-							SELECT ?uri
-							WHERE {
-							    ?question parl:tablingMember ?uri;
-							    dcterms:subject <#{concept_uri}> .
-							}
-							GROUP BY ?uri
-							ORDER BY DESC(COUNT(?question))
-							LIMIT 100
-							")
+  	def self.find(uri)
+  		result = self.query("
+			PREFIX schema: <http://schema.org/>
+			CONSTRUCT {
+				<#{uri}>
+			        schema:name ?name .
+			}
+			WHERE { 
+				<#{uri}> 
+					schema:name ?name .
+		}")
+		
+		hierarchy = result.map do |statement| 
+      		{
+      		  :id => self.get_id(statement.subject),
+      		  :name => statement.object.to_s
+      		}
+    	end.first
+
+		{ :graph => result, :hierarchy => hierarchy }
+
   	end
+  	# def self.ordered_tabling_members_on_subject(concept_uri)
+  	# 	Person.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
+			# 				PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			# 				SELECT ?uri
+			# 				WHERE {
+			# 				    ?question parl:tablingMember ?uri;
+			# 				    dcterms:subject <#{concept_uri}> .
+			# 				}
+			# 				GROUP BY ?uri
+			# 				ORDER BY DESC(COUNT(?question))
+			# 				LIMIT 100
+			# 				")
+  	# end
 
 end
