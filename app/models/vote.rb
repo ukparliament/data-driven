@@ -1,4 +1,5 @@
 class Vote < QueryObject
+	include Vocabulary
 
 	# include Tripod::Resource
 
@@ -44,18 +45,21 @@ class Vote < QueryObject
 		RDF::URI.new(division_uri),
 		Dcterms.title,
 		:title)
+	member_pattern = RDF::Query::Pattern.new(
+		RDF::URI.new(division_uri),
+		Dcterms.title,
+		:title)
 
 	id = self.get_id(division_uri)
 	title = result.first_literal(division_title_pattern)
 
-	p title
 
-    members = ?.map do |statement| {
-    	:id => id,
-    	:name => name,
-    	:vote_value => vote_value
-    	}
-	end
+ #    members = ?.map do |statement| {
+ #    	:id => id,
+ #    	:name => name,
+ #    	:vote_value => vote_value
+ #    	}
+	# end
 
     hierarchy = {
     	:id => id,
