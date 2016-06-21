@@ -17,7 +17,8 @@ class ApplicationController < ActionController::Base
 
   protected
   def resource_uri(id)
-    "http://data.parliament.uk/resource/#{id}"
+    "http://id.ukpds.org/#{id}"
+    # "http://data.parliament.uk/resource/#{id}"
   end
 
   def format(data)
