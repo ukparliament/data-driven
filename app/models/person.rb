@@ -50,37 +50,51 @@ class Person < QueryObject
   	def self.find(uri)
   		result = self.query("
 			PREFIX schema: <http://schema.org/>
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			CONSTRUCT {
 				<#{uri}>
-			        schema:name ?name .
+			        schema:name ?name ;
+			        parl:house ?house .
+			    ?house
+			    	rdfs:label ?label .
 			}
 			WHERE { 
 				<#{uri}> 
-					schema:name ?name .
+					schema:name ?name ;
+					parl:house ?house .
+				?house
+			    	rdfs:label ?label .
 		}")
-		
-		hierarchy = result.map do |statement| 
+
+		name_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(uri),
+			Schema.name,
+			:name)
+		house_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(uri),
+			Parl.house,
+			:house)
+
+		name = result.first_literal(name_pattern)
+		house = result.first_object(house_pattern)
+
+		house_label_pattern = RDF::Query::Pattern.new(
+			house,
+			Rdfs.label,
+			:label)
+		label = result.first_literal(house_label_pattern)
+
+		hierarchy = 
       		{
-      		  :id => self.get_id(statement.subject),
-      		  :name => statement.object.to_s
+      		  :id => self.get_id(uri),
+      		  :name => name.to_s,
+      		  :house => {
+      		  	:id => self.get_id(house),
+      		  	:label => label.to_s
+      		  }
       		}
-    	end.first
 
 		{ :graph => result, :hierarchy => hierarchy }
 
   	end
-  	# def self.ordered_tabling_members_on_subject(concept_uri)
-  	# 	Person.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
-			# 				PREFIX parl: <http://data.parliament.uk/schema/parl#>
-			# 				SELECT ?uri
-			# 				WHERE {
-			# 				    ?question parl:tablingMember ?uri;
-			# 				    dcterms:subject <#{concept_uri}> .
-			# 				}
-			# 				GROUP BY ?uri
-			# 				ORDER BY DESC(COUNT(?question))
-			# 				LIMIT 100
-			# 				")
-  	# end
-
 end
