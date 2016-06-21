@@ -1,9 +1,10 @@
 class PeopleController < ApplicationController
 
 	def index
-		@people = Person.most_active_people
+		data = Person.most_active_people
+		@people = data[:hierarchy]
 
-		format(@people)
+		format(data)
 	end
 
 	def show
