@@ -35,7 +35,7 @@ class Concept < QueryObject
 			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 			CONSTRUCT {
 				<#{uri}>
-			        skos:prefLabel ?label ;
+			        skos:prefLabel ?label .
 			}
 			WHERE { 
 				<#{uri}> 

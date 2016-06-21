@@ -1,15 +1,17 @@
 class PeopleController < ApplicationController
 
 	def index
-		@people = Person.most_active_people
+		data = Person.most_active_people
+		@people = data[:hierarchy]
 
-		format(@people)
+		format(data)
 	end
 
 	def show
 		person_uri = resource_uri(params[:id])
-		@person = Person.find(person_uri)
+		data = Person.find(person_uri)
+		@person = data[:hierarchy]
 
-		format(@person)
+		format(data)
 	end
 end
