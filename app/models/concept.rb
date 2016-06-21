@@ -21,7 +21,7 @@ class Concept < QueryObject
 			    }
 			    GROUP BY ?concept ?label
 			    ORDER BY DESC(?count)
-			    LIMIT 50
+
 			}
 		")
 
