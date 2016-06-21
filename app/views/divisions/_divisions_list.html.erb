@@ -1,8 +1,8 @@
 <ul>
 	<% @divisions.each do |division| %>
 		<li>
-			<%= link_to division_path(division.id) do %>
-				<%= division.title %>
+			<%= link_to division_path(division[:id]) do %>
+				<%= division[:title] %>
 			<% end %>
 		</li>
 	<% end %>

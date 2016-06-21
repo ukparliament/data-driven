@@ -2,7 +2,6 @@ class House < QueryObject
 
 	def self.all
 		result = self.query("
-			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX schema: <http://www.w3.org/2000/01/rdf-schema#>
 			CONSTRUCT {
@@ -10,7 +9,7 @@ class House < QueryObject
 			}
 			WHERE { 
 				?house
-					rdf:type parl:House ;
+					a parl:House ;
 					schema:label ?label .
 			}")
 

@@ -1,50 +1,103 @@
-class Vote
+class Vote < QueryObject
+	include Vocabulary
 
-	include Tripod::Resource
+	# include Tripod::Resource
 
-	rdf_type 'http://data.parliament.uk/schema/parl#Vote'
+	# rdf_type 'http://data.parliament.uk/schema/parl#Vote'
 
-	field :value, 'http://data.parliament.uk/schema/parl#value'
+	# field :value, 'http://data.parliament.uk/schema/parl#value'
 
-	linked_to :division, 'http://data.parliament.uk/schema/parl#division', class_name: 'Division'
-	linked_to :member, 'http://data.parliament.uk/schema/parl#member', class_name: 'Person'
+	# linked_to :division, 'http://data.parliament.uk/schema/parl#division', class_name: 'Division'
+	# linked_to :member, 'http://data.parliament.uk/schema/parl#member', class_name: 'Person'
 
-	def text
-		self.value ? "Content" : "Not Content"
-	end
+	# def text
+	# 	self.value ? "Content" : "Not Content"
+	# end
 
 	def self.find_by_division(division_uri)
-		client = SPARQL::Client.new(DataDriven::Application.config.database)
-		division_pattern = RDF::Query::Pattern.new(
-		  :vote, 
-		  'parl:division', 
-		  RDF::URI.new(division_uri))
-		division_title_pattern = RDF::Query::Pattern.new(
-		  RDF::URI.new(division_uri), 
-		  'dcterms:title', 
-		  :division_title)
-		value_pattern = RDF::Query::Pattern.new(
-		  :vote, 
-		  'parl:value', 
-		  :vote_value)
-		member_pattern = RDF::Query::Pattern.new(
-		  :vote, 
-		  'parl:member', 
-		  :person)
-		name_pattern = RDF::Query::Pattern.new(
-		  :person, 
-		  'schema:name', 
-		  :person_name)
+	result = self.query("
+		PREFIX parl: <http://data.parliament.uk/schema/parl#>
+      	PREFIX dcterms: <http://purl.org/dc/terms/>
+      	PREFIX schema: <http://schema.org/>
+      	CONSTRUCT {
+      		?vote
+      			parl:division <#{division_uri}> ;
+      			parl:value ?value ;
+      			parl:member ?person .
+      		<#{division_uri}>
+      			dcterms:title ?title .
+      		?person
+      			schema:name ?name .
+      	}
+      	WHERE {
+      		?vote 
+      			parl:division <#{division_uri}> ;
+      			parl:value ?value ;
+      			parl:member ?person .
+      		<#{division_uri}>
+      			dcterms:title ?title .
+      		?person
+      			schema:name ?name .
+      	}
+		")
 
-		query = client
-		  .select
-		  .prefix("parl:<http://data.parliament.uk/schema/parl#>")
-		  .prefix("schema:<http://schema.org/>")
-		  .prefix("dcterms:<http://purl.org/dc/terms/>")
-		  .select(:division_title, :person, :person_name, :vote_value)
-		  .where(division_pattern, division_title_pattern, value_pattern, member_pattern, name_pattern)
+	division_title_pattern = RDF::Query::Pattern.new(
+		RDF::URI.new(division_uri),
+		Dcterms.title,
+		:title)
+	member_pattern = RDF::Query::Pattern.new(
+		RDF::URI.new(division_uri),
+		Dcterms.title,
+		:title)
 
-		query.result	
+	id = self.get_id(division_uri)
+	title = result.first_literal(division_title_pattern)
+
+
+ #    members = ?.map do |statement| {
+ #    	:id => id,
+ #    	:name => name,
+ #    	:vote_value => vote_value
+ #    	}
+	# end
+
+    hierarchy = {
+    	:id => id,
+    	:title => title,
+    	:members => members
+    }
+
+    { :graph => result, :hierarchy => hierarchy }
+		# division_pattern = RDF::Query::Pattern.new(
+		#   :vote, 
+		#   'parl:division', 
+		#   RDF::URI.new(division_uri))
+		# division_title_pattern = RDF::Query::Pattern.new(
+		#   RDF::URI.new(division_uri), 
+		#   'dcterms:title', 
+		#   :division_title)
+		# value_pattern = RDF::Query::Pattern.new(
+		#   :vote, 
+		#   'parl:value', 
+		#   :vote_value)
+		# member_pattern = RDF::Query::Pattern.new(
+		#   :vote, 
+		#   'parl:member', 
+		#   :person)
+		# name_pattern = RDF::Query::Pattern.new(
+		#   :person, 
+		#   'schema:name', 
+		#   :person_name)
+
+		# query = client
+		#   .select
+		#   .prefix("parl:<http://data.parliament.uk/schema/parl#>")
+		#   .prefix("schema:<http://schema.org/>")
+		#   .prefix("dcterms:<http://purl.org/dc/terms/>")
+		#   .select(:division_title, :person, :person_name, :vote_value)
+		#   .where(division_pattern, division_title_pattern, value_pattern, member_pattern, name_pattern)
+
+		# query.result	
 	end	
 
 	def self.find_by_person(person_uri)

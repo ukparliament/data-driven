@@ -21,6 +21,10 @@ module Vocabulary
 		def self.text
 			RDF::URI.new("#{@@prefix}text")
 		end
+
+		def self.label
+			RDF::URI.new("#{@@prefix}label")
+		end
 	end
 	
 	class Dcterms
@@ -32,6 +36,14 @@ module Vocabulary
 
 		def self.date
 			RDF::URI.new("#{@@prefix}date")
+		end
+
+		def self.title
+			RDF::URI.new("#{@@prefix}title")
+		end
+
+		def self.description
+			RDF::URI.new("#{@@prefix}description")
 		end
 	end
 	
