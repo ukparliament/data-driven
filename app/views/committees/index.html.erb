@@ -1,0 +1,11 @@
+<h1>Committees</h1>
+
+<ul>
+	<% @committees.each do |committee| %>
+		<li>
+			<%= link_to committee_path(committee[:id]) do %>
+				<%= committee[:name] %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>
