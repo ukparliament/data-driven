@@ -7,7 +7,7 @@ class Vote < QueryObject
       	PREFIX dcterms: <http://purl.org/dc/terms/>
       	PREFIX schema: <http://schema.org/>
       	CONSTRUCT {
-      		<http://data.parliament.uk/resource/00089385-0000-0000-0000-000000000000>
+      		<#{division_uri}>
       			dcterms:title ?title .
       		?person
       			schema:name ?name ;
@@ -15,10 +15,10 @@ class Vote < QueryObject
       	}
       	WHERE {
       		?vote 
-      			parl:division <http://data.parliament.uk/resource/00089385-0000-0000-0000-000000000000> ;
+      			parl:division <#{division_uri}> ;
       			parl:value ?value ;
       			parl:member ?person .
-      		<http://data.parliament.uk/resource/00089385-0000-0000-0000-000000000000>
+      		<#{division_uri}>
       			dcterms:title ?title .
       		?person
       			a schema:Person ;
@@ -71,6 +71,8 @@ class Vote < QueryObject
 	end	
 
 	def self.find_by_person(person_uri)
+
+
 		client = SPARQL::Client.new(DataDriven::Application.config.database)
 		vote_pattern = RDF::Query::Pattern.new(
 		  :vote, 
