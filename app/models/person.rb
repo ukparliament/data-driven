@@ -69,18 +69,5 @@ class Person < QueryObject
 		{ :graph => result, :hierarchy => hierarchy }
 
   	end
-  	# def self.ordered_tabling_members_on_subject(concept_uri)
-  	# 	Person.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
-			# 				PREFIX parl: <http://data.parliament.uk/schema/parl#>
-			# 				SELECT ?uri
-			# 				WHERE {
-			# 				    ?question parl:tablingMember ?uri;
-			# 				    dcterms:subject <#{concept_uri}> .
-			# 				}
-			# 				GROUP BY ?uri
-			# 				ORDER BY DESC(COUNT(?question))
-			# 				LIMIT 100
-			# 				")
-  	# end
 
 end
