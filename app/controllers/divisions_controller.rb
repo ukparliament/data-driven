@@ -32,8 +32,9 @@ class DivisionsController < ApplicationController
 
 	def show
 		division_uri = resource_uri(params[:id])
-		@division = Division.find(division_uri)
+		data = Division.find(division_uri)
+		@division = data[:hierarchy]
 
-		format(@division)
+		format(data)
 	end
 end
