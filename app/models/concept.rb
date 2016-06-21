@@ -21,7 +21,7 @@ class Concept < QueryObject
 			    }
 			    GROUP BY ?concept ?label
 			    ORDER BY DESC(?count)
-			    LIMIT 50
+			    LIMIT 200
 			}
 		")
 
@@ -46,21 +46,6 @@ class Concept < QueryObject
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end
-
-
-  # def self.most_popular_by_question_for_tabling_member(person_uri)
-  # 	Concept.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
-		# 				PREFIX parl: <http://data.parliament.uk/schema/parl#>
-		# 				SELECT ?uri
-		# 				WHERE {
-		# 				    ?question dcterms:subject ?uri;
-		# 				    parl:tablingMember <#{person_uri}> .
-		# 				}
-		# 				GROUP BY ?uri
-		# 				ORDER BY DESC(COUNT(?question))
-		# 				LIMIT 100
-		# 				")
-  # end
 
 	private
 

@@ -48,6 +48,7 @@ module Vocabulary
 	end
 	
 	class Parl
+ 
 		@@prefix = 'http://data.parliament.uk/schema/parl#'
 
 		def self.OralParliamentaryQuestion
@@ -81,6 +82,35 @@ module Vocabulary
 		def self.division
 			RDF::URI.new("#{@@prefix}division")
 		end
+
+		def self.houseLabel
+			RDF::URI.new("#{@@prefix}houseLabel")
+		end
+
+		def self.questionMemberName
+			RDF::URI.new("#{@@prefix}questionMemberName")
+		end
+
+		def self.answerMemberName
+			RDF::URI.new("#{@@prefix}answerMemberName")
+		end
+
+		def self.questionText
+			RDF::URI.new("#{@@prefix}questionText")
+		end				
+
+		def self.questionDate
+			RDF::URI.new("#{@@prefix}questionDate")
+		end
+
+		def self.answerText
+			RDF::URI.new("#{@@prefix}answerText")
+		end
+
+		def self.answerDate
+			RDF::URI.new("#{@@prefix}answerDate")
+		end
+
 	end
 	
 	class Rdfs

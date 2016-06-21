@@ -97,4 +97,5 @@ class Person < QueryObject
 		{ :graph => result, :hierarchy => hierarchy }
 
   	end
+
 end
