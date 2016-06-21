@@ -1,14 +1,16 @@
 class HousesController < ApplicationController
 	def index 
-		@houses = House.all.resources
-
-		format(@houses)
+		data = House.all
+		@houses = data[:hierarchy]
+		format(data)
 	end
 
 	def show
 		house_uri = resource_uri(params[:id])
-		@house = House.find(house_uri)
+		data = House.find(house_uri)
+
+		@house = data[:hierarchy]
 		
-		format(@house)
+		format(data)
 	end
 end

@@ -1,11 +1,15 @@
-<h1><%= @person_name %></h1>
+<h1><%= @person[:name] %></h1>
 
 <ul>
-	<% @votes.each do |item|%>
+	<% @person[:divisions].each do |division|%>
 		<li>
 			<dl>
-				<dt><%= item[:division_title] %></dt>
-				<dd><%= item[:value] %></dd>
+				<dt>
+					<%= link_to division_path(division[:id]) do %>
+						<%= division[:title] %> 
+					<% end %>
+				</dt>
+				<dd><%= division[:vote_value] == 'true' ? 'Content' : 'Not content' %></dd>
 			</dl>
 		</li>
 	<% end %>

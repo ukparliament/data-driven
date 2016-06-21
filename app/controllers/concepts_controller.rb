@@ -1,16 +1,17 @@
 class ConceptsController < ApplicationController
 
 	def index
-		@concepts = Concept.most_popular_by_contribution
+		data = Concept.most_popular_by_contribution
+		@concepts = data[:hierarchy]
 
-		format(@concepts)
+		format(data)
 	end
 
 	def show
 		concept_uri = resource_uri(params[:id])
-		@concept = Concept.find(concept_uri)
-		@tabling_members = Person.ordered_tabling_members_on_subject(concept_uri)
+		data = Concept.find(concept_uri)
+		@concept = data[:hierarchy]
 
-		format([@concept, @tabling_members])
+		format(data)
 	end
 end

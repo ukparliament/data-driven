@@ -1,38 +1,34 @@
 class DivisionsController < ApplicationController
 	def index
-		@divisions = Division.all.resources
+		data = Division.all
+		@divisions = data[:hierarchy]
 
-		format(@divisions)
+		format(data)
 	end
 
 	def index_by_house
 		house_uri = resource_uri(params[:house_id])
-		@house = House.find(house_uri)
-		@divisions = Division.find_by_house(house_uri)
-
-		format([@house, @divisions])
+		data = Division.find_by_house(house_uri)
+		@house = data[:hierarchy]
+		@divisions = data[:hierarchy][:divisions]
+		
+		format(data)
 	end
 
 	def index_by_concept
 		concept_uri = resource_uri(params[:concept_id])
-		@concept = Concept.find(concept_uri)
-		@divisions = Division.find_by_concept(concept_uri)
+		data = Division.find_by_concept(concept_uri)
+		@concept = data[:hierarchy]
+		@divisions = data[:hierarchy][:divisions]
 		
-		format([@concept, @divisions])
-	end
-
-	def index_by_person
-		person_uri = resource_uri(params[:person_id])
-		@person = Person.find(person_uri)
-		@divisions = Division.find_by_person(person_uri)
-		
-		format([@person, @divisions])
+		format(data)
 	end
 
 	def show
 		division_uri = resource_uri(params[:id])
-		@division = Division.find(division_uri)
+		data = Division.find(division_uri)
+		@division = data[:hierarchy]
 
-		format(@division)
+		format(data)
 	end
 end

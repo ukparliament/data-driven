@@ -1,8 +1,8 @@
 <ul>
-	<% @written_questions.each do |written_question| %>
+	<% @hierarchy[:questions].each do |question| %>
 		<li>
-			<%= link_to written_question_path(written_question.id) do %>
-				<%= written_question.text %>
+			<%= link_to written_question_path(question[:id]) do %>
+				<%= question[:text] %>
 			<% end %>
 		</li>
 	<% end %>

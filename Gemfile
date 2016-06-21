@@ -55,3 +55,7 @@ group :test do
 	gem 'factory_girl_rails'
 	gem 'webmock'
 end
+
+# Gems required for Docker containers
+ gem 'passenger'
+ gem 'therubyracer'

@@ -1,44 +1,73 @@
-class Person
-	include Tripod::Resource
-	
-	rdf_type 'http://schema.org/Person'
-
-	field :name, 'http://schema.org/name'
-  	field :image, 'http://schema.org/image', is_uri: true
-
-  	linked_from :writtenQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
-  	linked_from :oralQuestions, :tablingMember, class_name: 'WrittenQuestion', multivalued: true
-  	linked_from :votes, :votingMember, class_name: 'Vote'
-
-  	def id 
-  		self.uri.to_s.split("/").last
-  	end
+class Person < QueryObject
+	include Vocabulary 
 
   	def self.most_active_people
-  		Person.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
-							PREFIX parl: <http://data.parliament.uk/schema/parl#>
-							SELECT ?uri
-							WHERE {
-							    ?subject parl:member ?uri;
-							}
-							GROUP BY ?uri
-							ORDER BY DESC(COUNT(?question))
-							LIMIT 100
-							")
+  			result = self.query("
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX schema: <http://schema.org/>
+			CONSTRUCT {
+			    ?person
+			        schema:name ?name ;
+			    	parl:count ?count .
+			}
+			WHERE { 
+			    SELECT ?person ?name (COUNT(?contribution) AS ?count)
+			    WHERE {
+			        ?person
+			            a schema:Person ;
+				        schema:name ?name .
+			        ?contribution parl:member ?person .
+			    }
+			    GROUP BY ?person ?name
+			    ORDER BY DESC(?count)
+			    LIMIT 100
+			}
+		")
+
+		hierarchy = result.subjects(unique: true).map do |subject| 
+			name_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Schema.name, 
+		  		:name)
+			name = result.first_literal(name_pattern)
+			count_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Parl.count, 
+		  		:count)
+			count = result.first_literal(count_pattern)
+
+			{
+				:id => self.get_id(subject),
+				:name => name.to_s,
+				:count => count.to_i
+			}
+		end
+
+		{ :graph => result, :hierarchy => hierarchy }
+
   	end
 
-  	def self.ordered_tabling_members_on_subject(concept_uri)
-  		Person.find_by_sparql("PREFIX dcterms: <http://purl.org/dc/terms/>
-							PREFIX parl: <http://data.parliament.uk/schema/parl#>
-							SELECT ?uri
-							WHERE {
-							    ?question parl:tablingMember ?uri;
-							    dcterms:subject <#{concept_uri}> .
-							}
-							GROUP BY ?uri
-							ORDER BY DESC(COUNT(?question))
-							LIMIT 100
-							")
+  	def self.find(uri)
+  		result = self.query("
+			PREFIX schema: <http://schema.org/>
+			CONSTRUCT {
+				<#{uri}>
+			        schema:name ?name .
+			}
+			WHERE { 
+				<#{uri}> 
+					schema:name ?name .
+		}")
+		
+		hierarchy = result.map do |statement| 
+      		{
+      		  :id => self.get_id(statement.subject),
+      		  :name => statement.object.to_s
+      		}
+    	end.first
+
+		{ :graph => result, :hierarchy => hierarchy }
+
   	end
 
 end

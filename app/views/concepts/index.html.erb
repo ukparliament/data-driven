@@ -4,8 +4,8 @@
 <ul>
 	<% @concepts.each do |concept| %>
 		<li>
-			<%= link_to concept_path(concept.id) do %>
-				<%= concept.label %>
+			<%= link_to concept_path(concept[:id]) do %>
+				<%= concept[:label] %> (<%= concept[:count] %>)
 			<% end %>
 		</li>
 	<% end %>
