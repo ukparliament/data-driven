@@ -1,8 +1,9 @@
 class DivisionsController < ApplicationController
 	def index
-		@divisions = Division.all.resources
+		data = Division.all
+		@divisions = data[:hierarchy]
 
-		format(@divisions)
+		format(data)
 	end
 
 	def index_by_house

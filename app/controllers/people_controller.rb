@@ -14,4 +14,5 @@ class PeopleController < ApplicationController
 
 		format(data)
 	end
+	
 end
