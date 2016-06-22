@@ -25,6 +25,14 @@ module Vocabulary
 		def self.label
 			RDF::URI.new("#{@@prefix}label")
 		end
+
+		def self.startDate
+			RDF::URI.new("#{@@prefix}startDate")
+		end
+
+		def self.endDate
+			RDF::URI.new("#{@@prefix}endDate")
+		end
 	end
 	
 	class Dcterms
@@ -111,6 +119,9 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}answerDate")
 		end
 
+		def self.committeeName
+			RDF::URI.new("#{@@prefix}committeeName")
+		end
 	end
 	
 	class Rdfs
