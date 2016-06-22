@@ -59,25 +59,6 @@ class Committee < QueryObject
       }
       ")
 
-    id = self.get_id(uri)
-    committee_name_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Parl.committeeName,
-        :committee_name)
-		house_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(uri),
-				Parl.house,
-				:house)
-    house_label_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Parl.houseLabel,
-        :house_label)
-
-		committee_name = result.first_literal(committee_name_pattern)
-		house = result.first_object(house_pattern)
-		house_id = self.get_id(house)
-		house_label = result.first_literal(house_label_pattern).to_s
-
 		members = result.subjects
 									.select{ |subject| subject != RDF::URI.new(uri)}
 									.map do |subject|
@@ -120,6 +101,25 @@ class Committee < QueryObject
 					:end_date => end_date
 			}
 		end
+
+		id = self.get_id(uri)
+		committee_name_pattern = RDF::Query::Pattern.new(
+				RDF::URI.new(uri),
+				Parl.committeeName,
+				:committee_name)
+		house_pattern = RDF::Query::Pattern.new(
+				RDF::URI.new(uri),
+				Parl.house,
+				:house)
+		house_label_pattern = RDF::Query::Pattern.new(
+				RDF::URI.new(uri),
+				Parl.houseLabel,
+				:house_label)
+
+		committee_name = result.first_literal(committee_name_pattern)
+		house = result.first_object(house_pattern)
+		house_id = self.get_id(house)
+		house_label = result.first_literal(house_label_pattern).to_s
 
 		hierarchy = {
 				:id => id,
