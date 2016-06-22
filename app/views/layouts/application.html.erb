@@ -25,13 +25,13 @@
 		<legend>Download</legend>
 		<ul>
 			<li>
-				<a href="<%= url_for(:format => :json) %>">json</a>
+				<a href="<%= url_for(:format => :json, :params => params) %>">json</a>
 			</li>
 			<li>
-				<a href="<%= url_for(:format => :xml) %>">xml</a>
+				<a href="<%= url_for(:format => :xml, :params => params) %>">xml</a>
 			</li>
 			<li>
-				<a href="<%= url_for(:format => :rdf) %>">rdf</a>
+				<a href="<%= url_for(:format => :rdf, :params => params) %>">rdf</a>
 			</li>
 		</ul>
 	</fieldset>

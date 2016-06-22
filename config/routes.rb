@@ -45,6 +45,8 @@ Rails.application.routes.draw do
 
   resources :committees, only: [:index, :show]
 
+  resources :search, only: [:index]
+
   resources :houses, only: [:index, :show] do
     get '/oral_questions(.:format)', to: 'oral_questions#index_by_house', as: 'oral_questions'
     get '/written_questions(.:format)', to: 'written_questions#index_by_house', as: 'written_questions'
