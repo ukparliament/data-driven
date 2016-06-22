@@ -2,7 +2,9 @@
 <ul>
 	<% @results.each do |result| %>
 		<li>
-			<%= result[:text] %>
+			<%= link_to controller:"#{result[:path]}", action: "show", id: result[:id] do %>
+				<%= strip_tags(result[:text]) %>
+			<% end %>
 		</li>
 	<% end %>
 </ul>

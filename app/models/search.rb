@@ -60,7 +60,19 @@ class Search < QueryObject
 				when Parl.Division
 					Dcterms.title
 				end
-
+			path = 
+				case type
+				when Schema.Person
+					"people"
+				when Parl.OralParliamentaryQuestion
+					"oral_questions"
+				when Parl.WrittenParliamentaryQuestion
+					"written_questions"
+				when Parl.WrittenParliamentaryAnswer
+					"written_answers"
+				when Parl.Division
+					"divisions"
+				end
 			text_pattern = RDF::Query::Pattern.new(
 				RDF::URI.new(result.subject),
 				text_property,
@@ -72,7 +84,8 @@ class Search < QueryObject
 				:id => id,
 				:type => type.to_s,
 				:score => score.to_f,
-				:text => text.to_s
+				:text => text.to_s,
+				:path => path
 			}
 		end
 
