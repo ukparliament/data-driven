@@ -7,9 +7,17 @@ class CommitteesController < ApplicationController
 	end
 
   def show
-		committe_uri = resource_uri(params[:id])
-		data = Committee.find(committe_uri)
+		committee_uri = resource_uri(params[:id])
+		data = Committee.find(committee_uri)
 		@committee = data[:hierarchy]
+
+		format(data)
+	end
+
+  def index_by_person
+		person_uri = resource_uri(params[:person_id])
+		data = Committee.find_by_person(person_uri)
+		@committees = data[:hierarchy]
 
 		format(data)
 	end

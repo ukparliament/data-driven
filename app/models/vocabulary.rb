@@ -122,6 +122,30 @@ module Vocabulary
 		def self.committeeName
 			RDF::URI.new("#{@@prefix}committeeName")
 		end
+
+		def self.personName
+			RDF::URI.new("#{@@prefix}personName")
+		end
+
+		def self.membershipType
+			RDF::URI.new("#{@@prefix}membershipType")
+		end
+
+		def self.committee
+			RDF::URI.new("#{@@prefix}committee")
+		end
+
+		def self.CommitteeChair
+			RDF::URI.new("#{@@prefix}CommitteeChair")
+		end
+
+		def self.CommitteeMember
+			RDF::URI.new("#{@@prefix}CommitteeMember")
+		end
+
+		def self.CommitteeAdviser
+			RDF::URI.new("#{@@prefix}CommitteeAdviser")
+		end
 	end
 	
 	class Rdfs

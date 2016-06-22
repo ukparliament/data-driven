@@ -2,7 +2,7 @@ class Person < QueryObject
 	include Vocabulary 
 
   	def self.most_active_people
-  			result = self.query("
+  			result = self.query('
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX schema: <http://schema.org/>
 			CONSTRUCT {
@@ -10,7 +10,7 @@ class Person < QueryObject
 			        schema:name ?name ;
 			    	parl:count ?count .
 			}
-			WHERE { 
+			WHERE {
 			    SELECT ?person ?name (COUNT(?contribution) AS ?count)
 			    WHERE {
 			        ?person
@@ -22,7 +22,7 @@ class Person < QueryObject
 			    ORDER BY DESC(?count)
 			    LIMIT 100
 			}
-		")
+		')
 
 		hierarchy = result.subjects(unique: true).map do |subject| 
 			name_pattern = RDF::Query::Pattern.new(
