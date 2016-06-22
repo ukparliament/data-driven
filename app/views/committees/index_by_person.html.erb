@@ -8,10 +8,9 @@
         <dl>
           <dt>
             <%= link_to committee_path(chairship[:committee][:id]) do %>
-                <%= chairship[:committee][:name] %>
-            <% end %>
+                <%= chairship[:committee][:name] %><% end %>
+            (<%= chairship[:start_date].strftime("%D") %>-<%= chairship[:end_date].strftime("%D") %>)
           </dt>
-          <p>from <%= chairship[:start_date].strftime("%d %B %Y") %> to <%= chairship[:end_date].strftime("%d %B %Y") %></p>
         </dl>
       </li>
   <% end %>
@@ -25,11 +24,10 @@
         <dl>
           <dt>
             <%= link_to committee_path(membership[:committee][:id]) do %>
-                <%= membership[:committee][:name] %>
-            <% end %>
+                <%= membership[:committee][:name] %><% end %>
+            (<%= membership[:start_date].strftime("%D") %>-<%= membership[:end_date].strftime("%D") %>)
           </dt>
           </dt>
-          <p>from <%= membership[:start_date].strftime("%d %B %Y") %> to <%= membership[:end_date].strftime("%d %B %Y") %></p>
         </dl>
       </li>
   <% end %>
@@ -43,11 +41,10 @@
         <dl>
           <dt>
             <%= link_to committee_path(advisership[:committee][:id]) do %>
-                <%= advisership[:committee][:name] %>
-            <% end %>
+                <%= advisership[:committee][:name] %><% end %>
+            (<%= advisership[:start_date].strftime("%D") %>-<%= advisership[:end_date].strftime("%D") %>)
           </dt>
           </dt>
-          <p>from <%= advisership[:start_date].strftime("%d %B %Y") %> to <%= advisership[:end_date].strftime("%d %B %Y") %></p>
         </dl>
       </li>
   <% end %>
