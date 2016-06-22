@@ -73,6 +73,20 @@ class Search < QueryObject
 				when Parl.Division
 					"divisions"
 				end
+			friendly_type = 
+				case type
+				when Schema.Person
+					"Person"
+				when Parl.OralParliamentaryQuestion
+					"Oral Question"
+				when Parl.WrittenParliamentaryQuestion
+					"Written Question"
+				when Parl.WrittenParliamentaryAnswer
+					"Written Answer"
+				when Parl.Division
+					"Division"
+				end
+
 			text_pattern = RDF::Query::Pattern.new(
 				RDF::URI.new(result.subject),
 				text_property,
@@ -85,7 +99,8 @@ class Search < QueryObject
 				:type => type.to_s,
 				:score => score.to_f,
 				:text => text.to_s,
-				:path => path
+				:path => path,
+				:friendly_type => friendly_type
 			}
 		end
 
