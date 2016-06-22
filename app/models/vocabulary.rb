@@ -99,6 +99,10 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}answerMemberName")
 		end
 
+		def self.question
+			RDF::URI.new("#{@@prefix}question")
+		end
+
 		def self.questionText
 			RDF::URI.new("#{@@prefix}questionText")
 		end				
