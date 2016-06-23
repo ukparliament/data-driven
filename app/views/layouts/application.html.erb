@@ -21,11 +21,6 @@
 	<%= link_to root_path do %>
 		Home
 	<% end %>
-
-	<form action="/search">
-		<input type="text" name="q">
-		<button type="submit">Search</button>
-	</form>
 	
 	<fieldset style="position: absolute; right: 0; border: 5px solid; padding: 3px; background-color: white">
 		<legend>Download</legend>
@@ -42,7 +37,12 @@
 		</ul>
 	</fieldset>
 
-	<%= yield %>
+	<form action="/search">
+		<input type="text" name="q" value="<%= params[:q] %>">
+		<button type="submit">Search</button>
+
+		<%= yield %>
+	</form>
 
 </body>
 </html>

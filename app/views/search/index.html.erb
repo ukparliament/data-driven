@@ -1,4 +1,11 @@
+<input id="filter1" name="filters[parl:Division]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:Division"] == "on" %>>
+<label for="filter1">filter1</label>
+<input id="filter2" name="filters[parl:OralParliamentaryQuestion]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:OralParliamentaryQuestion"] == "on" %>>
+<label for="filter2">filter2</label>
+
 <h1>Search results</h1>
+
+
 <ul>
 	<% @results.each do |result| %>
 		<li>

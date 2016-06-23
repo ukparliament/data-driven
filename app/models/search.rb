@@ -1,8 +1,20 @@
 class Search < QueryObject
 	include Vocabulary
 
-	def self.find(q)
+	def self.find(q, filters)
+		filterString = ""
+		if filters
+			filterArray = filters.map do |filterKey, filterValue|
+				# TODO: convert to reduce
+				"?type = #{filterKey}"
+			end
+
+			filterString = "FILTER(#{filterArray.join(" || ")})"
+		end
+
 		q = q.gsub(/\"/, "\\\"")
+
+		type_filter = ""
 
 		result_graph = self.query("
 			PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
@@ -24,6 +36,8 @@ class Search < QueryObject
 			        luc:score ?scoreString ;
 			        ?property ?text .
 			    FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description || ?property = rdfs:label)
+				#{filterString}
+				#FILTER(?type = parl:Division || ?type = parl:OralParliamentaryQuestion || ?type = parl:WrittenParliamentaryQuestion || ?type = parl:WrittenParliamentaryAnswer || ?type = schema:Person || ?type = parl:Committee)
 				BIND(xsd:float(?scoreString) AS ?score)
 			}
 			LIMIT 204
