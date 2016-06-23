@@ -60,6 +60,7 @@ class Search < QueryObject
 				when Parl.Division
 					Dcterms.title
 				end
+				
 			path = 
 				case type
 				when Schema.Person
@@ -73,6 +74,7 @@ class Search < QueryObject
 				when Parl.Division
 					"divisions"
 				end
+
 			friendly_type = 
 				case type
 				when Schema.Person
