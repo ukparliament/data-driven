@@ -53,6 +53,7 @@ Rails.application.routes.draw do
     get '/oral_questions(.:format)', to: 'oral_questions#index_by_house', as: 'oral_questions'
     get '/written_questions(.:format)', to: 'written_questions#index_by_house', as: 'written_questions'
     get '/divisions(.:format)', to: 'divisions#index_by_house', as: 'divisions'
+    get '/people(.:format)', to: 'people#index_by_house', as: 'people'
   end
 
   resources :divisions, only: [:index, :show] do
