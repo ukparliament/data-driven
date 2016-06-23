@@ -63,7 +63,7 @@ class Search < QueryObject
 					Schema.name
 				end
 
-			path = 
+			controller = 
 				case type
 				when Schema.Person
 					"people"
@@ -76,7 +76,7 @@ class Search < QueryObject
 				when Parl.Division
 					"divisions"
 				when Parl.Committee
-					"committee"
+					"committees"
 				end
 
 			friendly_type = 
@@ -107,7 +107,7 @@ class Search < QueryObject
 				:type => type.to_s,
 				:score => score.to_f,
 				:text => text.to_s,
-				:path => path,
+				:controller => controller,
 				:friendly_type => friendly_type
 			}
 		end
