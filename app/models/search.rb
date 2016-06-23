@@ -25,7 +25,7 @@ class Search < QueryObject
 			    FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description)
 				BIND(xsd:float(?scoreString) AS ?score)
 			}
-			LIMIT 102
+			LIMIT 204
 		")
 
 		search_results_pattern = RDF::Query::Pattern.new(
