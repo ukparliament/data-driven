@@ -25,6 +25,14 @@ module Vocabulary
 		def self.label
 			RDF::URI.new("#{@@prefix}label")
 		end
+
+		def self.startDate
+			RDF::URI.new("#{@@prefix}startDate")
+		end
+
+		def self.endDate
+			RDF::URI.new("#{@@prefix}endDate")
+		end
 	end
 	
 	class Dcterms
@@ -117,6 +125,34 @@ module Vocabulary
 
 		def self.answerDate
 			RDF::URI.new("#{@@prefix}answerDate")
+		end
+
+		def self.committeeName
+			RDF::URI.new("#{@@prefix}committeeName")
+		end
+
+		def self.personName
+			RDF::URI.new("#{@@prefix}personName")
+		end
+
+		def self.membershipType
+			RDF::URI.new("#{@@prefix}membershipType")
+		end
+
+		def self.committee
+			RDF::URI.new("#{@@prefix}committee")
+		end
+
+		def self.CommitteeChair
+			RDF::URI.new("#{@@prefix}CommitteeChair")
+		end
+
+		def self.CommitteeMember
+			RDF::URI.new("#{@@prefix}CommitteeMember")
+		end
+
+		def self.CommitteeAdviser
+			RDF::URI.new("#{@@prefix}CommitteeAdviser")
 		end
 
 		def self.score

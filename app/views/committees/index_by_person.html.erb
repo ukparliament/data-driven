@@ -1,0 +1,51 @@
+<h1><%= @committees[:person][:name] %> Committees</h1>
+
+<h2>Chair of <%= @committees[:chairs] %> committees</h2>
+
+<ul>
+  <% @committees[:chairships].each do |chairship|%>
+      <li>
+        <dl>
+          <dt>
+            <%= link_to committee_path(chairship[:committee][:id]) do %>
+                <%= chairship[:committee][:name] %><% end %>
+            (<%= chairship[:start_date].strftime("%D") %>-<%= chairship[:end_date].strftime("%D") %>)
+          </dt>
+        </dl>
+      </li>
+  <% end %>
+</ul>
+
+<h2>Member of <%= @committees[:members] %> committees</h2>
+
+<ul>
+  <% @committees[:memberships].each do |membership|%>
+      <li>
+        <dl>
+          <dt>
+            <%= link_to committee_path(membership[:committee][:id]) do %>
+                <%= membership[:committee][:name] %><% end %>
+            (<%= membership[:start_date].strftime("%D") %>-<%= membership[:end_date].strftime("%D") %>)
+          </dt>
+          </dt>
+        </dl>
+      </li>
+  <% end %>
+</ul>
+
+<h2>Adviser of <%= @committees[:advisers] %> committees</h2>
+
+<ul>
+  <% @committees[:adviserships].each do |advisership|%>
+      <li>
+        <dl>
+          <dt>
+            <%= link_to committee_path(advisership[:committee][:id]) do %>
+                <%= advisership[:committee][:name] %><% end %>
+            (<%= advisership[:start_date].strftime("%D") %>-<%= advisership[:end_date].strftime("%D") %>)
+          </dt>
+          </dt>
+        </dl>
+      </li>
+  <% end %>
+</ul>
