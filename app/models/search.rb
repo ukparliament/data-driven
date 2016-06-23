@@ -59,8 +59,11 @@ class Search < QueryObject
 					Schema.text
 				when Parl.Division
 					Dcterms.title
+				when Parl.Committee
+					Schema.name
 				end
-			path = 
+
+			controller = 
 				case type
 				when Schema.Person
 					"people"
@@ -72,7 +75,10 @@ class Search < QueryObject
 					"written_answers"
 				when Parl.Division
 					"divisions"
+				when Parl.Committee
+					"committees"
 				end
+
 			friendly_type = 
 				case type
 				when Schema.Person
@@ -85,6 +91,8 @@ class Search < QueryObject
 					"Written Answer"
 				when Parl.Division
 					"Division"
+				when Parl.Committee
+					"Committee"
 				end
 
 			text_pattern = RDF::Query::Pattern.new(
@@ -99,7 +107,7 @@ class Search < QueryObject
 				:type => type.to_s,
 				:score => score.to_f,
 				:text => text.to_s,
-				:path => path,
+				:controller => controller,
 				:friendly_type => friendly_type
 			}
 		end
