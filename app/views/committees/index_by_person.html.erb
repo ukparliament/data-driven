@@ -1,6 +1,6 @@
 <h1><%= @committees[:person][:name] %> Committees</h1>
 
-<h2>Chair of <%= @committees[:chairs] %> committees</h2>
+<h2>Chair of <%= @committees[:chairs_count] %> committees</h2>
 
 <ul>
   <% @committees[:chairships].each do |chairship|%>
@@ -16,7 +16,7 @@
   <% end %>
 </ul>
 
-<h2>Member of <%= @committees[:members] %> committees</h2>
+<h2>Member of <%= @committees[:members_count] %> committees</h2>
 
 <ul>
   <% @committees[:memberships].each do |membership|%>
@@ -33,7 +33,7 @@
   <% end %>
 </ul>
 
-<h2>Adviser of <%= @committees[:advisers] %> committees</h2>
+<h2>Adviser of <%= @committees[:advisers_count] %> committees</h2>
 
 <ul>
   <% @committees[:adviserships].each do |advisership|%>
