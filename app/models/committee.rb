@@ -89,7 +89,7 @@ class Committee < QueryObject
 				Parl.houseLabel,
 				:house_label)
 
-		committee_name = result.first_literal(committee_name_pattern)
+		committee_name = result.first_literal(committee_name_pattern).to_s
 		house = result.first_object(house_pattern)
 		house_id = self.get_id(house)
 		house_label = result.first_literal(house_label_pattern).to_s
@@ -223,10 +223,10 @@ class Committee < QueryObject
 
 		committee = result.first_object(committee_pattern)
 		committee_id = self.get_id(committee)
-		committee_name = result.first_literal(committee_name_pattern)
+		committee_name = result.first_literal(committee_name_pattern).to_s
 		house = result.first_object(house_pattern)
 		house_id = self.get_id(house)
-		house_label = result.first_literal(house_label_pattern)
+		house_label = result.first_literal(house_label_pattern).to_s
 		start_date = result.first_object(start_date_pattern).to_s.to_datetime
 		end_date = result.first_object(end_date_pattern).to_s.to_datetime
 		{
@@ -263,7 +263,7 @@ class Committee < QueryObject
 
 		person = result.first_object(person_pattern)
 		person_id = self.get_id(person)
-		person_name = result.first_literal(person_name_pattern)
+		person_name = result.first_literal(person_name_pattern).to_s
 		start_date = result.first_object(start_date_pattern).to_s.to_datetime
 		end_date = result.first_object(end_date_pattern).to_s.to_datetime
 		{
