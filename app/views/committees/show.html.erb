@@ -1,0 +1,24 @@
+<h1><%= @committee[:committee_name] %></h1>
+
+<p>House:
+  <%= link_to house_path(@committee[:house][:id]) do %>
+    <%= @committee[:house][:label] %>
+  <% end %>
+</p>
+
+<ul>
+  <% @committee[:members].each do |member|%>
+      <li>
+        <dl>
+          <dt>
+            <%= link_to person_path(member[:id]) do %>
+                <%= member[:name] %>
+            <% end %>
+          </dt>
+          <dd><%= member[:role] %></dd>
+          <p>start date :<%= member[:start_date].strftime("%d %B %Y") %></p>
+          <p>end date :<%= member[:end_date].strftime("%d %B %Y") %></p>
+        </dl>
+      </li>
+  <% end %>
+</ul>
