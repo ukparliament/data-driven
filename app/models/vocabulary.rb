@@ -126,6 +126,10 @@ module Vocabulary
 		def self.Division
 			RDF::URI.new("#{@@prefix}Division")
 		end
+
+		def self.Committee
+			RDF::URI.new("#{@@prefix}Committee")
+		end
 	end
 	
 	class Rdfs

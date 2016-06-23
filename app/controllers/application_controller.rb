@@ -6,13 +6,13 @@ class ApplicationController < ActionController::Base
 
   def index
     data = {
-      :hierachy => {
-        :houses => url_for(controller: 'houses', format: :json),
-        :concepts => url_for(controller: 'concepts', format: :json),
-        :oralQuestions => url_for(controller: 'oral_questions', format: :json),
-        :writtenQuestions => url_for(controller: 'written_questions', format: :json),
-        :divisions => url_for(controller: 'divisions', format: :json),
-        :people => url_for(controller: 'people', format: :json)
+      :hierarchy => {
+        :houses => url_for(controller: 'houses'),
+        :concepts => url_for(controller: 'concepts'),
+        :oralQuestions => url_for(controller: 'oral_questions'),
+        :writtenQuestions => url_for(controller: 'written_questions'),
+        :divisions => url_for(controller: 'divisions'),
+        :people => url_for(controller: 'people')
       }
     }
 
