@@ -98,7 +98,6 @@ class Division < QueryObject
     result = self.query("
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX dcterms: <http://purl.org/dc/terms/>     
       CONSTRUCT {
          ?division 
@@ -108,7 +107,7 @@ class Division < QueryObject
       }
       WHERE { 
          ?division 
-           rdf:type parl:Division;
+           a parl:Division;
            parl:house <#{house_uri}>;
            dcterms:title ?title .
          <#{house_uri}> rdfs:label ?label .

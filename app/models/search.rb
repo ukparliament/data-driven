@@ -2,13 +2,14 @@ class Search < QueryObject
 	include Vocabulary
 
 	def self.find(q)
-		q = q.tr('"', '')
+		q = q.gsub(/\"/, "\\\"")
 
 		result_graph = self.query("
 			PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
 			PREFIX schema: <http://schema.org/>
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 			 
 			CONSTRUCT {
 			    ?result
@@ -22,10 +23,10 @@ class Search < QueryObject
 			        luc:searchAll \"#{q}\" ;
 			        luc:score ?scoreString ;
 			        ?property ?text .
-			    FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description)
+			    FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description || ?property = rdfs:label)
 				BIND(xsd:float(?scoreString) AS ?score)
 			}
-			LIMIT 102
+			LIMIT 204
 		")
 
 		search_results_pattern = RDF::Query::Pattern.new(
