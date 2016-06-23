@@ -1,0 +1,13 @@
+<h1>Search results</h1>
+<ul>
+	<% @results.each do |result| %>
+		<li>
+			<strong>
+				<%= result[:friendly_type]%>:
+			</strong>
+			<%= link_to controller:"#{result[:path]}", action: "show", id: result[:id] do %>
+				<%= strip_tags(result[:text]) %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>

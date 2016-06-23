@@ -1,15 +1,25 @@
-class WrittenAnswer
-	include Tripod::Resource
+class WrittenAnswer < QueryObject
+	include Vocabulary
 
-	rdf_type 'http://data.parliament.uk/schema/parl#WrittenParliamentaryAnswer'
+ 	def self.find_question(uri)
+ 		result = self.query("
+ 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			CONSTRUCT {
+    			<#{uri}> parl:question ?question .
+			}
+			WHERE { 
+				<#{uri}> parl:question ?question .
+		}")
 
-	field :text, 'http://schema.org/text'
-	field :date, 'http://purl.org/dc/terms/date'
+ 		question_pattern = RDF::Query::Pattern.new(
+ 			RDF::URI.new(uri),
+ 			Parl.question,
+ 			:question)
 
-	linked_to :tablingMember, 'http://data.parliament.uk/schema/parl#member', class_name: 'Person'
-	linked_to :writtenQuestion, 'http://data.parliament.uk/schema/parl#question', class_name: 'WrittenQuestion'
+		question = result.first_object(question_pattern)
 
-	def id
-  		self.uri.to_s.split('/').last
-  	end
+		p question
+
+		{ :id => self.get_id(question) }
+ 	end
 end

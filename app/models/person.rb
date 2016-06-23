@@ -2,7 +2,7 @@ class Person < QueryObject
 	include Vocabulary 
 
   	def self.most_active_people
-  			result = self.query("
+		result = self.query("
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX schema: <http://schema.org/>
 			CONSTRUCT {
