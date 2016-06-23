@@ -24,7 +24,7 @@ class Person < QueryObject
 					}
 				')
 
-		hierarchy = result.subjects(unique: true).map do |subject| 
+		people = result.subjects(unique: true).map do |subject| 
 			name_pattern = RDF::Query::Pattern.new(
 		  		subject, 
 		  		Schema.name, 
@@ -42,6 +42,10 @@ class Person < QueryObject
 				:count => count.to_i
 			}
 		end
+
+		hierarchy = {
+			:people => people
+		}
 
 		{ :graph => result, :hierarchy => hierarchy }
 
@@ -133,7 +137,7 @@ class Person < QueryObject
   			:name
   		)
 
-  		members = result.query(person_pattern).subjects.map do |subject| 
+  		people = result.query(person_pattern).subjects.map do |subject| 
   			person_name_pattern = RDF::Query::Pattern.new(
   				subject,
   				Schema.name,
@@ -166,8 +170,8 @@ class Person < QueryObject
   		hierarchy = 
       		{
       			:id => self.get_id(house_uri),
-      			:label => house_label.to_s,
-      			:members => members
+      			:house_label => house_label.to_s,
+      			:people => people
       		}
 
 		{ :graph => result, :hierarchy => hierarchy }

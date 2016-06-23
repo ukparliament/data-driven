@@ -2,7 +2,7 @@ class PeopleController < ApplicationController
 
 	def index
 		data = Person.most_active_people
-		@people = data[:hierarchy]
+		@hierarchy = data[:hierarchy]
 
 		format(data)
 	end
@@ -10,7 +10,7 @@ class PeopleController < ApplicationController
 	def index_by_house
 		house_uri = resource_uri(params[:house_id])
 		data = Person.find_most_active_by_house(house_uri)
-		@house = data[:hierarchy]
+		@hierarchy = data[:hierarchy]
 
 		format(data)
 	end
