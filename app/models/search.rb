@@ -2,7 +2,7 @@ class Search < QueryObject
 	include Vocabulary
 
 	def self.find(q)
-		q = q.tr('"', '')
+		q = q.gsub(/\"/, "\\\"")
 
 		result_graph = self.query("
 			PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
