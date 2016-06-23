@@ -5,7 +5,7 @@
 			<strong>
 				<%= result[:friendly_type]%>:
 			</strong>
-			<%= link_to controller:"#{result[:path]}", action: "show", id: result[:id] do %>
+			<%= link_to controller:"#{result[:controller]}", action: "show", id: result[:id] do %>
 				<%= strip_tags(result[:text]) %>
 			<% end %>
 		</li>
