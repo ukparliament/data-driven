@@ -166,6 +166,18 @@ module Vocabulary
 		def self.Committee
 			RDF::URI.new("#{@@prefix}Committee")
 		end
+
+		def self.oralQuestionCount
+			RDF::URI.new("#{@@prefix}oralQuestionCount")
+		end
+
+		def self.writtenQuestionCount
+			RDF::URI.new("#{@@prefix}writtenQuestionCount")
+		end
+
+		def self.writtenAnswerCount
+			RDF::URI.new("#{@@prefix}writtenAnswerCount")
+		end
 	end
 	
 	class Rdfs

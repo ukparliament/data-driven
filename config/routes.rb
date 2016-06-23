@@ -35,6 +35,7 @@ Rails.application.routes.draw do
   resources :people, only: [:index, :show] do
     get '/oral_questions(.:format)', to: 'oral_questions#index_by_person', as: 'oral_questions'
     get '/written_questions(.:format)', to: 'written_questions#index_by_person', as: 'written_questions'
+    get '/written_answers(.:format)', to: 'written_answers#index_by_person', as: 'written_answers'
     get '/votes(.:format)', to: 'votes#index_by_person', as: 'votes'
     get '/committees(.:format)', to: 'committees#index_by_person', as: 'committees'
   end

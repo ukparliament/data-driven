@@ -1,0 +1,17 @@
+/* TEAM */
+
+Developer: Rebecca Appleyard
+GitHub: katylouise
+Twitter: @rklappleyard
+
+Developer: Giuseppe De Santis
+GitHub: giusepped
+Twitter: @sologius
+
+Trainee Developer: Alexander Fedatov
+GitHub: mewasabi
+
+Technical Director: Samu Lang
+Site: https://www.linkedin.com/in/langsamu
+
+Developer: Wojciech Stawiarski
