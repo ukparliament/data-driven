@@ -11,7 +11,7 @@ class PeopleController < ApplicationController
 		house_uri = resource_uri(params[:house_id])
 		data = Person.find_most_active_by_house(house_uri)
 		@house = data[:hierarchy]
-		p house_uri
+
 		format(data)
 	end
 

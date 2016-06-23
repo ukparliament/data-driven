@@ -24,9 +24,9 @@ class WrittenQuestion < QueryObject
     end
 
     hierarchy = 
-    {
-      :questions => questions
-    }
+      {
+        :questions => questions
+      }
 
     { :graph => result, :hierarchy => hierarchy }
   end
