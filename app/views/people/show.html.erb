@@ -9,14 +9,19 @@
 <ul>
 	<li>
 		<%= link_to person_oral_questions_path(@person[:id]) do %>
-			Oral questions
+        Oral questions (<%= @person[:oral_question_count] %>)
 		<% end %>
 	</li>
 	<li>
 		<%= link_to person_written_questions_path(@person[:id]) do %>
-			Written questions
+        Written questions (<%= @person[:written_question_count] %>)
 		<% end %>
 	</li>
+  <li>
+    <%= link_to person_written_answers_path(@person[:id]) do %>
+        Written answers (<%= @person[:written_answer_count] %>)
+    <% end %>
+  </li>
 	<li>
 		<%= link_to person_written_answers_path(@person[:id]) do %>
 			Written answers

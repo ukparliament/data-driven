@@ -7,15 +7,15 @@ class Person < QueryObject
 					PREFIX schema: <http://schema.org/>
 					CONSTRUCT {
 							?person
-								schema:name ?name ;
-								parl:count ?count .
+									schema:name ?name ;
+									parl:count ?count .
 					}
 					WHERE {
 							SELECT ?person ?name (COUNT(?contribution) AS ?count)
 							WHERE {
 									?person
-										a schema:Person ;
-										schema:name ?name .
+											a schema:Person ;
+											schema:name ?name .
 									?contribution parl:member ?person .
 							}
 							GROUP BY ?person ?name
@@ -53,22 +53,45 @@ class Person < QueryObject
 
   	def self.find(uri)
   		result = self.query("
-			PREFIX schema: <http://schema.org/>
-			PREFIX parl: <http://data.parliament.uk/schema/parl#>
-			CONSTRUCT {
-				<#{uri}>
-			        schema:name ?name ;
-			        parl:house ?house .
-			    ?house
-			    	rdfs:label ?label .
-			}
-			WHERE { 
-				<#{uri}> 
-					schema:name ?name ;
-					parl:house ?house .
-				?house
-			    	rdfs:label ?label .
-		}")
+				PREFIX schema: <http://schema.org/>
+				PREFIX parl: <http://data.parliament.uk/schema/parl#>
+				PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+				CONSTRUCT {
+					<#{uri}>
+							schema:name ?name ;
+						parl:house ?house ;
+								parl:oralQuestionCount ?oralQuestionCount ;
+								parl:writtenQuestionCount ?writtenQuestionCount ;
+								parl:writtenAnswerCount ?writtenAnswerCount .
+					?house
+						rdfs:label ?label .
+				}
+				WHERE {
+						SELECT ?name ?house ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?writtenAnswer) as ?writtenAnswerCount)
+						WHERE {
+							<#{uri}>
+							schema:name ?name ;
+							parl:house ?house .
+						?house
+							rdfs:label ?label .
+								OPTIONAL {
+									?oralQuestion
+										a parl:OralParliamentaryQuestion ;
+										parl:member <#{uri}> .
+								}
+								OPTIONAL {
+										?writtenQuestion
+												a parl:WrittenParliamentaryQuestion ;
+												parl:member <#{uri}> .
+								}
+								OPTIONAL {
+										?writtenAnswer
+												a parl:WrittenParliamentaryAnswer ;
+												parl:member <#{uri}> .
+								}
+						}
+						GROUP BY ?name ?house ?label
+				}")
 
 		name_pattern = RDF::Query::Pattern.new(
 			RDF::URI.new(uri),
@@ -88,6 +111,26 @@ class Person < QueryObject
 			:label)
 		label = result.first_literal(house_label_pattern)
 
+		oral_question_count_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(uri),
+			Parl.oralQuestionCount,
+			:oral_question_count
+		)
+		written_question_count_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(uri),
+			Parl.writtenQuestionCount,
+			:written_question_count
+		)
+		written_answer_count_pattern = RDF::Query::Pattern.new(
+			RDF::URI::new(uri),
+			Parl.writtenAnswerCount,
+			:written_answer_count
+		)
+
+		oral_question_count = result.first_literal(oral_question_count_pattern)
+		written_question_count = result.first_literal(written_question_count_pattern)
+		written_answer_count = result.first_literal(written_answer_count_pattern)
+
 		hierarchy = 
       		{
       		  :id => self.get_id(uri),
@@ -95,7 +138,10 @@ class Person < QueryObject
       		  :house => {
       		  	:id => self.get_id(house),
       		  	:label => label.to_s
-      		  }
+      		  },
+						:oral_question_count => oral_question_count,
+						:written_question_count => written_question_count,
+						:written_answer_count => written_answer_count
       		}
 
 		{ :graph => result, :hierarchy => hierarchy }

@@ -13,5 +13,5 @@ class WrittenAnswersController < ApplicationController
 
 		redirect_to(written_question_path(question[:id]))
 	end
-	
+
 end
