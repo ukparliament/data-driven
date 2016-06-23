@@ -1,5 +1,5 @@
 <ul>
-	<% @people.each do |person| %>
+	<% @hierarchy[:people].each do |person| %>
 		<li>
 			<%= link_to person_path(person[:id]) do %>
 				<%= person[:name] %> (<%= person[:count] %>)
