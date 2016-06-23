@@ -2,6 +2,8 @@ class Search < QueryObject
 	include Vocabulary
 
 	def self.find(q)
+		q = q.tr('"', '')
+
 		result_graph = self.query("
 			PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
 			PREFIX schema: <http://schema.org/>
@@ -23,7 +25,7 @@ class Search < QueryObject
 			    FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description)
 				BIND(xsd:float(?scoreString) AS ?score)
 			}
-			LIMIT 100
+			LIMIT 102
 		")
 
 		search_results_pattern = RDF::Query::Pattern.new(
