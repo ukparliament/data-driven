@@ -67,6 +67,10 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}WrittenParliamentaryQuestion")
 		end
 
+		def self.WrittenParliamentaryAnswer
+			RDF::URI.new("#{@@prefix}WrittenParliamentaryAnswer")
+		end
+
 		def self.member
 			RDF::URI.new("#{@@prefix}member")
 		end
@@ -101,6 +105,10 @@ module Vocabulary
 
 		def self.answerMemberName
 			RDF::URI.new("#{@@prefix}answerMemberName")
+		end
+
+		def self.question
+			RDF::URI.new("#{@@prefix}question")
 		end
 
 		def self.questionText
@@ -145,6 +153,14 @@ module Vocabulary
 
 		def self.CommitteeAdviser
 			RDF::URI.new("#{@@prefix}CommitteeAdviser")
+		end
+
+		def self.score
+			RDF::URI.new("#{@@prefix}score")
+		end
+
+		def self.Division
+			RDF::URI.new("#{@@prefix}Division")
 		end
 	end
 	

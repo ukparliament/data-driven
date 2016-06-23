@@ -21,17 +21,23 @@
 	<%= link_to root_path do %>
 		Home
 	<% end %>
+
+	<form action="/search">
+		<input type="text" name="q">
+		<button type="submit">Search</button>
+	</form>
+	
 	<fieldset style="position: absolute; right: 0; border: 5px solid; padding: 3px; background-color: white">
 		<legend>Download</legend>
 		<ul>
 			<li>
-				<a href="<%= url_for(:format => :json) %>">json</a>
+				<a href="<%= url_for(:format => :json, :params => params) %>">json</a>
 			</li>
 			<li>
-				<a href="<%= url_for(:format => :xml) %>">xml</a>
+				<a href="<%= url_for(:format => :xml, :params => params) %>">xml</a>
 			</li>
 			<li>
-				<a href="<%= url_for(:format => :rdf) %>">rdf</a>
+				<a href="<%= url_for(:format => :rdf, :params => params) %>">rdf</a>
 			</li>
 		</ul>
 	</fieldset>
