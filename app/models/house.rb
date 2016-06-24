@@ -3,14 +3,14 @@ class House < QueryObject
 	def self.all
 		result = self.query("
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
-			PREFIX schema: <http://www.w3.org/2000/01/rdf-schema#>
+      		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 			CONSTRUCT {
-				?house schema:label ?label .
+				?house rdfs:label ?label .
 			}
 			WHERE { 
 				?house
 					a parl:House ;
-					schema:label ?label .
+					rdfs:label ?label .
 			}")
 
 		hierarchy = self.convert_to_hash(result)
@@ -20,12 +20,12 @@ class House < QueryObject
 
 	def self.find(uri)
 		result = self.query("
-			PREFIX schema: <http://www.w3.org/2000/01/rdf-schema#>
+      		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 			CONSTRUCT {
-				<#{uri}> schema:label ?label .
+				<#{uri}> rdfs:label ?label .
 			}
 			WHERE { 
-				<#{uri}> schema:label ?label .
+				<#{uri}> rdfs:label ?label .
 			}")
 
 		hierarchy = self.convert_to_hash(result).first
