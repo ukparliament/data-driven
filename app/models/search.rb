@@ -1,7 +1,14 @@
 class Search < QueryObject
 	include Vocabulary
 
-	def self.find(q)
+	def self.find(q, filters)
+		if filters
+			filterString = filters.inject("FILTER(") do |sum, (k, v)| 
+				sum += "?type = #{k}" 
+				sum += k == filters.keys.last ? ")" : " || "
+			end
+		end
+
 		q = q.gsub(/\"/, "\\\"")
 
 		result_graph = self.query("
@@ -24,6 +31,8 @@ class Search < QueryObject
 			        luc:score ?scoreString ;
 			        ?property ?text .
 			    FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description || ?property = rdfs:label)
+				#{filterString}
+				#FILTER(?type = parl:Division || ?type = parl:OralParliamentaryQuestion || ?type = parl:WrittenParliamentaryQuestion || ?type = parl:WrittenParliamentaryAnswer || ?type = schema:Person || ?type = parl:Committee)
 				BIND(xsd:float(?scoreString) AS ?score)
 			}
 			LIMIT 204
