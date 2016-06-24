@@ -2,14 +2,11 @@ class Search < QueryObject
 	include Vocabulary
 
 	def self.find(q, filters)
-		filterString = ""
 		if filters
-			filterArray = filters.map do |filterKey, filterValue|
-				# TODO: convert to reduce
-				"?type = #{filterKey}"
+			filterString = filters.inject("FILTER(") do |sum, (k, v)| 
+				sum += "?type = #{k}" 
+				sum += k == filters.keys.last ? ")" : " || "
 			end
-
-			filterString = "FILTER(#{filterArray.join(" || ")})"
 		end
 
 		q = q.gsub(/\"/, "\\\"")
