@@ -58,39 +58,53 @@ class Person < QueryObject
 				PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 				CONSTRUCT {
 					<#{uri}>
-							schema:name ?name ;
+				    	schema:name ?name ;
 						parl:house ?house ;
-								parl:oralQuestionCount ?oralQuestionCount ;
-								parl:writtenQuestionCount ?writtenQuestionCount ;
-								parl:writtenAnswerCount ?writtenAnswerCount .
+				        parl:oralQuestionCount ?oralQuestionCount ;
+				    	parl:writtenQuestionCount ?writtenQuestionCount ;
+				        parl:membershipCount ?membershipCount ;
+				        parl:writtenAnswerCount ?writtenAnswerCount ;
+				        parl:voteCount ?voteCount .
 					?house
 						rdfs:label ?label .
 				}
 				WHERE {
-						SELECT ?name ?house ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?writtenAnswer) as ?writtenAnswerCount)
-						WHERE {
-							<#{uri}>
+				    SELECT ?name ?house ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?writtenAnswer) as ?writtenAnswerCount) (COUNT(DISTINCT ?vote) as ?voteCount) (COUNT(?membership) AS ?membershipCount)
+				    WHERE {
+				     	?person
 							schema:name ?name ;
 							parl:house ?house .
 						?house
 							rdfs:label ?label .
-								OPTIONAL {
-									?oralQuestion
-										a parl:OralParliamentaryQuestion ;
-										parl:member <#{uri}> .
-								}
-								OPTIONAL {
-										?writtenQuestion
-												a parl:WrittenParliamentaryQuestion ;
-												parl:member <#{uri}> .
-								}
-								OPTIONAL {
-										?writtenAnswer
-												a parl:WrittenParliamentaryAnswer ;
-												parl:member <#{uri}> .
-								}
-						}
-						GROUP BY ?name ?house ?label
+				        {
+				        	?oralQuestion
+				        		a parl:OralParliamentaryQuestion ;
+				        		parl:member ?person .
+				        }
+				        UNION {
+				            ?writtenQuestion
+				                a parl:WrittenParliamentaryQuestion ;
+				                parl:member ?person .
+				        }
+				        UNION {
+				            ?writtenAnswer
+				                a parl:WrittenParliamentaryAnswer ;
+				                parl:member ?person .
+				        }
+				        UNION {
+				            ?vote
+				      			parl:member ?person ;
+				      			parl:division ?division .
+				        }
+				        UNION {
+				            ?membership
+				                parl:member ?person ;
+				                a ?committeeParticipation .
+				            FILTER (?committeeParticipation = parl:CommitteeMember || ?committeeParticipation = parl:CommitteeChair || ?committeeParticipation = parl:CommitteeAdviser)
+				        }
+				    	FILTER(?person = <#{uri}>)
+				    }
+				    GROUP BY ?name ?house ?label
 				}")
 
 		name_pattern = RDF::Query::Pattern.new(
@@ -126,10 +140,23 @@ class Person < QueryObject
 			Parl.writtenAnswerCount,
 			:written_answer_count
 		)
+		vote_count_pattern = RDF::Query::Pattern.new(
+			RDF::URI::new(uri),
+			Parl.voteCount,
+			:voteCount
+		)
+		membership_count_pattern = RDF::Query::Pattern.new(
+			RDF::URI::new(uri),
+			Parl.membershipCount,
+			:membershipCount
+		)
 
 		oral_question_count = result.first_literal(oral_question_count_pattern)
 		written_question_count = result.first_literal(written_question_count_pattern)
 		written_answer_count = result.first_literal(written_answer_count_pattern)
+		vote_count = result.first_literal(vote_count_pattern)
+		membership_count = result.first_literal(membership_count_pattern)
+
 
 		hierarchy = 
       		{
@@ -141,7 +168,9 @@ class Person < QueryObject
       		  },
 						:oral_question_count => oral_question_count,
 						:written_question_count => written_question_count,
-						:written_answer_count => written_answer_count
+						:written_answer_count => written_answer_count,
+						:vote_count => vote_count,
+						:membership_count => membership_count
       		}
 
 		{ :graph => result, :hierarchy => hierarchy }
