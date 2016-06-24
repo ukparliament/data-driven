@@ -11,8 +11,6 @@ class Search < QueryObject
 
 		q = q.gsub(/\"/, "\\\"")
 
-		type_filter = ""
-
 		result_graph = self.query("
 			PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
 			PREFIX schema: <http://schema.org/>
