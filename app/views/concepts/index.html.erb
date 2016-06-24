@@ -1,4 +1,14 @@
 <h1>Concepts</h1>
+
+<form action="<%= url_for(search_index_path) %>">
+	<fieldset>
+		<legend>Concept search</legend>
+		<input type="hidden" name="filters[skos:Concept]" value="on">
+		<input name="q">
+		<button>Search</button>
+	</fieldset>
+</form>
+
 <h2>Ranked by number of contributions</h2>
 
 <ul>

@@ -39,11 +39,30 @@
 	</fieldset>
 
 	<form action="/search">
-		<input type="text" name="q" value="<%= params[:q] %>">
-		<button type="submit">Search</button>
-
-		<%= yield %>
+		<fieldset>
+			<legend>Site-wide full-text search</legend>
+			<input type="text" name="q" value="<%= params[:q] %>">
+			<button type="submit">Search</button>
+			<% if current_page?(search_index_path) %>
+				<input id="Concepts" name="filters[skos:Concept]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["skos:Concept"] == "on" %>>
+				<label for="Concepts">Concepts</label>
+				<input id="Divisions" name="filters[parl:Division]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:Division"] == "on" %>>
+				<label for="Divisions">Divisions</label>
+				<input id="Oral Questions" name="filters[parl:OralParliamentaryQuestion]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:OralParliamentaryQuestion"] == "on" %>>
+				<label for="Oral Questions">Oral Questions</label>
+				<input id="Written Questions" name="filters[parl:WrittenParliamentaryQuestion]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:WrittenParliamentaryQuestion"] == "on" %>>
+				<label for="Written Questions">Written Questions</label>
+				<input id="Written Answers" name="filters[parl:WrittenParliamentaryAnswer]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:WrittenParliamentaryAnswer"] == "on" %>>
+				<label for="Written Answers">Written Answers</label>
+				<input id="Committees" name="filters[parl:Committee]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:Committee"] == "on" %>>
+				<label for="Committees">Committees</label>
+				<input id="People" name="filters[schema:Person]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["schema:Person"] == "on" %>>
+				<label for="People">People</label>
+			<% end %>
+		</fieldset>
 	</form>
+
+	<%= yield %>
 
 </body>
 </html>

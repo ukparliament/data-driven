@@ -5,6 +5,10 @@ module Vocabulary
 		def self.prefLabel
 			RDF::URI.new("#{@@prefix}prefLabel")
 		end
+
+		def self.Concept
+			RDF::URI.new("#{@@prefix}Concept")
+		end
 	end
 	
 	class Schema
