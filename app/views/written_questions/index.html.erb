@@ -1,3 +1,12 @@
 <h1>Written questions</h1>
 
+<form action="<%= url_for(search_index_path) %>">
+	<fieldset>
+		<legend>Written question search</legend>
+		<input type="hidden" name="filters[parl:WrittenParliamentaryQuestion]" value="on">
+		<input name="q">
+		<button>Search</button>
+	</fieldset>
+</form>
+
 <%= render "written_questions_list" %>

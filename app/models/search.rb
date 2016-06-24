@@ -17,6 +17,7 @@ class Search < QueryObject
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 			 
 			CONSTRUCT {
 			    ?result
@@ -30,11 +31,12 @@ class Search < QueryObject
 			        luc:searchAll \"#{q}\" ;
 			        luc:score ?scoreString ;
 			        ?property ?text .
-			    FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description || ?property = rdfs:label)
+			    FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description || ?property = rdfs:label || ?property = skos:prefLabel)
 				#{filterString}
 				#FILTER(?type = parl:Division || ?type = parl:OralParliamentaryQuestion || ?type = parl:WrittenParliamentaryQuestion || ?type = parl:WrittenParliamentaryAnswer || ?type = schema:Person || ?type = parl:Committee)
 				BIND(xsd:float(?scoreString) AS ?score)
 			}
+			ORDER BY DESC(?score)
 			LIMIT 204
 		")
 
@@ -73,6 +75,8 @@ class Search < QueryObject
 					Dcterms.title
 				when Parl.Committee
 					Schema.name
+				when Skos.Concept
+					Skos.prefLabel
 				end
 
 			controller = 
@@ -89,6 +93,8 @@ class Search < QueryObject
 					"divisions"
 				when Parl.Committee
 					"committees"
+				when Skos.Concept
+					"concepts"
 				end
 
 			friendly_type = 
@@ -105,6 +111,8 @@ class Search < QueryObject
 					"Division"
 				when Parl.Committee
 					"Committee"
+				when Skos.Concept
+					"Concept"
 				end
 
 			text_pattern = RDF::Query::Pattern.new(

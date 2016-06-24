@@ -1,16 +1,3 @@
-<input id="Divisions" name="filters[parl:Division]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:Division"] == "on" %>>
-<label for="Divisions">Divisions</label>
-<input id="Oral Questions" name="filters[parl:OralParliamentaryQuestion]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:OralParliamentaryQuestion"] == "on" %>>
-<label for="Oral Questions">Oral Questions</label>
-<input id="Written Questions" name="filters[parl:WrittenParliamentaryQuestion]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:WrittenParliamentaryQuestion"] == "on" %>>
-<label for="Written Questions">Written Questions</label>
-<input id="Written Answers" name="filters[parl:WrittenParliamentaryAnswer]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:WrittenParliamentaryAnswer"] == "on" %>>
-<label for="Written Answers">Written Answers</label>
-<input id="Committees" name="filters[parl:Committee]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:Committee"] == "on" %>>
-<label for="Committees">Committees</label>
-<input id="People" name="filters[schema:Person]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["schema:Person"] == "on" %>>
-<label for="People">People</label>
-
 <h1>Search results</h1>
 
 <ul>
@@ -30,6 +17,11 @@
 			<% end %>
 			<% if result[:controller] == "divisions" %>
 				- <%= link_to "Votes", division_votes_path(result[:id]) %>
+			<% end %>
+			<% if result[:controller] == "concepts" %>
+				- <%= link_to "Written questions", concept_written_questions_path(result[:id]) %>
+				- <%= link_to "Oral questions", concept_oral_questions_path(result[:id]) %>
+				- <%= link_to "Divisions", concept_divisions_path(result[:id]) %>
 			<% end %>
 		</li>
 	<% end %>

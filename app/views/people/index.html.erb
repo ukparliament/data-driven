@@ -1,5 +1,14 @@
 <h1>Most active people based on the number of total contributions</h1>
 
+<form action="<%= url_for(search_index_path) %>">
+	<fieldset>
+		<legend>Person search</legend>
+		<input type="hidden" name="filters[schema:Person]" value="on">
+		<input name="q">
+		<button>Search</button>
+	</fieldset>
+</form>
+
 <%= render "people_list" %>
 
 

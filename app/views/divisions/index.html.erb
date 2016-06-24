@@ -1,3 +1,12 @@
 <h1>Divisions</h1>
 
+<form action="<%= url_for(search_index_path) %>">
+	<fieldset>
+		<legend>Division search</legend>
+		<input type="hidden" name="filters[parl:Division]" value="on">
+		<input name="q">
+		<button>Search</button>
+	</fieldset>
+</form>
+
 <%= render "divisions_list" %>
