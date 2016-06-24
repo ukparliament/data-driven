@@ -182,6 +182,22 @@ module Vocabulary
 		def self.writtenAnswerCount
 			RDF::URI.new("#{@@prefix}writtenAnswerCount")
 		end
+
+		def self.divisionCount
+			RDF::URI.new("#{@@prefix}divisionCount")
+		end
+
+		def self.peopleCount
+			RDF::URI.new("#{@@prefix}peopleCount")
+		end
+
+		def self.voteCount
+			RDF::URI.new("#{@@prefix}voteCount")
+		end
+
+		def self.membershipCount
+			RDF::URI.new("#{@@prefix}membershipCount")
+		end
 	end
 	
 	class Rdfs
