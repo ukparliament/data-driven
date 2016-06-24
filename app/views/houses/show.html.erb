@@ -3,22 +3,22 @@
 <ul>
 	<li>
 		<%= link_to house_oral_questions_path(@house[:id]) do %>
-			<%= @house[:label] %> oral questions
+			<%= @house[:label] %> oral questions (<%= @house[:oral_question_count] %>)
 		<% end %>
 	</li>
 	<li>
 		<%= link_to house_written_questions_path(@house[:id]) do %>
-			<%= @house[:label] %> written questions
+			<%= @house[:label] %> written questions (<%= @house[:written_question_count] %>)
 		<% end %>
 	</li>
 	<li>
 		<%= link_to house_divisions_path(@house[:id]) do %>
-			<%= @house[:label] %> divisions
+			<%= @house[:label] %> divisions (<%= @house[:division_count] %>)
 		<% end %>
 	</li>
 	<li>
 		<%= link_to house_people_path(@house[:id]) do %>
-			<%= @house[:label] %> people
+			<%= @house[:label] %> people (<%= @house[:people_count] %>)
 		<% end %>
 	</li>
 </ul>
