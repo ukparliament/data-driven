@@ -1,0 +1,28 @@
+<h1>Search results</h1>
+
+<ul>
+	<% @results.each do |result| %>
+		<li>
+			<strong>
+				<%= result[:friendly_type]%>:
+			</strong>
+			<%= link_to controller:"#{result[:controller]}", action: "show", id: result[:id] do %>
+				<%= truncate(strip_tags(result[:text]), length: 120) %>
+			<% end %>
+			<% if result[:controller] == "people" %>
+				- <%= link_to "Written questions", person_written_questions_path(result[:id]) %>
+				- <%= link_to "Oral questions", person_oral_questions_path(result[:id]) %>
+				- <%= link_to "Voting record", person_votes_path(result[:id]) %>
+				- <%= link_to "Committees", person_committees_path(result[:id]) %>
+			<% end %>
+			<% if result[:controller] == "divisions" %>
+				- <%= link_to "Votes", division_votes_path(result[:id]) %>
+			<% end %>
+			<% if result[:controller] == "concepts" %>
+				- <%= link_to "Written questions", concept_written_questions_path(result[:id]) %>
+				- <%= link_to "Oral questions", concept_oral_questions_path(result[:id]) %>
+				- <%= link_to "Divisions", concept_divisions_path(result[:id]) %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>

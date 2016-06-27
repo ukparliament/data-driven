@@ -5,6 +5,7 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <link type="text/plain" rel="author" href="humans.txt" />
 </head>
 <body>
 	<script>
@@ -21,20 +22,45 @@
 	<%= link_to root_path do %>
 		Home
 	<% end %>
+	
 	<fieldset style="position: absolute; right: 0; border: 5px solid; padding: 3px; background-color: white">
 		<legend>Download</legend>
 		<ul>
 			<li>
-				<a href="<%= url_for(:format => :json) %>">json</a>
+				<a href="<%= url_for(:format => :json, :params => params) %>">json</a>
 			</li>
 			<li>
-				<a href="<%= url_for(:format => :xml) %>">xml</a>
+				<a href="<%= url_for(:format => :xml, :params => params) %>">xml</a>
 			</li>
 			<li>
-				<a href="<%= url_for(:format => :rdf) %>">rdf</a>
+				<a href="<%= url_for(:format => :rdf, :params => params) %>">rdf</a>
 			</li>
 		</ul>
 	</fieldset>
+
+	<form action="/search">
+		<fieldset>
+			<legend>Site-wide full-text search</legend>
+			<input type="text" name="q" value="<%= params[:q] %>">
+			<button type="submit">Search</button>
+			<% if current_page?(search_index_path) %>
+				<input id="Concepts" name="filters[skos:Concept]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["skos:Concept"] == "on" %>>
+				<label for="Concepts">Concepts</label>
+				<input id="Divisions" name="filters[parl:Division]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:Division"] == "on" %>>
+				<label for="Divisions">Divisions</label>
+				<input id="Oral Questions" name="filters[parl:OralParliamentaryQuestion]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:OralParliamentaryQuestion"] == "on" %>>
+				<label for="Oral Questions">Oral Questions</label>
+				<input id="Written Questions" name="filters[parl:WrittenParliamentaryQuestion]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:WrittenParliamentaryQuestion"] == "on" %>>
+				<label for="Written Questions">Written Questions</label>
+				<input id="Written Answers" name="filters[parl:WrittenParliamentaryAnswer]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:WrittenParliamentaryAnswer"] == "on" %>>
+				<label for="Written Answers">Written Answers</label>
+				<input id="Committees" name="filters[parl:Committee]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:Committee"] == "on" %>>
+				<label for="Committees">Committees</label>
+				<input id="People" name="filters[schema:Person]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["schema:Person"] == "on" %>>
+				<label for="People">People</label>
+			<% end %>
+		</fieldset>
+	</form>
 
 	<%= yield %>
 

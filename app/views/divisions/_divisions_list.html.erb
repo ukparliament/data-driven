@@ -1,5 +1,5 @@
 <ul>
-	<% @divisions.each do |division| %>
+	<% @hierarchy[:divisions].each do |division| %>
 		<li>
 			<%= link_to division_path(division[:id]) do %>
 				<%= division[:title] %>

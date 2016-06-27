@@ -1,7 +1,7 @@
 class DivisionsController < ApplicationController
 	def index
 		data = Division.all
-		@divisions = data[:hierarchy]
+		@hierarchy = data[:hierarchy]
 
 		format(data)
 	end
@@ -9,8 +9,7 @@ class DivisionsController < ApplicationController
 	def index_by_house
 		house_uri = resource_uri(params[:house_id])
 		data = Division.find_by_house(house_uri)
-		@house = data[:hierarchy]
-		@divisions = data[:hierarchy][:divisions]
+		@hierarchy = data[:hierarchy]
 		
 		format(data)
 	end
@@ -18,9 +17,9 @@ class DivisionsController < ApplicationController
 	def index_by_concept
 		concept_uri = resource_uri(params[:concept_id])
 		data = Division.find_by_concept(concept_uri)
-		@concept = data[:hierarchy]
-		@divisions = data[:hierarchy][:divisions]
+		@hierarchy = data[:hierarchy]
 		
+		p @hierarchy
 		format(data)
 	end
 

@@ -14,12 +14,16 @@ class Division < QueryObject
           dcterms:title ?title .
       }")
 
-    hierarchy = result.map do |statement| 
+    divisions = result.map do |statement| 
       {
         :id => self.get_id(statement.subject),
         :title => statement.object.to_s
       }
     end
+
+    hierarchy = {
+      :divisions => divisions
+    }
 
     { :graph => result, :hierarchy => hierarchy }
   end
@@ -98,7 +102,6 @@ class Division < QueryObject
     result = self.query("
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX dcterms: <http://purl.org/dc/terms/>     
       CONSTRUCT {
          ?division 
@@ -108,7 +111,7 @@ class Division < QueryObject
       }
       WHERE { 
          ?division 
-           rdf:type parl:Division;
+           a parl:Division;
            parl:house <#{house_uri}>;
            dcterms:title ?title .
          <#{house_uri}> rdfs:label ?label .
@@ -145,20 +148,25 @@ class Division < QueryObject
     result = self.query("
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX dcterms: <http://purl.org/dc/terms/>     
+
       CONSTRUCT {
-         ?division 
-           dcterms:title ?title .
-         <#{concept_uri}> 
-           skos:prefLabel ?label .
+          ?concept 
+              skos:prefLabel ?label .
+          ?division 
+              dcterms:title ?title .
       }
       WHERE { 
-         ?division 
-           rdf:type parl:Division;
-           dcterms:subject <#{concept_uri}>;
-           dcterms:title ?title .
-         <#{concept_uri}> skos:prefLabel ?label .
+          ?concept skos:prefLabel ?label .
+
+          OPTIONAL{
+              ?division 
+                  a parl:Division;
+                  dcterms:subject ?concept ;
+                  dcterms:title ?title .
+          }
+          
+          FILTER(?concept = <#{concept_uri}>)
       }")
 
     concept_label_pattern = RDF::Query::Pattern.new(
@@ -171,7 +179,8 @@ class Division < QueryObject
       :title)
 
 
-    concept_label = result.first_literal(concept_label_pattern).to_s
+    concept_label = result.first_literal(concept_label_pattern)
+    
     divisions = result.query(divisions_pattern).map do |statement| 
       {
         :id => self.get_id(statement.subject),
@@ -181,7 +190,7 @@ class Division < QueryObject
 
     hierarchy = {
       :id => self.get_id(concept_uri),
-      :label => concept_label,
+      :concept_label => concept_label,
       :divisions => divisions
     }
 
