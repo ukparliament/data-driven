@@ -17,3 +17,37 @@
 body {
 	font-family: Verdana;
 }
+
+.written-question-list li,
+.oral-question-list li,
+.written-answer-list li,
+.search-result-list li{
+    width: 100%;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    list-style-position: inside;
+}
+
+.contextual-link-list li:before {
+    content: '•';
+}
+
+.contextual-link-list li {
+    display: inline;
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.contextual-link-list li a:link {
+    color: green;
+}
+
+.contextual-link-list li a:visited {
+    color: darkgreen;
+}
+
+.contextual-link-list li a:hover {
+    color: lightgreen;
+}

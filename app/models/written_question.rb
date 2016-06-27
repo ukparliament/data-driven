@@ -2,19 +2,19 @@ class WrittenQuestion < QueryObject
   include Vocabulary
 
   def self.all
-    result = self.query("
+    result = self.query('
       PREFIX schema: <http://schema.org/>
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       CONSTRUCT {
         ?question schema:text ?text .
       }
-      WHERE { 
-        ?question 
+      WHERE {
+        ?question
           a parl:WrittenParliamentaryQuestion;
           schema:text ?text;
       }
       LIMIT 100
-    ")
+    ')
 
     questions = result.map do |statement| 
       {
@@ -43,7 +43,8 @@ class WrittenQuestion < QueryObject
               parl:questionText ?text ;
               parl:questionDate ?date ;
               parl:answerText ?answerText ;
-              parl:answerDate ?answerDate .
+              parl:answerDate ?answerDate ;
+              dcterms:subject ?concept .
           ?house 
               parl:houseLabel ?houseLabel .
           ?member
@@ -56,7 +57,7 @@ class WrittenQuestion < QueryObject
       WHERE { 
           <#{uri}>
               schema:text ?text ;
-            parl:house ?house ;
+              parl:house ?house ;
               parl:member ?member ;
               dcterms:date ?date ;
               dcterms:subject ?concept .
@@ -184,7 +185,8 @@ class WrittenQuestion < QueryObject
            parl:house <#{house_uri}>;
            schema:text ?text .
          <#{house_uri}> rdfs:label ?label .
-      }")
+      }
+      LIMIT 200")
 
     house_label_pattern = RDF::Query::Pattern.new(
       RDF::URI.new(house_uri),

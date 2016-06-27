@@ -2,17 +2,17 @@ class OralQuestion < QueryObject
   include Vocabulary
 
   def self.all
-    result = self.query("
+    result = self.query('
       PREFIX schema: <http://schema.org/>
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       CONSTRUCT {
         ?question schema:text ?text .
       }
-      WHERE { 
-        ?question 
+      WHERE {
+        ?question
           a parl:OralParliamentaryQuestion;
           schema:text ?text;
-      }")
+      }')
 
     questions = result.map do |statement| 
       {

@@ -1,10 +1,10 @@
 <h1><%= @person[:name] %> Written Answers</h1>
 
-<ul>
+<ul class="written-answer-list">
 	<% @person[:written_answers].each do |answer| %>
 		<li>
 			<%= link_to written_answer_path(answer[:id]) do %>
-				<%= truncate(strip_tags(answer[:text]), length: 100) %>
+				<%= strip_tags(answer[:text]) %>
 			<% end %>
 		</li>
 	<% end %>
