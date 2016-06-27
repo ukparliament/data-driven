@@ -1,9 +1,13 @@
-<ul class="oral-question-list">
-	<% @hierarchy[:questions].each do |oral_question| %>
-		<li>
-			<%= link_to oral_question_path(oral_question[:id]) do %>
-				<%= strip_tags(oral_question[:text]) %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+<% if(@hierarchy[:questions].empty?) %>
+    <p>No oral questions</p>
+<% else %>
+    <ul class="oral-question-list">
+      <% @hierarchy[:questions].each do |oral_question| %>
+          <li>
+            <%= link_to oral_question_path(oral_question[:id]) do %>
+                <%= strip_tags(oral_question[:text]) %>
+            <% end %>
+          </li>
+      <% end %>
+    </ul>
+<% end %>

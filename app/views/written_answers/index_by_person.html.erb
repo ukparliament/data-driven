@@ -1,11 +1,14 @@
 <h1><%= @person[:name] %> Written Answers</h1>
-
-<ul class="written-answer-list">
-	<% @person[:written_answers].each do |answer| %>
-		<li>
-			<%= link_to written_answer_path(answer[:id]) do %>
-				<%= strip_tags(answer[:text]) %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+<% if(@person[:written_answers].empty?) %>
+    <p>No written answers</p>
+<% else %>
+  <ul class="written-answer-list">
+    <% @person[:written_answers].each do |answer| %>
+      <li>
+        <%= link_to written_answer_path(answer[:id]) do %>
+          <%= strip_tags(answer[:text]) %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
