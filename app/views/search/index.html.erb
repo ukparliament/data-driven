@@ -1,28 +1,30 @@
 <h1>Search results</h1>
 
-<ul>
+<ul class="search-result-list">
 	<% @results.each do |result| %>
 		<li>
 			<strong>
 				<%= result[:friendly_type]%>:
 			</strong>
 			<%= link_to controller:"#{result[:controller]}", action: "show", id: result[:id] do %>
-				<%= truncate(strip_tags(result[:text]), length: 120) %>
+          <%= strip_tags(result[:text]) %>
 			<% end %>
-			<% if result[:controller] == "people" %>
-				- <%= link_to "Written questions", person_written_questions_path(result[:id]) %>
-				- <%= link_to "Oral questions", person_oral_questions_path(result[:id]) %>
-				- <%= link_to "Voting record", person_votes_path(result[:id]) %>
-				- <%= link_to "Committees", person_committees_path(result[:id]) %>
+        <ul class="contextual-link-list">
+          <% if result[:controller] == "people" %>
+            <li> <%= link_to "Written questions", person_written_questions_path(result[:id]) %> </li>
+            <li> <%= link_to "Oral questions", person_oral_questions_path(result[:id]) %> </li>
+            <li> <%= link_to "Voting record", person_votes_path(result[:id]) %> </li>
+            <li> <%= link_to "Committees", person_committees_path(result[:id]) %> </li>
+          <% end %>
+          <% if result[:controller] == "divisions" %>
+            <li> <%= link_to "Votes", division_votes_path(result[:id]) %> </li>
+          <% end %>
+          <% if result[:controller] == "concepts" %>
+            <li> <%= link_to "Written questions", concept_written_questions_path(result[:id]) %> </li>
+            <li> <%= link_to "Oral questions", concept_oral_questions_path(result[:id]) %> </li>
+            <li> <%= link_to "Divisions", concept_divisions_path(result[:id]) %> </li>
 			<% end %>
-			<% if result[:controller] == "divisions" %>
-				- <%= link_to "Votes", division_votes_path(result[:id]) %>
-			<% end %>
-			<% if result[:controller] == "concepts" %>
-				- <%= link_to "Written questions", concept_written_questions_path(result[:id]) %>
-				- <%= link_to "Oral questions", concept_oral_questions_path(result[:id]) %>
-				- <%= link_to "Divisions", concept_divisions_path(result[:id]) %>
-			<% end %>
+        </ul>
 		</li>
 	<% end %>
 </ul>
