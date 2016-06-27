@@ -13,13 +13,9 @@ services:
   web:
     build: .
     volumes:
-       - "web-data:/app"
+       - .:/opt/sparql-exploration
     ports:
       - "3000"
     labels:
       - "traefik.backend=data-driven"
       - "traefik.frontend.rule=Host:data-driven.docker.localhost"
-
-volumes:
-    web-data:
-      driver: local

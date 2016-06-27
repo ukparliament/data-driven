@@ -3,7 +3,7 @@ services:
   web:
     image: ${IMAGE_NAME}
     volumes:
-       - "web-data:/app"
+       - "web-data:/opt/sparql-exploration"
     ports:
       - "3000"
     networks:
