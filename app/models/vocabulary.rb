@@ -198,6 +198,10 @@ module Vocabulary
 		def self.membershipCount
 			RDF::URI.new("#{@@prefix}membershipCount")
 		end
+
+		def self.label
+			RDF::URI.new("#{@@prefix}label")
+		end
 	end
 	
 	class Rdfs

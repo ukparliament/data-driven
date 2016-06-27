@@ -2,7 +2,7 @@ class Concept < QueryObject
 	include Vocabulary
 	
 	def self.most_popular_by_contribution
-		result = self.query("
+		result = self.query('
 			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
@@ -11,7 +11,7 @@ class Concept < QueryObject
 			        skos:prefLabel ?label ;
 			    	parl:count ?count .
 			}
-			WHERE { 
+			WHERE {
 			    SELECT ?concept ?label (COUNT(?contribution) AS ?count)
 			    WHERE {
 			        ?concept
@@ -24,7 +24,7 @@ class Concept < QueryObject
 			    ORDER BY DESC(?count)
 			    LIMIT 200
 			}
-		")
+		')
 
 	  	hierarchy = self.all_convert_to_hash(result)
 
@@ -33,17 +33,83 @@ class Concept < QueryObject
 
 	def self.find(uri)
 		result = self.query("
+			PREFIX schema: <http://schema.org/>
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
 			CONSTRUCT {
 				<#{uri}>
-			        skos:prefLabel ?label .
+					parl:label ?label ;
+					parl:writtenQuestionCount ?writtenQuestionCount ;
+					parl:oralQuestionCount ?oralQuestionCount ;
+					parl:divisionCount ?divisionCount .
 			}
-			WHERE { 
-				<#{uri}> 
-					skos:prefLabel ?label .
-		}")
-		
-		hierarchy = self.find_convert_to_hash(result).first
+			WHERE {
+				SELECT ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?division) AS ?divisionCount)
+				WHERE {
+					{
+						?concept
+							skos:prefLabel ?label .
+					}
+					{
+						?writtenQuestion
+							a parl:WrittenParliamentaryQuestion ;
+							dcterms:subject ?concept .
+					}
+					UNION
+					{
+						?oralQuestion
+							a parl:OralParliamentaryQuestion ;
+							dcterms:subject ?concept .
+					}
+					UNION
+					{
+						?division
+							a parl:Division ;
+							dcterms:subject ?concept .
+					}
+					FILTER(?concept = <#{uri}>)
+				}
+				GROUP BY ?label
+			}
+		")
+
+		concept_label_pattern = RDF::Query::Pattern.new(
+				RDF::URI.new(uri),
+				Parl.label,
+				:label)
+		label = result.first_literal(concept_label_pattern).to_s
+
+		oral_question_count_pattern = RDF::Query::Pattern.new(
+				RDF::URI.new(uri),
+				Parl.oralQuestionCount,
+				:oral_question_count
+		)
+		written_question_count_pattern = RDF::Query::Pattern.new(
+				RDF::URI.new(uri),
+				Parl.writtenQuestionCount,
+				:written_question_count
+		)
+		division_count_pattern = RDF::Query::Pattern.new(
+				RDF::URI::new(uri),
+				Parl.divisionCount,
+				:division_count
+		)
+
+		oral_question_count = result.first_literal(oral_question_count_pattern).to_i
+		written_question_count = result.first_literal(written_question_count_pattern).to_i
+		division_count = result.first_literal(division_count_pattern).to_i
+
+		hierarchy =
+				{
+						:id => self.get_id(uri),
+						:label => label,
+						:oral_question_count => oral_question_count,
+						:written_question_count => written_question_count,
+						:division_count => division_count
+				}
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end

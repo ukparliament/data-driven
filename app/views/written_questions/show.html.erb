@@ -16,6 +16,19 @@
 	<dd><%= @written_question[:text] %></dd>	
 </dl>
 
+<fieldset>
+  <legend>Subjects</legend>
+  <ul>
+    <% @written_question[:subjects].each do |subject| %>
+        <li>
+          <%= link_to concept_path(subject[:id]) do %>
+              <%= subject[:label] %>
+          <% end %>
+        </li>
+    <% end %>
+  </ul>
+</fieldset>
+
 <fieldset> 
 	<legend>Answer</legend>
 	<dl>

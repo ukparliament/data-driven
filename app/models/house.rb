@@ -20,52 +20,58 @@ class House < QueryObject
 	end
 
 	def self.find(uri)
-		result = self.query("PREFIX schema: <http://schema.org/>
+		result = self.query("
+			PREFIX schema: <http://schema.org/>
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			CONSTRUCT {
 				<#{uri}>
-						parl:label ?label ;
-						parl:writtenQuestionCount ?writtenQuestionCount ;
-						parl:oralQuestionCount ?oralQuestionCount ;
-						parl:divisionCount ?divisionCount ;
-						parl:peopleCount ?peopleCount .
+					parl:label ?label ;
+					parl:writtenQuestionCount ?writtenQuestionCount ;
+					parl:oralQuestionCount ?oralQuestionCount ;
+					parl:divisionCount ?divisionCount ;
+					parl:peopleCount ?peopleCount .
 			}
 			WHERE {
-					SELECT ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?division) AS ?divisionCount) (COUNT(DISTINCT ?person) AS ?peopleCount)
-					WHERE {
-							{
-									<#{uri}>
-										rdfs:label ?label .
-							}
-							{
-									?writtenQuestion
-										a parl:WrittenParliamentaryQuestion ;
-										parl:house <#{uri}> .
-							}
-								UNION {
-									?oralQuestion
-										a parl:OralParliamentaryQuestion ;
-										parl:house <#{uri}> .
-							}
-								UNION {
-									?division
-										a parl:Division ;
-										parl:house <#{uri}> .
-							}
-								UNION {
-									?person
-										a schema:Person ;
-										parl:house <#{uri}> .
-							}
+				SELECT ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?division) AS ?divisionCount) (COUNT(DISTINCT ?person) AS ?peopleCount)
+				WHERE {
+					{
+						?house
+							rdfs:label ?label .
 					}
-					GROUP BY ?label
-			}")
+					{
+						?writtenQuestion
+							a parl:WrittenParliamentaryQuestion ;
+							parl:house ?house .
+					}
+					UNION
+					{
+						?oralQuestion
+							a parl:OralParliamentaryQuestion ;
+							parl:house ?house .
+					}
+					UNION
+					{
+						?division
+							a parl:Division ;
+							parl:house ?house .
+					}
+					UNION
+					{
+						?person
+							a schema:Person ;
+							parl:house ?house .
+					}
+					FILTER(?house = <#{uri}>)
+				}
+				GROUP BY ?label
+			}
+		")
 
 		house_label_pattern = RDF::Query::Pattern.new(
 				RDF::URI.new(uri),
-				Rdfs.label,
+				Parl.label,
 				:label)
 		label = result.first_literal(house_label_pattern).to_s
 
@@ -90,10 +96,10 @@ class House < QueryObject
 				:people_count
 		)
 
-		oral_question_count = result.first_literal(oral_question_count_pattern)
-		written_question_count = result.first_literal(written_question_count_pattern)
-		people_count = result.first_literal(people_count_pattern)
-		division_count = result.first_literal(division_count_pattern)
+		oral_question_count = result.first_literal(oral_question_count_pattern).to_i
+		written_question_count = result.first_literal(written_question_count_pattern).to_i
+		people_count = result.first_literal(people_count_pattern).to_i
+		division_count = result.first_literal(division_count_pattern).to_i
 
 		hierarchy =
 				{
