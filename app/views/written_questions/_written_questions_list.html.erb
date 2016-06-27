@@ -1,9 +1,13 @@
-<ul>
-	<% @hierarchy[:questions].each do |question| %>
-		<li>
-			<%= link_to written_question_path(question[:id]) do %>
-				<%= question[:text] %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+<% if(@hierarchy[:questions].empty?) %>
+    <p>No written questions</p>
+<% else %>
+    <ul class="written-question-list">
+      <% @hierarchy[:questions].each do |question| %>
+        <li>
+          <%= link_to written_question_path(question[:id]) do %>
+            <%= question[:text] %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+<% end %>
