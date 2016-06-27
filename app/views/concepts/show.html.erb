@@ -3,17 +3,17 @@
 <ul>
 <li>
 <%= link_to concept_oral_questions_path(@concept[:id]) do %>
-	Oral questions related to this concept
+	Oral questions related to this concept (<%= @concept[:oral_question_count] %>)
 <% end %>
 </li>
 <li>
 <%= link_to concept_written_questions_path(@concept[:id]) do %>
-	Written questions related to this concept
+	Written questions related to this concept (<%= @concept[:written_question_count] %>)
 <% end %>
 </li>
 <li>
 <%= link_to concept_divisions_path(@concept[:id]) do %>
-	Divisions related to this concept
+	Divisions related to this concept (<%= @concept[:division_count] %>)
 <% end %>
 </li>
 </ul>
