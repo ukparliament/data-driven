@@ -39,8 +39,8 @@ module DataDriven
   end
 end
 
-Tripod.configure do |config|
-  # config.query_endpoint = 'http://data.ukpds.org/repositories/TempWorkerSimple2'
-  config.query_endpoint = DATABASE
-  config.timeout_seconds = 30
-end
+# Tripod.configure do |config|
+#   # config.query_endpoint = 'http://data.ukpds.org/repositories/TempWorkerSimple2'
+#   config.query_endpoint = DATABASE
+#   config.timeout_seconds = 30
+# end

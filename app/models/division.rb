@@ -106,15 +106,20 @@ class Division < QueryObject
       CONSTRUCT {
          ?division 
            dcterms:title ?title .
-         <#{house_uri}> 
+         ?house
            rdfs:label ?label .
       }
       WHERE { 
-         ?division 
-           a parl:Division;
-           parl:house <#{house_uri}>;
-           dcterms:title ?title .
-         <#{house_uri}> rdfs:label ?label .
+        ?house rdfs:label ?label .
+
+        OPTIONAL {
+          ?division 
+            a parl:Division;
+            parl:house ?house;
+            dcterms:title ?title .
+        }
+
+        FILTER(?house = <#{house_uri}>)
       }")
 
     house_label_pattern = RDF::Query::Pattern.new(
@@ -137,7 +142,7 @@ class Division < QueryObject
 
     hierarchy = {
       :id => self.get_id(house_uri),
-      :label => house_label,
+      :house_label => house_label,
       :divisions => divisions
     }
 

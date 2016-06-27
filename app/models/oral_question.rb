@@ -2,17 +2,17 @@ class OralQuestion < QueryObject
   include Vocabulary
 
   def self.all
-    result = self.query("
+    result = self.query('
       PREFIX schema: <http://schema.org/>
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       CONSTRUCT {
         ?question schema:text ?text .
       }
-      WHERE { 
-        ?question 
+      WHERE {
+        ?question
           a parl:OralParliamentaryQuestion;
           schema:text ?text;
-      }")
+      }')
 
     questions = result.map do |statement| 
       {
@@ -139,17 +139,21 @@ class OralQuestion < QueryObject
       CONSTRUCT {
          ?question 
            schema:text ?text .
-         <#{house_uri}> 
+         ?house 
            rdfs:label ?label .
       }
       WHERE { 
-         ?question 
-           rdf:type parl:OralParliamentaryQuestion;
-           parl:house <#{house_uri}>;
-           schema:text ?text .
-         <#{house_uri}> rdfs:label ?label .
-      }")
+        ?house rdfs:label ?label .
 
+        OPTIONAL {
+          ?question 
+            rdf:type parl:OralParliamentaryQuestion;
+            parl:house ?house;
+            schema:text ?text .
+        }
+        FILTER(?house = <#{house_uri}>)
+      }")
+        
     house_label_pattern = RDF::Query::Pattern.new(
       RDF::URI.new(house_uri),
       Rdfs.label,
@@ -186,17 +190,19 @@ class OralQuestion < QueryObject
       CONSTRUCT {
          ?question 
            schema:text ?text .
-         <#{concept_uri}> 
+         ?concept 
             skos:prefLabel ?label .
       }
       WHERE { 
-        <#{concept_uri}> 
-          skos:prefLabel ?label .
-        ?question 
-          dcterms:subject <#{concept_uri}>;
-          a parl:OralParliamentaryQuestion;
-          schema:text ?text .
-         
+        ?concept skos:prefLabel ?label .
+
+        OPTIONAL {
+          ?question 
+            dcterms:subject ?concept;
+            a parl:OralParliamentaryQuestion;
+            schema:text ?text .
+        }
+        FILTER(?concept = <#{concept_uri}>) 
       }")
 
     concept_label_pattern = RDF::Query::Pattern.new(
@@ -233,17 +239,19 @@ class OralQuestion < QueryObject
       CONSTRUCT {
          ?question 
            schema:text ?text .
-         <#{person_uri}> 
+         ?person 
             schema:name ?name .
       }
       WHERE { 
-        <#{person_uri}> 
-          schema:name ?name .
-        ?question 
-          parl:member <#{person_uri}>;
-          a parl:OralParliamentaryQuestion;
-          schema:text ?text .
-         
+        ?person schema:name ?name .
+
+        OPTIONAL {
+          ?question 
+            parl:member ?person;
+            a parl:OralParliamentaryQuestion;
+            schema:text ?text .
+        }
+        FILTER(?person = <#{person_uri}>)    
       }")
 
     person_name_pattern = RDF::Query::Pattern.new(

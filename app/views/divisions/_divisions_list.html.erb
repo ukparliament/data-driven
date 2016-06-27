@@ -1,9 +1,13 @@
-<ul>
-	<% @hierarchy[:divisions].each do |division| %>
-		<li>
-			<%= link_to division_path(division[:id]) do %>
-				<%= division[:title] %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+<% if(@hierarchy[:divisions].empty?) %>
+    <p>No divisions</p>
+<% else %>
+  <ul>
+    <% @hierarchy[:divisions].each do |division| %>
+      <li>
+        <%= link_to division_path(division[:id]) do %>
+          <%= division[:title] %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
