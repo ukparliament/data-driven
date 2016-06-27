@@ -130,7 +130,8 @@ class Committee < QueryObject
 			}
 			WHERE {
 					?person
-							schema:name ?personName .
+						schema:name ?personName .
+				OPTIONAL {
 					?membership
 							parl:member ?person ;
 							a ?membershipType ;
@@ -142,8 +143,10 @@ class Committee < QueryObject
 							parl:house ?house .
 					?house
 							rdfs:label ?houseLabel .
+
 					FILTER (?membershipType = parl:CommitteeAdviser || ?membershipType = parl:CommitteeChair || ?membershipType = parl:CommitteeMember)
-					FILTER (?person = <#{person_uri}>)
+				}
+				FILTER (?person = <#{person_uri}>)
 			}
 			")
 
