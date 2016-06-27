@@ -71,21 +71,24 @@ class Vote < QueryObject
       	PREFIX dcterms: <http://purl.org/dc/terms/>
       	PREFIX schema: <http://schema.org/>
       	CONSTRUCT {
-      		<#{person_uri}>
+      		?person
       			schema:name ?name .
       		?division
       			dcterms:title ?title ;
       			parl:voteValue ?value .
       	}
       	WHERE {
-      		?vote 
-      			parl:member <#{person_uri}> ;
-      			parl:value ?value ;
-      			parl:division ?division .
-      		<#{person_uri}>
-      			schema:name ?name .
-      		?division
-      			dcterms:title ?title .
+          ?person schema:name ?name .
+
+          OPTIONAL {
+            ?vote 
+              parl:member ?person ;
+              parl:value ?value ;
+              parl:division ?division .
+            ?division
+              dcterms:title ?title .
+          }
+          FILTER(?person = <#{person_uri}>)
       	}
 		")
 

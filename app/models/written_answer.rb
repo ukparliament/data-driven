@@ -29,18 +29,22 @@ class WrittenAnswer < QueryObject
  			PREFIX schema: <http://schema.org/>
 			CONSTRUCT {
     			?answer 
-        			parl:member <#{person_uri}> ;
+        			parl:member ?person ;
         			schema:text ?text .
-    			<#{person_uri}>
+    			?person
         			schema:name ?name .
 			}
 			WHERE { 
-				?answer 
-        			a parl:WrittenParliamentaryAnswer ;
-        			parl:member <#{person_uri}> ;
-    				schema:text ?text .
-    			<#{person_uri}>
-        			schema:name ?name .
+        ?person schema:name ?name .
+
+        OPTIONAL {
+          ?answer 
+              a parl:WrittenParliamentaryAnswer ;
+              parl:member ?person ;
+              schema:text ?text .
+        }
+				FILTER(?person = <#{person_uri}>)
+
 		}")
 
  		written_answers_pattern = RDF::Query::Pattern.new(

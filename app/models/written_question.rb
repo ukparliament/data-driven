@@ -175,15 +175,19 @@ class WrittenQuestion < QueryObject
       CONSTRUCT {
          ?question 
            schema:text ?text .
-         <#{house_uri}> 
+         ?house 
            rdfs:label ?label .
       }
       WHERE { 
-         ?question 
-           rdf:type parl:WrittenParliamentaryQuestion;
-           parl:house <#{house_uri}>;
-           schema:text ?text .
-         <#{house_uri}> rdfs:label ?label .
+        ?house rdfs:label ?label .
+
+        OPTIONAL {
+          ?question 
+            rdf:type parl:WrittenParliamentaryQuestion;
+            parl:house ?house;
+            schema:text ?text .
+        }
+        FILTER(?house = <#{house_uri}>)
       }")
 
     house_label_pattern = RDF::Query::Pattern.new(
@@ -222,17 +226,19 @@ class WrittenQuestion < QueryObject
       CONSTRUCT {
          ?question 
            schema:text ?text .
-         <#{concept_uri}> 
+         ?concept 
             skos:prefLabel ?label .
       }
       WHERE { 
-        <#{concept_uri}> 
-          skos:prefLabel ?label .
-        ?question 
-          dcterms:subject <#{concept_uri}>;
-          a parl:WrittenParliamentaryQuestion;
-          schema:text ?text .
-         
+        ?concept skos:prefLabel ?label .
+
+        OPTIONAL {
+          ?question 
+            dcterms:subject ?concept;
+            a parl:WrittenParliamentaryQuestion;
+            schema:text ?text .
+        }
+        FILTER(?concept = <#{concept_uri}>)    
       }")
 
     concept_label_pattern = RDF::Query::Pattern.new(
@@ -269,17 +275,19 @@ class WrittenQuestion < QueryObject
       CONSTRUCT {
          ?question 
            schema:text ?text .
-         <#{person_uri}> 
+         ?person 
             schema:name ?name .
       }
       WHERE { 
-        <#{person_uri}> 
-          schema:name ?name .
-        ?question 
-          parl:member <#{person_uri}>;
-          a parl:WrittenParliamentaryQuestion;
-          schema:text ?text .
-         
+        ?person schema:name ?name .
+        
+        OPTIONAL {
+          ?question 
+            parl:member ?person;
+            a parl:WrittenParliamentaryQuestion;
+            schema:text ?text .
+        }
+        FILTER(?person = <#{person_uri}>)      
       }")
 
     person_name_pattern = RDF::Query::Pattern.new(
