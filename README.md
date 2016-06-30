@@ -33,6 +33,8 @@ Now browse to http://data-driven.docker.localhost
 $ make destroy
 ```
 
+### Rebuild
+
 In order to rebuild the application:
 
 ```
