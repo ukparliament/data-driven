@@ -41,5 +41,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def json_ld(data)
+    rdf = ''
+  end
+
 end
 
