@@ -17,8 +17,6 @@ class ApplicationController < ActionController::Base
     }
 
     format(data)
-
-    @json_ld = ''
   end
 
   protected

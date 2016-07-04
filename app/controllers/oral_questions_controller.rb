@@ -4,6 +4,7 @@ class OralQuestionsController < ApplicationController
 		data = OralQuestion.all
 		@hierarchy = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -11,7 +12,8 @@ class OralQuestionsController < ApplicationController
 		oral_question_uri = resource_uri(params[:id])
 		data = OralQuestion.find(oral_question_uri)
 		@oral_question = data[:hierarchy]
-		
+
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -19,7 +21,8 @@ class OralQuestionsController < ApplicationController
 		house_uri = resource_uri(params[:house_id])
 		data = OralQuestion.find_by_house(house_uri)
 		@hierarchy = data[:hierarchy]
-		
+
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -27,7 +30,8 @@ class OralQuestionsController < ApplicationController
 		concept_uri = resource_uri(params[:concept_id])
 		data = OralQuestion.find_by_concept(concept_uri)
 		@hierarchy = data[:hierarchy]
-		
+
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -35,7 +39,8 @@ class OralQuestionsController < ApplicationController
 		person_uri = resource_uri(params[:person_id])
 		data = OralQuestion.find_by_person(person_uri)
 		@hierarchy = data[:hierarchy]
-		
+
+		@json_ld = json_ld(data)
 		format(data)
 	end
 end
