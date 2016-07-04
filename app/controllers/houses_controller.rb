@@ -3,6 +3,7 @@ class HousesController < ApplicationController
 		data = House.all
 		@houses = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
