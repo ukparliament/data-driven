@@ -1,4 +1,4 @@
-# PDS Prototype Kit
+# Data-driven app
 
 ## Installation
 
@@ -31,4 +31,12 @@ Now browse to http://data-driven.docker.localhost
 ### Destroy
 ```bash
 $ make destroy
+```
+
+### Rebuild
+
+In order to rebuild the application:
+
+```
+$ make rebuild
 ```
