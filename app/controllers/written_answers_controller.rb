@@ -4,6 +4,7 @@ class WrittenAnswersController < ApplicationController
 		data = WrittenAnswer.find_by_person(person_uri)
 		@person = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 

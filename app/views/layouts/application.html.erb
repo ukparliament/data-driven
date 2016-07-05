@@ -18,8 +18,12 @@
 	  ga('send', 'pageview');
 
 	</script>
+  <script type="application/ld+json">
+    <%= raw(@json_ld) %>
+  </script>
 
-	<%= link_to root_path do %>
+
+  <%= link_to root_path do %>
 		Home
 	<% end %>
 
