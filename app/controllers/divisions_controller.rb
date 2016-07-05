@@ -3,6 +3,7 @@ class DivisionsController < ApplicationController
 		data = Division.all
 		@hierarchy = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -10,7 +11,8 @@ class DivisionsController < ApplicationController
 		house_uri = resource_uri(params[:house_id])
 		data = Division.find_by_house(house_uri)
 		@hierarchy = data[:hierarchy]
-		
+
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -18,8 +20,8 @@ class DivisionsController < ApplicationController
 		concept_uri = resource_uri(params[:concept_id])
 		data = Division.find_by_concept(concept_uri)
 		@hierarchy = data[:hierarchy]
-		
-		p @hierarchy
+
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -28,6 +30,7 @@ class DivisionsController < ApplicationController
 		data = Division.find(division_uri)
 		@division = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 end
