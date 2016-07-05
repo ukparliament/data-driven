@@ -13,8 +13,8 @@ services:
       - "traefik.frontend.rule=Host:data-driven.ci.ukpds.org"
 
 networks:
-    ci:
-      driver: overlay
+  ci:
+    external: true
 
 volumes:
     web-data:
