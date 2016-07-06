@@ -2,8 +2,8 @@ version: '2'
 services:
   web:
     image: ${IMAGE_NAME}
-    volumes:
-       - "web-data:/opt/sparql-exploration"
+#    volumes:
+#       - "web-data:/opt/sparql-exploration"
     ports:
       - "3000"
     networks:
