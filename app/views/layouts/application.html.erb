@@ -18,11 +18,17 @@
 	  ga('send', 'pageview');
 
 	</script>
+  <script type="application/ld+json">
+    <%= raw(@json_ld) %>
+  </script>
 
-	<%= link_to root_path do %>
+
+  <%= link_to root_path do %>
 		Home
 	<% end %>
-	
+
+	<%= Socket.ip_address_list.detect(&:ipv4_private?).try(:ip_address) %>
+
 	<fieldset style="position: absolute; right: 0; border: 5px solid; padding: 3px; background-color: white">
 		<legend>Download</legend>
 		<ul>

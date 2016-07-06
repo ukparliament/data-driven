@@ -4,6 +4,7 @@ class ConceptsController < ApplicationController
 		data = Concept.most_popular_by_contribution
 		@concepts = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -12,6 +13,7 @@ class ConceptsController < ApplicationController
 		data = Concept.find(concept_uri)
 		@concept = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 end

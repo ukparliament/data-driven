@@ -3,7 +3,7 @@ services:
   web:
     image: ${IMAGE_NAME}
     volumes:
-       - "web-data:/app"
+       - "web-data:/opt/sparql-exploration"
     ports:
       - "3000"
     networks:
@@ -13,8 +13,8 @@ services:
       - "traefik.frontend.rule=Host:data-driven.ci.ukpds.org"
 
 networks:
-    ci:
-      driver: overlay
+  ci:
+    external: true
 
 volumes:
     web-data:

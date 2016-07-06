@@ -4,6 +4,7 @@ class PeopleController < ApplicationController
 		data = Person.most_active_people
 		@hierarchy = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -12,6 +13,7 @@ class PeopleController < ApplicationController
 		data = Person.find_most_active_by_house(house_uri)
 		@hierarchy = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 
@@ -20,6 +22,7 @@ class PeopleController < ApplicationController
 		data = Person.find(person_uri)
 		@person = data[:hierarchy]
 
+		@json_ld = json_ld(data)
 		format(data)
 	end
 	
