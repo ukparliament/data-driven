@@ -31,17 +31,17 @@ class Committee < QueryObject
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       CONSTRUCT {
-          <#{uri}>
-              parl:committeeName ?committeeName ;
-          		parl:house ?house ;
-              parl:houseLabel ?houseLabel .
-          ?role
-              parl:membershipType ?roleType ;
-              parl:member ?member ;
-							a schema:Person ;
-              schema:name ?memberName ;
-              schema:endDate ?endDate ;
-              schema:startDate ?startDate .
+        <#{uri}>
+            parl:committeeName ?committeeName ;
+          	parl:house ?house ;
+            parl:houseLabel ?houseLabel .
+        ?role
+            parl:membershipType ?roleType ;
+            parl:member ?member ;
+			a schema:Person ;
+            schema:name ?memberName ;
+            schema:endDate ?endDate ;
+            schema:startDate ?startDate .
       }
       WHERE {
         <#{uri}>
@@ -49,17 +49,14 @@ class Committee < QueryObject
               parl:house ?house .
           ?house
               rdfs:label ?houseLabel .
-					OPTIONAL
-					{
-						?role
-								parl:committee <#{uri}> ;
-								rdf:type ?roleType ;
-								parl:member ?member ;
-								schema:endDate ?endDate ;
-								schema:startDate ?startDate .
-						?member
-								schema:name ?memberName .
-					}
+          ?role
+              parl:committee <#{uri}> ;
+              rdf:type ?roleType ;
+              parl:member ?member ;
+              schema:endDate ?endDate ;
+              schema:startDate ?startDate .
+          ?member
+              schema:name ?memberName .
       }
       ")
 

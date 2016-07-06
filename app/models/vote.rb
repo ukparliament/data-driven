@@ -10,6 +10,7 @@ class Vote < QueryObject
       		<#{division_uri}>
       			dcterms:title ?title .
       		?person
+            a schema:Person ;
       			schema:name ?name ;
       			parl:voteValue ?value .
       	}
@@ -72,6 +73,7 @@ class Vote < QueryObject
       	PREFIX schema: <http://schema.org/>
       	CONSTRUCT {
       		?person
+            a schema:Person ;
       			schema:name ?name .
       		?division
       			dcterms:title ?title ;
