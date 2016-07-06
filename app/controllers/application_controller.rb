@@ -42,14 +42,14 @@ class ApplicationController < ActionController::Base
   end
 
   def json_ld(data)
-    context = JSON.parse '{
-      "@context": "http://schema.org"
-    }'
+    # context = JSON.parse '{
+    #   "@context": ""
+    # }'
     json_ld = nil
     JSON::LD::API::fromRDF(data[:graph]) do |expanded|
-      json_ld = JSON::LD::API.compact(expanded, context['@context'])
+      json_ld = JSON::LD::API.compact(expanded, nil)
     end
-    json_ld
+    json_ld.to_json
   end
 
 end
