@@ -48,17 +48,14 @@ class Committee < QueryObject
               parl:house ?house .
           ?house
               rdfs:label ?houseLabel .
-					OPTIONAL
-					{
-						?role
-								parl:committee <#{uri}> ;
-								rdf:type ?roleType ;
-								parl:member ?member ;
-								schema:endDate ?endDate ;
-								schema:startDate ?startDate .
-						?member
-								schema:name ?memberName .
-					}
+          ?role
+              parl:committee <#{uri}> ;
+              rdf:type ?roleType ;
+              parl:member ?member ;
+              schema:endDate ?endDate ;
+              schema:startDate ?startDate .
+          ?member
+              schema:name ?memberName .
       }
       ")
 

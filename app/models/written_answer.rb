@@ -28,11 +28,12 @@ class WrittenAnswer < QueryObject
  			PREFIX parl: <http://data.parliament.uk/schema/parl#>
  			PREFIX schema: <http://schema.org/>
 			CONSTRUCT {
-    			?answer 
-        			parl:member ?person ;
-        			schema:text ?text .
-    			?person
-        			schema:name ?name .
+    		?answer 
+        	parl:member ?person ;
+        	schema:text ?text .
+    		?person
+          a schema:Person ;
+        	schema:name ?name .
 			}
 			WHERE { 
         ?person schema:name ?name .
