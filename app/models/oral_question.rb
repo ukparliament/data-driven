@@ -44,6 +44,7 @@ class OralQuestion < QueryObject
           parl:member ?member;
           dcterms:subject ?concept .
         ?concept
+          a skos:Concept ;
           skos:prefLabel ?concept_label .
         ?house 
           rdfs:label ?house_label .
@@ -190,7 +191,8 @@ class OralQuestion < QueryObject
       CONSTRUCT {
          ?question 
            schema:text ?text .
-         ?concept 
+         ?concept
+            a skos:Concept ;
             skos:prefLabel ?label .
       }
       WHERE { 
@@ -239,7 +241,8 @@ class OralQuestion < QueryObject
       CONSTRUCT {
          ?question 
            schema:text ?text .
-         ?person 
+         ?person
+            a schema:Person ;
             schema:name ?name .
       }
       WHERE { 
