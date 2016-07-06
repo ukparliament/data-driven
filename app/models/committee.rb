@@ -38,6 +38,7 @@ class Committee < QueryObject
           ?role
               parl:membershipType ?roleType ;
               parl:member ?member ;
+							a schema:Person ;
               schema:name ?memberName ;
               schema:endDate ?endDate ;
               schema:startDate ?startDate .
@@ -130,6 +131,8 @@ class Committee < QueryObject
 					parl:committeeName ?committeeName ;
 					parl:house ?house ;
 					parl:houseLabel ?houseLabel .
+				?member
+					a schema:Person .
 			}
 			WHERE {
 					?person

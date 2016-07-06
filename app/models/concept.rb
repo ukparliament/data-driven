@@ -8,6 +8,7 @@ class Concept < QueryObject
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			CONSTRUCT {
 			    ?concept
+							a skos:Concept ;
 			        skos:prefLabel ?label ;
 			    	parl:count ?count .
 			}
