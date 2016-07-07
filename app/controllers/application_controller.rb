@@ -1,3 +1,5 @@
+require 'socket'
+
 class ApplicationController < ActionController::Base
 
   # Prevent CSRF attacks by raising an exception.
@@ -15,6 +17,8 @@ class ApplicationController < ActionController::Base
         :people => url_for(controller: 'people')
       }
     }
+
+    @hostname = Socket.gethostname
 
     format(data)
   end

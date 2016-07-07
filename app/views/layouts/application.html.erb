@@ -8,7 +8,6 @@
   <link type="text/plain" rel="author" href="humans.txt" />
 </head>
 <body>
-  Hello world!
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -27,8 +26,6 @@
   <%= link_to root_path do %>
 		Home
 	<% end %>
-
-	<%= Socket.ip_address_list.detect(&:ipv4_private?).try(:ip_address) %>
 
 	<fieldset style="position: absolute; right: 0; border: 5px solid; padding: 3px; background-color: white">
 		<legend>Download</legend>
