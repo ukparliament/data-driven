@@ -51,3 +51,7 @@ body {
 .contextual-link-list li a:hover {
     color: lightgreen;
 }
+
+.hostname {
+    color: white;
+}
