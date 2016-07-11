@@ -6,6 +6,9 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <link type="text/plain" rel="author" href="humans.txt" />
+  <link rel="alternate" type="application/json" href="<%= url_for(:format => :json, :params => params) %>" title="JSON alternate for this page"/>
+  <link rel="alternate" type="text/xml" href="<%= url_for(:format => :xml, :params => params) %>" title="XML alternate for this page"/>
+  <link rel="alternate" type="application/n-triples" href="<%= url_for(:format => :rdf, :params => params) %>" title="RDF alternate for this page"/>
 </head>
 <body>
 	<script>
