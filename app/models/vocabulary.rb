@@ -219,6 +219,14 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}label")
 		end
 
+		def self.constituency
+			RDF::URI.new("#{@@prefix}constituency")
+		end
+
+		def self.constituencyLabel
+			RDF::URI.new("#{@@prefix}constituencyLabel")
+		end
+
 		def self.status
 			RDF::URI.new("#{@@prefix}status")
 		end
@@ -241,6 +249,14 @@ module Vocabulary
 
 		def self.type
 			RDF::URI.new("#{@@prefix}type")
+		end
+	end
+
+	class Osadm
+		@@prefix = 'http://data.ordnancesurvey.co.uk/ontology/admingeo/'
+
+		def self.gssCode
+			RDF::URI.new("#{@@prefix}gssCode")
 		end
 	end
 end

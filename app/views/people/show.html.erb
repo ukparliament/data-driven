@@ -5,6 +5,13 @@
 			<%= @person[:house][:label] %>
 		<% end %>
 	</dd>
+  <% if(@person[:constituency][:id] != nil) %>
+    <dt>Constituency</dt>
+    <dd><%= link_to constituency_path(@person[:constituency][:id]) do %>
+          <%= @person[:constituency][:label] %>
+      <% end %>
+    </dd>
+  <% end %>
 </dl>
 <ul>
 	<li>
