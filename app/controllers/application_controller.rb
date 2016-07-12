@@ -12,7 +12,9 @@ class ApplicationController < ActionController::Base
         :oralQuestions => url_for(controller: 'oral_questions'),
         :writtenQuestions => url_for(controller: 'written_questions'),
         :divisions => url_for(controller: 'divisions'),
-        :people => url_for(controller: 'people')
+        :people => url_for(controller: 'people'),
+        :committees => url_for(controller: 'committees'),
+        :petitions => url_for(controller: 'petitions')
       }
     }
 

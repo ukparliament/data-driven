@@ -14,7 +14,7 @@ require "rails/test_unit/railtie"
 # require "rspec-rails"
 # DATABASE = 'http://graphdb.southcentralus.cloudapp.azure.com/repositories/Master01'
 
-DATABASE = 'http://data.ukpds.org/repositories/DataDriven04'
+DATABASE = 'http://data.ukpds.org/repositories/DataDriven05'
 # DATABASE = 'http://data.ukpds.org/repositories/TempWorkerSimple2'
 
 # Require the gems listed in Gemfile, including any gems
