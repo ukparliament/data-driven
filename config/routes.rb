@@ -61,6 +61,8 @@ Rails.application.routes.draw do
     get '/votes(.:format)', to:'votes#index_by_division', as: 'votes'
   end
 
+  resources :constituencies, only: [:index, :show]
+
 
   # Example resource route with sub-resources:
   #   resources :products do

@@ -60,53 +60,61 @@ class Person < QueryObject
 				CONSTRUCT {
 					<#{uri}>
 						a schema:Person ;
-				    	schema:name ?name ;
+				   	schema:name ?name ;
 						parl:house ?house ;
-				        parl:oralQuestionCount ?oralQuestionCount ;
-				    	parl:writtenQuestionCount ?writtenQuestionCount ;
-				        parl:membershipCount ?membershipCount ;
-				        parl:writtenAnswerCount ?writtenAnswerCount ;
-				        parl:voteCount ?voteCount .
+				    parl:oralQuestionCount ?oralQuestionCount ;
+				   	parl:writtenQuestionCount ?writtenQuestionCount ;
+				    parl:membershipCount ?membershipCount ;
+			      parl:writtenAnswerCount ?writtenAnswerCount ;
+		        parl:voteCount ?voteCount ;
+						parl:constituency ?constituency ;
+						parl:constituencyLabel ?constituencyLabel .
 					?house
 						rdfs:label ?label .
 				}
 				WHERE {
-				    SELECT ?name ?house ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?writtenAnswer) as ?writtenAnswerCount) (COUNT(DISTINCT ?vote) as ?voteCount) (COUNT(?membership) AS ?membershipCount)
+				    SELECT ?name ?house ?label ?constituency ?constituencyLabel (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?writtenAnswer) as ?writtenAnswerCount) (COUNT(DISTINCT ?vote) as ?voteCount) (COUNT(?membership) AS ?membershipCount)
 				    WHERE {
 				     	?person
-							schema:name ?name ;
-							parl:house ?house .
-						?house
-							rdfs:label ?label .
-				        {
-				        	?oralQuestion
-				        		a parl:OralParliamentaryQuestion ;
-				        		parl:member ?person .
-				        }
-				        UNION {
-				            ?writtenQuestion
-				                a parl:WrittenParliamentaryQuestion ;
-				                parl:member ?person .
-				        }
-				        UNION {
-				            ?writtenAnswer
-				                a parl:WrittenParliamentaryAnswer ;
-				                parl:member ?person .
-				        }
-				        UNION {
-				            ?vote
-				      			parl:member ?person ;
-				      			parl:division ?division .
-				        }
-				        UNION {
-				            ?membership
-				                parl:member ?person ;
-				                a ?committeeParticipation .
-				            FILTER (?committeeParticipation = parl:CommitteeMember || ?committeeParticipation = parl:CommitteeChair || ?committeeParticipation = parl:CommitteeAdviser)
-				        }
-				    	FILTER(?person = <#{uri}>)
-				    }
-				    GROUP BY ?name ?house ?label
+								schema:name ?name ;
+								parl:house ?house .
+							?house
+								rdfs:label ?label .
+							OPTIONAL {
+								?constituency
+									parl:member ?person ;
+									a parl:Constituency ;
+									rdfs:label ?constituencyLabel .
+							}
+			        {
+			        	?oralQuestion
+			        		a parl:OralParliamentaryQuestion ;
+			        		parl:member ?person .
+			        }
+			        UNION {
+			            ?writtenQuestion
+			                a parl:WrittenParliamentaryQuestion ;
+			                parl:member ?person .
+			        }
+			        UNION {
+			            ?writtenAnswer
+			                a parl:WrittenParliamentaryAnswer ;
+			                parl:member ?person .
+			        }
+			        UNION {
+			            ?vote
+			      			parl:member ?person ;
+			      			parl:division ?division .
+			        }
+			        UNION {
+			            ?membership
+			                parl:member ?person ;
+			                a ?committeeParticipation .
+			            FILTER (?committeeParticipation = parl:CommitteeMember || ?committeeParticipation = parl:CommitteeChair || ?committeeParticipation = parl:CommitteeAdviser)
+			        }
+			    	FILTER(?person = <#{uri}>)
+			    }
+			    GROUP BY ?name ?house ?label ?constituency ?constituencyLabel
 				}")
 
 		name_pattern = RDF::Query::Pattern.new(
@@ -117,15 +125,28 @@ class Person < QueryObject
 			RDF::URI.new(uri),
 			Parl.house,
 			:house)
+		constituency_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(uri),
+			Parl.constituency,
+			:constituency)
 
 		name = result.first_literal(name_pattern)
 		house = result.first_object(house_pattern)
+		constituency = result.first_object(constituency_pattern)
 
 		house_label_pattern = RDF::Query::Pattern.new(
 			house,
 			Rdfs.label,
-			:label)
+			:label
+		)
 		label = result.first_literal(house_label_pattern)
+
+		constituency_label_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(uri),
+			Parl.constituencyLabel,
+			:constituency_label
+		)
+		constituency_label = result.first_literal(constituency_label_pattern)
 
 		oral_question_count_pattern = RDF::Query::Pattern.new(
 			RDF::URI.new(uri),
@@ -168,6 +189,10 @@ class Person < QueryObject
       		  	:id => self.get_id(house),
       		  	:label => label.to_s
       		  },
+						:constituency => {
+							:id => self.get_id(constituency),
+							:label => constituency_label.to_s
+						},
 						:oral_question_count => oral_question_count,
 						:written_question_count => written_question_count,
 						:written_answer_count => written_answer_count,
