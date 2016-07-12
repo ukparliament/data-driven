@@ -11,6 +11,7 @@ class PetitionsController < ApplicationController
 		data = Petition.find(petition_uri)
 
 		format(data)
+		
 	end
 
 end
