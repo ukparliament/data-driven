@@ -63,6 +63,7 @@ Rails.application.routes.draw do
 
   resources :constituencies, only: [:index, :show]
 
+  resources :petitions, only: [:index, :show]
 
   # Example resource route with sub-resources:
   #   resources :products do
