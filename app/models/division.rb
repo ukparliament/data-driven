@@ -156,7 +156,8 @@ class Division < QueryObject
       PREFIX dcterms: <http://purl.org/dc/terms/>     
 
       CONSTRUCT {
-          ?concept 
+          ?concept
+              a skos:Concept ;
               skos:prefLabel ?label .
           ?division 
               dcterms:title ?title .

@@ -6,7 +6,8 @@ class WrittenQuestion < QueryObject
       PREFIX schema: <http://schema.org/>
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       CONSTRUCT {
-        ?question schema:text ?text .
+        ?question 
+          schema:text ?text ;
       }
       WHERE {
         ?question
@@ -40,19 +41,22 @@ class WrittenQuestion < QueryObject
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       CONSTRUCT {
           <#{uri}> 
-              parl:questionText ?text ;
-              parl:questionDate ?date ;
-              parl:answerText ?answerText ;
-              parl:answerDate ?answerDate ;
-              dcterms:subject ?concept .
+            parl:questionText ?text ;
+            parl:questionDate ?date ;
+            parl:answerText ?answerText ;
+            parl:answerDate ?answerDate ;
+            dcterms:subject ?concept .
           ?house 
-              parl:houseLabel ?houseLabel .
+            parl:houseLabel ?houseLabel .
           ?member
-              parl:questionMemberName ?memberName .
+            a schema:Person ;
+            parl:questionMemberName ?memberName .
           ?answeringMember
-              parl:answerMemberName ?answeringMemberName .
+            a schema:Person ;
+            parl:answerMemberName ?answeringMemberName .
           ?concept
-              skos:prefLabel ?conceptLabel .
+            a skos:Concept ;
+            skos:prefLabel ?conceptLabel .
       }
       WHERE { 
           <#{uri}>
@@ -226,10 +230,11 @@ class WrittenQuestion < QueryObject
       PREFIX dcterms: <http://purl.org/dc/terms/>
       PREFIX schema: <http://schema.org/>
       CONSTRUCT {
-         ?question 
-           schema:text ?text .
-         ?concept 
-            skos:prefLabel ?label .
+        ?question 
+          schema:text ?text .
+        ?concept 
+          a skos:Concept ;
+          skos:prefLabel ?label .
       }
       WHERE { 
         ?concept skos:prefLabel ?label .
@@ -275,10 +280,11 @@ class WrittenQuestion < QueryObject
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       PREFIX schema: <http://schema.org/>
       CONSTRUCT {
-         ?question 
-           schema:text ?text .
-         ?person 
-            schema:name ?name .
+        ?question 
+          schema:text ?text .
+        ?person 
+          a schema:Person ;
+          schema:name ?name .
       }
       WHERE { 
         ?person schema:name ?name .
