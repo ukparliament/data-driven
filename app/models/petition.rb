@@ -27,4 +27,80 @@ class Petition < QueryObject
 		{ :graph => result, :hierarchy => hierarchy }
 	end
 
+	def self.find(uri)
+		result = self.query("
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			PREFIX schema: <http://schema.org/>
+	
+			CONSTRUCT {
+			    ?petition 
+        			dcterms:title ?title ;
+        			dcterms:abstract ?summary ;
+        			parl:status ?status ;
+        			dcterms:created ?dateCreated ;
+        			dcterms:modified ?dateUpdated ;
+        			dcterms:identifier ?identifier ;
+        			schema:url ?externalURL .
+			}
+			WHERE { 
+				?petition 
+			        a parl:EPetition ;
+			        dcterms:title ?title ;
+        			dcterms:abstract ?summary ;
+        			parl:status ?status ;
+        			dcterms:created ?dateCreated ;
+        			dcterms:modified ?dateUpdated ;
+        			dcterms:identifier ?identifier ;
+        			schema:url ?externalURL .
+        
+				FILTER(?petition = <#{uri}>)
+			}
+		")
+
+		title_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(uri), 
+		  	Dcterms.title, 
+		  	:title)
+		summary_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(uri), 
+		  	Dcterms.abstract, 
+		  	:abstract)
+		external_url_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(uri), 
+		  	Schema.url, 
+		  	:url)
+		status_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(uri), 
+		  	Parl.status, 
+		  	:status)
+		date_created_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(uri), 
+		  	Dcterms.created, 
+		  	:created_date)
+		date_modified_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(uri), 
+		  	Dcterms.modified, 
+		  	:modified_date)
+
+		title = result.first_literal(title_pattern).to_s
+		summary = result.first_literal(summary_pattern).to_s
+		external_url = result.first_object(external_url_pattern).to_s
+		status = result.first_literal(status).to_s
+		date_created = result.first_object(date_created_pattern).to_s.to_datetime
+		date_modified = result.first_object(date_modified_pattern).to_s.to_datetime
+
+		hierarchy = {
+			:id => self.get_id(uri),
+			:title => title,
+			:summary => summary,
+			:status => status,
+			:created => date_created,
+			:updated => date_modified,
+			:external_url => external_url
+		}
+
+		{ :graph => result, :hierarchy => hierarchy }
+	end
+
 end
