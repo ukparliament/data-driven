@@ -11,7 +11,7 @@ build :
 	docker-compose build
 
 run :
-	docker-compose up -d
+	sdocker-compose up -d
 
 rebuild :
 	docker-compose down
@@ -28,3 +28,6 @@ push:
 
 deploy-ci:
 	export DOCKER_HOST=$(DOCKER_SWARM_URL) && export IMAGE_NAME=$(NAME):$(VERSION) && docker-compose -f docker-compose.ci.yml down && docker-compose -f docker-compose.ci.yml up -d
+
+scale-ci:
+	export DOCKER_HOST=$(DOCKER_SWARM_URL) && export IMAGE_NAME=$(NAME):$(VERSION) && docker-compose -f docker-compose.ci.yml scale web=3
