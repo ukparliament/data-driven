@@ -222,6 +222,10 @@ module Vocabulary
 		def self.status
 			RDF::URI.new("#{@@prefix}status")
 		end
+
+		def self.numberOfSignatures
+			RDF::URI.new("#{@@prefix}numberOfSignatures")
+		end
 	end
 	
 	class Rdfs

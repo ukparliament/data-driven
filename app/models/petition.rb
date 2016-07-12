@@ -14,7 +14,6 @@ class Petition < QueryObject
 			        a parl:EPetition ;
 			        dcterms:title ?title .
 			}
-			LIMIT 100
 		")
 
 		hierarchy = result.map do |statement|
@@ -32,6 +31,7 @@ class Petition < QueryObject
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 			PREFIX schema: <http://schema.org/>
+			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	
 			CONSTRUCT {
 			    ?petition 
@@ -42,6 +42,9 @@ class Petition < QueryObject
         			dcterms:modified ?dateUpdated ;
         			dcterms:identifier ?identifier ;
         			schema:url ?externalURL .
+        		?constituency
+            		rdfs:label ?constituencyLabel ;
+            		parl:numberOfSignatures ?numberOfSignatures .
 			}
 			WHERE { 
 				?petition 
@@ -53,8 +56,15 @@ class Petition < QueryObject
         			dcterms:modified ?dateUpdated ;
         			dcterms:identifier ?identifier ;
         			schema:url ?externalURL .
+        		?signatures
+                	parl:ePetition ?petition ;
+        			parl:numberOfSignatures ?numberOfSignatures ;
+        			parl:constituency ?constituency .
+    			?constituency
+        			a parl:Constituency ;
+        			rdfs:label ?constituencyLabel .
         
-				FILTER(?petition = <#{uri}>)
+			FILTER(?petition = <#{uri}>)
 			}
 		")
 
@@ -82,6 +92,10 @@ class Petition < QueryObject
 		  	RDF::URI.new(uri), 
 		  	Dcterms.modified, 
 		  	:modified_date)
+		constituency_pattern = RDF::Query::Pattern.new(
+		  	:constituency, 
+		  	Rdfs.label, 
+		  	:constituency_label)
 
 		title = result.first_literal(title_pattern).to_s
 		summary = result.first_literal(summary_pattern).to_s
@@ -90,6 +104,26 @@ class Petition < QueryObject
 		date_created = result.first_object(date_created_pattern).to_s.to_datetime
 		date_modified = result.first_object(date_modified_pattern).to_s.to_datetime
 
+		constituencies = result.query(constituency_pattern).subjects.map do |subject|
+			constituency_label_pattern = RDF::Query::Pattern.new(
+		  	subject, 
+		  	Rdfs.label, 
+		  	:constituency_label)
+			number_of_signatures_pattern = RDF::Query::Pattern.new(
+		  	subject, 
+		  	Parl.numberOfSignatures, 
+		  	:number_of_signatures)
+
+			constituency_label = result.first_literal(constituency_label_pattern).to_s
+			number_of_signatures = result.first_literal(number_of_signatures_pattern).to_i
+
+			{
+				:id => self.get_id(subject),
+				:constituency_label => constituency_label,
+				:number_of_signatures => number_of_signatures
+			}
+		end
+
 		hierarchy = {
 			:id => self.get_id(uri),
 			:title => title,
@@ -97,7 +131,8 @@ class Petition < QueryObject
 			:status => status,
 			:created => date_created,
 			:updated => date_modified,
-			:external_url => external_url
+			:external_url => external_url,
+			:constituencies => constituencies
 		}
 
 		{ :graph => result, :hierarchy => hierarchy }
