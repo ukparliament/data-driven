@@ -210,6 +210,10 @@ module Vocabulary
 		def self.constituencyLabel
 			RDF::URI.new("#{@@prefix}constituencyLabel")
 		end
+
+		def self.numberOfSignatures
+			RDF::URI.new("#{@@prefix}numberOfSignatures")
+		end
 	end
 	
 	class Rdfs
