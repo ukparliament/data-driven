@@ -100,7 +100,7 @@ class Petition < QueryObject
 		title = result.first_literal(title_pattern).to_s
 		summary = result.first_literal(summary_pattern).to_s
 		external_url = result.first_object(external_url_pattern).to_s
-		status = result.first_literal(status).to_s
+		status = result.first_literal(status_pattern).to_s
 		date_created = result.first_object(date_created_pattern).to_s.to_datetime
 		date_modified = result.first_object(date_modified_pattern).to_s.to_datetime
 
