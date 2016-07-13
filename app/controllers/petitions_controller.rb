@@ -3,14 +3,15 @@ class PetitionsController < ApplicationController
 	def index
 		data = Petition.all
 
-		render json: data[:hierarchy] 
+		format(data)
 	end
 
 	def show
 		petition_uri = resource_uri(params[:id])
 		data = Petition.find(petition_uri)
 
-		render json: data[:hierarchy]
+		format(data)
+		
 	end
 
 end

@@ -66,6 +66,7 @@ class Petition < QueryObject
         
 			FILTER(?petition = <#{uri}>)
 			}
+			ORDER BY ASC(?constituencyLabel)
 		")
 
 		title_pattern = RDF::Query::Pattern.new(
@@ -101,8 +102,8 @@ class Petition < QueryObject
 		summary = result.first_literal(summary_pattern).to_s
 		external_url = result.first_object(external_url_pattern).to_s
 		status = result.first_literal(status_pattern).to_s
-		date_created = result.first_object(date_created_pattern).to_s.to_datetime
-		date_modified = result.first_object(date_modified_pattern).to_s.to_datetime
+		date_created = result.first_object(date_created_pattern).to_s.to_datetime.strftime("%d %B %Y")
+		date_modified = result.first_object(date_modified_pattern).to_s.to_datetime.strftime("%d %B %Y")
 
 		constituencies = result.query(constituency_pattern).subjects.map do |subject|
 			constituency_label_pattern = RDF::Query::Pattern.new(
