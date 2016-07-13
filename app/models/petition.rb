@@ -66,6 +66,7 @@ class Petition < QueryObject
         
 			FILTER(?petition = <#{uri}>)
 			}
+			ORDER BY ASC(?constituencyLabel)
 		")
 
 		title_pattern = RDF::Query::Pattern.new(
