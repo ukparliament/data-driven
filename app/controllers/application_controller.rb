@@ -23,6 +23,8 @@ class ApplicationController < ActionController::Base
 
     @hostname = Socket.gethostname
 
+    @is_it_in_production = Rails.env.production?
+
     format(data)
   end
 
