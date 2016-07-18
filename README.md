@@ -14,9 +14,7 @@ Edit your host file and add the following line
 | ------------- |:-------------------------------------------------:|
 | OSX           | /etc/host                                         |
 | Windows       | C:\Windows\System32\drivers\etc\hosts             |
-| Ubuntu        | Create /etc/NetworkManager/dnsmasq.d/hosts.conf   |
-|               | and put aline address=/docker.localhost/localhost |
-|               | in it, then restart [NetworkManager](http://serverfault.com/questions/118378/in-my-etc-hosts-file-on-linux-osx-how-do-i-do-a-wildcard-subdomain) |
+| Ubuntu        | Put a line address=/docker.localhost/127.0.0.1 in /etc/NetworkManager/dnsmasq.d/hosts.conf, then restart [NetworkManager](http://serverfault.com/questions/118378/in-my-etc-hosts-file-on-linux-osx-how-do-i-do-a-wildcard-subdomain) |
 
 ```bash
 $ *.docker.localhost localhost
