@@ -12,10 +12,12 @@ require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
 # require "rspec-rails"
-# DATABASE = 'http://graphdb.southcentralus.cloudapp.azure.com/repositories/Master01'
 
-DATABASE = 'http://data.ukpds.org/repositories/DataDriven05'
-# DATABASE = 'http://data.ukpds.org/repositories/TempWorkerSimple2'
+# Cluster
+DATABASE = 'http://graphdb20160718120614master.azurewebsites.net/repositories/Master'
+
+# Single
+# DATABASE = 'http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven05'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
