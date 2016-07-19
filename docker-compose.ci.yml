@@ -14,7 +14,6 @@ services:
 networks:
   ci:
     external: true
-
 logging:
   driver: syslog
   options:
