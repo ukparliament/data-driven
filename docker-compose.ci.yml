@@ -9,8 +9,8 @@ services:
     labels:
       - "traefik.backend=data-driven"
       - "traefik.frontend.rule=Host:data-driven.ci.ukpds.org"
-      volumes:
-       - /etc/localtime:/etc/localtime:ro
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 networks:
   ci:
     external: true
