@@ -27,6 +27,10 @@ gem 'sparql'
 
 gem 'nokogiri'
 
+gem 'lograge'
+
+gem 'logstash-event'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
