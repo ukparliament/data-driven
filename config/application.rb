@@ -17,7 +17,7 @@ require "rails/test_unit/railtie"
 # DATABASE = 'http://graphdb20160718120614master.azurewebsites.net/repositories/Master'
 
 # Single
-DATABASE = 'http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven05'
+DATABASE = 'http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
