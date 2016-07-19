@@ -12,3 +12,4 @@
 !/log/.keep
 /tmp
 /.idea/*
+passenger.3000.pid.lock
