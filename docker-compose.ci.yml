@@ -9,7 +9,12 @@ services:
     labels:
       - "traefik.backend=data-driven"
       - "traefik.frontend.rule=Host:data-driven.ci.ukpds.org"
-
+      volumes:
+       - /etc/localtime:/etc/localtime:ro
 networks:
   ci:
     external: true
+logging:
+  driver: syslog
+  options:
+    syslog-address: "tcp://logstash.ukpds.private:5000"
