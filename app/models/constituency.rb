@@ -12,16 +12,11 @@ class Constituency < QueryObject
           ?constituency
               rdfs:label ?constituencyLabel ;
               osadm:gssCode ?gssCode ;
-              parl:member ?member ;
-              schema:name ?member_name .
       }
       WHERE {
         ?constituency rdf:type parl:Constituency ;
               rdfs:label ?constituencyLabel ;
-              osadm:gssCode ?gssCode ;
-              parl:member ?member .
-        ?member
-              schema:name ?member_name .
+              osadm:gssCode ?gssCode .
       }
     ')
 
@@ -40,28 +35,10 @@ class Constituency < QueryObject
       )
       gss_code = result.first_literal(gss_code_pattern)
 
-      member_pattern = RDF::Query::Pattern.new(
-          subject,
-          Parl.member,
-          :member
-      )
-      member_id = self.get_id(result.first_object(member_pattern))
-
-      member_name_pattern = RDF::Query::Pattern.new(
-          subject,
-          Schema.name,
-          :member_name
-      )
-      member_name = result.first_literal(member_name_pattern)
-
       {
           :id => self.get_id(subject),
           :constituency_label => constituency_label.to_s,
-          :gss_code => gss_code.to_s,
-          :member => {
-              :id => member_id,
-              :name => member_name.to_s
-          }
+          :gss_code => gss_code.to_s
       }
     end
 
@@ -80,10 +57,10 @@ class Constituency < QueryObject
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX dcterms: <http://purl.org/dc/terms/>
       CONSTRUCT{
-          <#{uri}>
+          ?constituency
               rdfs:label ?label ;
-              osadm:gssCode ?gssCode ;
-              parl:member ?member ;
+              osadm:gssCode ?gssCode .
+          ?member
               schema:name ?member_name .
           ?petition
               dcterms:title ?petitionTitle ;
@@ -92,17 +69,19 @@ class Constituency < QueryObject
       WHERE {
         ?constituency
               rdfs:label ?label ;
-              parl:member ?member ;
               osadm:gssCode ?gssCode .
-          ?member
+        ?member
+              parl:constituency ?constituency ;
               schema:name ?member_name .
-          ?constituencySignature
+        OPTIONAL {
+        ?constituencySignature
               parl:constituency ?constituency ;
               rdf:type parl:EPetitionConstituencySignature ;
               parl:numberOfSignatures ?numberOfSignatures ;
               parl:ePetition ?petition .
-          ?petition
+        ?petition
               dcterms:title ?petitionTitle .
+        }
           FILTER ( ?constituency = <#{uri}> )
       }")
 
@@ -111,60 +90,65 @@ class Constituency < QueryObject
       Rdfs.label,
       :constituency_label
     )
-    constituency_label = result.first_literal(constituency_label_pattern)
+    constituency_label = result.first_literal(constituency_label_pattern).to_s
 
     gss_code_pattern = RDF::Query::Pattern.new(
         RDF::URI.new(uri),
         Osadm.gssCode,
         :gss_code
     )
-    gss_code = result.first_literal(gss_code_pattern)
+    gss_code = result.first_literal(gss_code_pattern).to_s
 
     member_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Parl.member,
-        :member_uri
-    )
-    member_uri = result.first_object(member_pattern)
-
-    member_name_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
+        :member,
         Schema.name,
         :member_name
     )
-    member_name = result.first_literal(member_name_pattern)
 
-    petitions = result.subjects
-      .select{ |subject| subject != RDF::URI.new(uri) }
-      .map do |subject|
-        petition_uri = subject
+    members = result.query(member_pattern).subjects.map do |subject|
+      member_name_pattern = RDF::Query::Pattern.new(
+        subject,
+        Schema.name,
+        :member_name
+      )
+      member_name = result.first_literal(member_name_pattern).to_s
+      {
+        :id => self.get_id(subject),
+        :name => member_name
+      }
+    end
+
+    petition_pattern = RDF::Query::Pattern.new(
+      :peititon,
+      Dcterms.title,
+      :petition_title
+    )
+
+    petitions = result.query(petition_pattern).subjects.map do |subject|
         petition_title_pattern = RDF::Query::Pattern.new(
           subject,
           Dcterms.title,
           :petition_title
         )
-        petition_title = result.first_literal(petition_title_pattern)
+        petition_title = result.first_literal(petition_title_pattern).to_s
         number_of_signatures_pattern = RDF::Query::Pattern.new(
           subject,
           Parl.numberOfSignatures,
           :number_of_signatures
         )
-        number_of_signatures = result.first_literal(number_of_signatures_pattern)
+        number_of_signatures = result.first_literal(number_of_signatures_pattern).to_s
       {
-          :id => self.get_id(petition_uri),
-          :title => petition_title.to_s,
-          :number_of_signatures => number_of_signatures.to_s
+          :id => self.get_id(subject),
+          :title => petition_title,
+          :number_of_signatures => number_of_signatures
       }
     end
 
     hierarchy = {
         :id => self.get_id(uri),
-        :label => constituency_label.to_s,
-        :gss_code => gss_code.to_s,
-        :member => {
-            :id => self.get_id(member_uri),
-            :name => member_name.to_s
-        },
+        :label => constituency_label,
+        :gss_code => gss_code,
+        :members => members,
         :petitions => petitions
     }
 
