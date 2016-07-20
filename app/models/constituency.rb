@@ -20,7 +20,7 @@ class Constituency < QueryObject
       }
     ')
 
-    constituencies = result.subjects(unique: true).map do |subject|
+    hierarchy = result.subjects(unique: true).map do |subject|
       constituency_label_pattern = RDF::Query::Pattern.new(
           subject,
           Rdfs.label,
@@ -41,10 +41,6 @@ class Constituency < QueryObject
           :gss_code => gss_code.to_s
       }
     end
-
-    hierarchy = {
-        :constituencies => constituencies
-    }
 
     { :graph => result, :hierarchy => hierarchy }
   end
