@@ -18,9 +18,9 @@ class Constituency < QueryObject
       WHERE {
         ?constituency rdf:type parl:Constituency ;
               rdfs:label ?constituencyLabel ;
-              osadm:gssCode ?gssCode ;
-              parl:member ?member .
+              osadm:gssCode ?gssCode .
         ?member
+              parl:constituency ?constituency ;
               schema:name ?member_name .
       }
     ')
