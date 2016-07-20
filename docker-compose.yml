@@ -14,6 +14,7 @@ services:
     build: .
     volumes:
        - .:/opt/sparql-exploration
+       - /etc/localtime:/etc/localtime:ro
     ports:
       - "3000"
     labels:

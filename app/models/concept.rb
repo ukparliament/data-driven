@@ -16,10 +16,10 @@ class Concept < QueryObject
 			    SELECT ?concept ?label (COUNT(?contribution) AS ?count)
 			    WHERE {
 			        ?concept
-								a skos:Concept ;
-								skos:prefLabel ?label .
+						a skos:Concept ;
+						skos:prefLabel ?label .
 			        ?contribution
-								dcterms:subject ?concept .
+						dcterms:subject ?concept .
 			    }
 			    GROUP BY ?concept ?label
 			    ORDER BY DESC(?count)

@@ -11,7 +11,7 @@ build :
 	docker-compose build
 
 run :
-	sdocker-compose up -d
+	docker-compose up -d
 
 rebuild :
 	docker-compose down

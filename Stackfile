@@ -7,6 +7,6 @@ lb:
   volumes:
     - '/var/run/docker.sock:/var/run/docker.sock'
 web:
-  image: 'ukparliament/sparql-exploration'
+  image: 'ukparliament/data-driven'
   ports:
     - '3000'
