@@ -1,6 +1,6 @@
 class BusinessItemsController < ApplicationController
 	def index
-		date = params[:id]
+		date = params[:order_paper_id]
 		data = BusinessItem.all(date)
 		@order_paper = data[:hierarchy]
 
