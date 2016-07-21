@@ -1,4 +1,4 @@
-class OrderPaperItem < QueryObject
+class OrderPaper < QueryObject
 	include Vocabulary
 
 	def self.all_dates
@@ -22,5 +22,6 @@ class OrderPaperItem < QueryObject
 			    ORDER BY ?date
 			}
 		')
-	end
+	end	
+
 end
