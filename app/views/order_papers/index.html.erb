@@ -4,7 +4,7 @@
 	<% @order_papers.each do |order_paper| %>
 		<li>
 			<%= link_to order_paper_business_items_path(order_paper[:id]) do %>
-				<%= order_paper[:date].strftime("%d/%m/%Y") %>( <%= order_paper[:items_count] %> )
+				<%= order_paper[:date].strftime("%d/%m/%Y") %> ( <%= order_paper[:items_count] %> )
 			<% end %>
 		</li>
 	<% end %>
