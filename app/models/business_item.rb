@@ -1,8 +1,7 @@
 class BusinessItem < QueryObject
 	include Vocabulary
 
-	#rename this method
-	def self.find_by_date(date)
+	def self.all(date)
 		result = self.query("
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX dcterms: <http://purl.org/dc/terms/>

@@ -1,7 +1,7 @@
 class BusinessItemsController < ApplicationController
-	def index_by_date
+	def index
 		date = params[:date]
-		@order_paper = OrderPaperItem.find_by_date(date)
+		@order_paper = OrderPaperItem.all(date)
 
 		@json_ld = json_ld(data)
 		format(data)
