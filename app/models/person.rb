@@ -60,13 +60,13 @@ class Person < QueryObject
 				CONSTRUCT {
 					<#{uri}>
 						a schema:Person ;
-				   	schema:name ?name ;
+				   		schema:name ?name ;
 						parl:house ?house ;
-				    parl:oralQuestionCount ?oralQuestionCount ;
-				   	parl:writtenQuestionCount ?writtenQuestionCount ;
-				    parl:membershipCount ?membershipCount ;
-			      parl:writtenAnswerCount ?writtenAnswerCount ;
-		        parl:voteCount ?voteCount ;
+				    	parl:oralQuestionCount ?oralQuestionCount ;
+				   		parl:writtenQuestionCount ?writtenQuestionCount ;
+				    	parl:membershipCount ?membershipCount ;
+			      		parl:writtenAnswerCount ?writtenAnswerCount ;
+		        		parl:voteCount ?voteCount ;
 						parl:constituency ?constituency ;
 						parl:constituencyLabel ?constituencyLabel .
 					?house
