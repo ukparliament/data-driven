@@ -1,7 +1,7 @@
 class OrderPaper < QueryObject
 	include Vocabulary
 
-	def self.all_dates
+	def self.all
 		result = self.query('
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX dcterms: <http://purl.org/dc/terms/>
