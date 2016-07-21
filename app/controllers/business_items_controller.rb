@@ -1,11 +1,15 @@
 class BusinessItemsController < ApplicationController
-	def index_by_date
-		date = params[:date]
-		@order_paper = OrderPaperItem.find_by_date(date)
+	def index
+		date = params[:order_paper_id]
+		data = BusinessItem.all(date)
+		@order_paper = data[:hierarchy]
 
 		@json_ld = json_ld(data)
 		format(data)
 	end
 
-	#rename this method
+	def show
+		
+	end
+
 end
