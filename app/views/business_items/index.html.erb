@@ -1,1 +1,11 @@
-index.html.erb
+<h1>Business items for Order Paper <%= @order_paper[:date].strftime("%d %B %Y") %></h1>
+<ul>
+	<% @order_paper[:order_paper_items].each do |item| %>
+		<li><%= link_to order_paper_business_item_path(@order_paper[:date], item[:id]) do %>
+				<%= item[:title] %>
+			<% end %>
+		</li>
+	<% end %>	
+</ul>
+
+
