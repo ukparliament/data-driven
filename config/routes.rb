@@ -66,7 +66,7 @@ Rails.application.routes.draw do
   resources :petitions, only: [:index, :show]
 
   resources :order_papers, only: [:index] do
-    resources :business_items, only: [:index, :show]
+    resources :business_items, only: [:index, :show, :edit]
   end
 
   # Example resource route with sub-resources:
