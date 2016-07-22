@@ -1,1 +1,28 @@
-show.html.erb
+<h1>Order Paper <%= @business_item[:date].strftime("%d %B %Y") %> Business Item</h1>
+
+<dl>
+	<dt>Title</dt>
+	<dd>
+		<%= @business_item[:title] %>
+	</dd>
+	<% if @business_item[:abstract] != "" %> 
+		<dt>Abstract</dt>
+			<dd>
+				<%= strip_tags(@business_item[:abstract]) %>
+			</dd>
+	<% end %>
+
+	<% unless @business_item[:person][:id].nil? %> 
+		<dt>Member</dt>
+			<dd>
+				<%= link_to person_path(@business_item[:person][:id]) do %>
+					<%= @business_item[:person][:name] %>
+				<% end %>
+			</dd>
+	<% end %>
+</dl>
+
+<% unless @business_item[:previousItemId].nil? %>
+	<%= link_to "Previous Item", order_paper_business_item_path(@business_item[:date], @business_item[:previousItemId]) %>
+<% end %>
+

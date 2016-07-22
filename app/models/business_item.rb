@@ -101,7 +101,7 @@ class BusinessItem < QueryObject
 		  	RDF::URI.new(uri), 
 		  	Dcterms.date, 
 		  	:date)
-		date = result.first_object(date_pattern).to_s
+		date = result.first_object(date_pattern).to_s.to_datetime
 		title_pattern = RDF::Query::Pattern.new(
 		  	RDF::URI.new(uri), 
 		  	Dcterms.title, 
