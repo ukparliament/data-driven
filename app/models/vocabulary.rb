@@ -41,6 +41,10 @@ module Vocabulary
 		def self.url
 			RDF::URI.new("#{@@prefix}url")
 		end
+
+		def self.previousItem
+			RDF::URI.new("#{@@prefix}previousItem")
+		end
 	end
 	
 	class Dcterms

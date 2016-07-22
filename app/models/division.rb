@@ -74,8 +74,6 @@ class Division < QueryObject
       date = result.first_literal(date_pattern)
       house = result.first_object(house_pattern)
 
-      p house
-
       house_label_pattern = RDF::Query::Pattern.new(
         house,
         Rdfs.label,

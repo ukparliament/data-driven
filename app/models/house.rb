@@ -102,14 +102,14 @@ class House < QueryObject
 		division_count = result.first_literal(division_count_pattern).to_i
 
 		hierarchy =
-				{
-						:id => self.get_id(uri),
-						:label => label,
-						:oral_question_count => oral_question_count,
-						:written_question_count => written_question_count,
-						:people_count => people_count,
-						:division_count => division_count
-				}
+			{
+				:id => self.get_id(uri),
+				:label => label,
+				:oral_question_count => oral_question_count,
+				:written_question_count => written_question_count,
+				:people_count => people_count,
+				:division_count => division_count
+			}
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end

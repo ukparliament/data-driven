@@ -9,7 +9,12 @@ class BusinessItemsController < ApplicationController
 	end
 
 	def show
-		
+		business_item_uri = resource_uri(params[:id])
+		data = BusinessItem.find(business_item_uri)
+		@business_item = data[:hierarchy]
+
+		@json_ld = json_ld(data)
+		format(data)
 	end
 
 end
