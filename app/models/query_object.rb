@@ -8,4 +8,8 @@ class QueryObject
 		uri.to_s.split("/").last
 	end
 
+	def self.insert(sparql)
+		RDF::Graph.load(DataDriven::Application.config.database+'/statements').insert(sparql)
+	end
+
 end

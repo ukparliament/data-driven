@@ -139,4 +139,17 @@ class BusinessItem < QueryObject
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end
+
+	def self.update
+		self.insert("
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			INSERT {
+			    <http://id.ukpds.org/23a6596b-bc6c-4577-a9d7-0670fcdfe180> dcterms:subject <http://id.ukpds.org/00090502-0000-0000-0000-000000000002>
+			}
+			WHERE {
+			    
+			}
+		")
+	end
 end
