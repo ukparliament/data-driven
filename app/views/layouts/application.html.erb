@@ -65,6 +65,8 @@
 				<label for="Committees">Committees</label>
 				<input id="People" name="filters[schema:Person]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["schema:Person"] == "on" %>>
 				<label for="People">People</label>
+				<input id="Order Paper Item" name="filters[parl:OrderPaperItem]" type="checkbox" <%= "checked" if params[:filters] && params[:filters]["parl:OrderPaperItem"] == "on" %>>
+				<label for="Order Paper Item">Order Paper Item</label>
 			<% end %>
 		</fieldset>
 	</form>

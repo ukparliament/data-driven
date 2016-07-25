@@ -238,6 +238,10 @@ module Vocabulary
 		def self.numberOfSignatures
 			RDF::URI.new("#{@@prefix}numberOfSignatures")
 		end
+
+		def self.OrderPaperItem
+			RDF::URI.new("#{@@prefix}OrderPaperItem")
+		end
 	end
 	
 	class Rdfs
