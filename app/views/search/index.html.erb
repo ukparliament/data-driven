@@ -6,9 +6,17 @@
 			<strong>
 				<%= result[:friendly_type]%>:
 			</strong>
-			<%= link_to controller:"#{result[:controller]}", action: "show", id: result[:id] do %>
+      <% if result[:controller] == "business_items" %>
+        <%= link_to controller:"#{result[:controller]}", action: "show", order_paper_id: result[:date], id: result[:id] do %>
           <%= strip_tags(result[:text]) %>
-			<% end %>
+        <% end %>
+      <% else %>
+        <%= link_to controller:"#{result[:controller]}", action: "show", id: result[:id] do %>
+          <%= strip_tags(result[:text]) %>
+        <% end %>
+      <% end %>
+
+
         <ul class="contextual-link-list">
           <% if result[:controller] == "people" %>
             <li> <%= link_to "Written questions", person_written_questions_path(result[:id]) %> </li>

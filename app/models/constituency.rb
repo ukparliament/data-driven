@@ -9,14 +9,14 @@ class Constituency < QueryObject
       PREFIX osadm: <http://data.ordnancesurvey.co.uk/ontology/admingeo/>
       PREFIX schema: <http://schema.org/>
       CONSTRUCT {
-          ?constituency
-              rdfs:label ?constituencyLabel ;
-              osadm:gssCode ?gssCode ;
+        ?constituency
+          a ?constituencyLabel ;
+          osadm:gssCode ?gssCode ;
       }
       WHERE {
-        ?constituency rdf:type parl:Constituency ;
-              rdfs:label ?constituencyLabel ;
-              osadm:gssCode ?gssCode .
+        ?constituency a parl:Constituency ;
+          a ?constituencyLabel ;
+          osadm:gssCode ?gssCode .
       }
     ')
 
@@ -46,7 +46,7 @@ class Constituency < QueryObject
   end
 
   def self.find(uri)
-    result = self.query("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    result = self.query("
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       PREFIX schema: <http://schema.org/>
       PREFIX osadm: <http://data.ordnancesurvey.co.uk/ontology/admingeo/>
@@ -54,7 +54,7 @@ class Constituency < QueryObject
       PREFIX dcterms: <http://purl.org/dc/terms/>
       CONSTRUCT{
           ?constituency
-              rdfs:label ?label ;
+              a ?label ;
               osadm:gssCode ?gssCode .
           ?member
               schema:name ?member_name .
@@ -64,7 +64,7 @@ class Constituency < QueryObject
       }
       WHERE {
         ?constituency
-              rdfs:label ?label ;
+              a ?label ;
               osadm:gssCode ?gssCode .
         ?member
               parl:constituency ?constituency ;
