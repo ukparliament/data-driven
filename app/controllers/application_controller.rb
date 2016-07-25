@@ -17,7 +17,8 @@ class ApplicationController < ActionController::Base
         :people => url_for(controller: 'people'),
         :committees => url_for(controller: 'committees'),
         :petitions => url_for(controller: 'petitions'),
-        :constituencies => url_for(controller: 'constituencies')
+        :constituencies => url_for(controller: 'constituencies',
+        :order_papers => url_form(controller: 'order_papers'))
       }
     }
 
