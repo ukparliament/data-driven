@@ -51,15 +51,15 @@ class Committee < QueryObject
               rdfs:label ?houseLabel .
 					OPTIONAL {
           	?role
-								parl:committee <#{uri}> ;
-								rdf:type ?roleType ;
-								parl:member ?member ;
-								schema:endDate ?endDate ;
-								schema:startDate ?startDate .
-						?member
-								schema:name ?memberName .
-					}
-      }
+				parl:committee <#{uri}> ;
+				rdf:type ?roleType ;
+				parl:member ?member ;
+				schema:endDate ?endDate ;
+				schema:startDate ?startDate .
+			?member
+				schema:name ?memberName .
+			}
+      	}
       ")
 
 		chairships = self.get_membership_by_type(result, Parl.CommitteeChair)

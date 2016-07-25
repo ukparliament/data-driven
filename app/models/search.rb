@@ -23,21 +23,28 @@ class Search < QueryObject
 			    ?result
 			        a ?type ;
 			        parl:score ?score ;
-			    	?property ?text .
+			    	?property ?text ;
+			    	dcterms:date ?date .
 			}
 			WHERE { 
-			    ?result 
-			    	a ?type ;
-			        luc:searchAll \"#{q}\" ;
-			        luc:score ?scoreString ;
-			        ?property ?text .
-			    FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description || ?property = rdfs:label || ?property = skos:prefLabel)
-				#{filterString}
-				#FILTER(?type = parl:Division || ?type = parl:OralParliamentaryQuestion || ?type = parl:WrittenParliamentaryQuestion || ?type = parl:WrittenParliamentaryAnswer || ?type = schema:Person || ?type = parl:Committee)
-				BIND(xsd:float(?scoreString) AS ?score)
+				SELECT ?result ?type ?score ?property ?text ?date
+				WHERE {
+					?result 
+			    		a ?type ;
+			        	luc:searchAll \"#{q}\" ;
+			        	luc:score ?scoreString ;
+			        	?property ?text .
+			    	FILTER(?property = schema:name || ?property = schema:text || ?property = dcterms:title || ?property = dcterms:description || ?property = rdfs:label || ?property = skos:prefLabel)
+					#{filterString}
+					#FILTER(?type = parl:Division || ?type = parl:OralParliamentaryQuestion || ?type = parl:WrittenParliamentaryQuestion || ?type = parl:WrittenParliamentaryAnswer || ?type = schema:Person || ?type = parl:Committee)
+					BIND(xsd:float(?scoreString) AS ?score)
+					OPTIONAL {
+						?result dcterms:date ?date .
+					}
+				}
+				ORDER BY DESC(?score)
+				LIMIT 204
 			}
-			ORDER BY DESC(?score)
-			LIMIT 204
 		")
 
 		search_results_pattern = RDF::Query::Pattern.new(
@@ -59,6 +66,7 @@ class Search < QueryObject
 
 			id = self.get_id(result.subject)
 			type = result_graph.first_object(type_pattern)
+
 			score = result_graph.first_object(score_pattern)
 
 			text_property = 
@@ -77,6 +85,8 @@ class Search < QueryObject
 					Schema.name
 				when Skos.Concept
 					Skos.prefLabel
+				when Parl.OrderPaperItem
+					Dcterms.title
 				end
 
 			controller = 
@@ -95,6 +105,8 @@ class Search < QueryObject
 					"committees"
 				when Skos.Concept
 					"concepts"
+				when Parl.OrderPaperItem
+					"business_items"
 				end
 
 			friendly_type = 
@@ -113,6 +125,8 @@ class Search < QueryObject
 					"Committee"
 				when Skos.Concept
 					"Concept"
+				when Parl.OrderPaperItem
+					"Order Paper Item"
 				end
 
 			text_pattern = RDF::Query::Pattern.new(
@@ -122,13 +136,22 @@ class Search < QueryObject
 
 			text = result_graph.first_literal(text_pattern)
 
+			date_pattern = RDF::Query::Pattern.new(
+				RDF::URI.new(result.subject),
+				Dcterms.date,
+				:date
+				)
+
+			date = result_graph.first_literal(date_pattern)
+
 			{
 				:id => id,
 				:type => type.to_s,
 				:score => score.to_f,
 				:text => text.to_s,
 				:controller => controller,
-				:friendly_type => friendly_type
+				:friendly_type => friendly_type,
+				:date => date.to_s.to_datetime
 			}
 		end
 
