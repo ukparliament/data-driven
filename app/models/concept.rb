@@ -1,5 +1,35 @@
 class Concept < QueryObject
 	include Vocabulary
+
+	def self.all_alphabetical
+		result = self.query('
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			CONSTRUCT {
+			    ?concept
+			        skos:prefLabel ?label .
+			}
+			WHERE {
+			    SELECT ?concept ?label (COUNT(?contribution) AS ?count)
+			    WHERE {
+			        ?concept
+						a skos:Concept ;
+						skos:prefLabel ?label .
+			        ?contribution
+						dcterms:subject ?concept .
+			    }
+			    GROUP BY ?concept ?label
+			    ORDER BY DESC(?count)
+			    LIMIT 200
+			}
+			ORDER BY ?label
+		')
+
+	  	hierarchy = self.find_convert_to_hash(result)
+
+		{ :graph => result, :hierarchy => hierarchy }
+	end
 	
 	def self.most_popular_by_contribution
 		result = self.query('
@@ -8,7 +38,7 @@ class Concept < QueryObject
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			CONSTRUCT {
 			    ?concept
-							a skos:Concept ;
+					a skos:Concept ;
 			        skos:prefLabel ?label ;
 			    	parl:count ?count .
 			}

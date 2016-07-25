@@ -1,0 +1,12 @@
+<%= form_tag(method: :post) do %>
+	<%= label_tag(:concept, "concept") %>
+	<%= select_tag(:concept, options_for_select(@concepts)) %>
+
+	<%= submit_tag("add") %>
+
+
+	<%= foreach concept in {concepts associated with this item} %>
+		<%= concept.label %>
+		<button name="delete" value="concept.id">delete</button>
+	<% end %>
+<% end %>
