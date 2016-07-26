@@ -34,8 +34,7 @@ class BusinessItemsController < ApplicationController
 		@concepts = dropdown_data[:hierarchy].map { |concept| [ concept[:label], concept[:id] ]}.to_h
 
 		data = Concept.find_by_business_item(business_item_uri)
-		@linked_concepts = data[:hierarchy][:concepts]
-		@business_item_title = data[:hierarchy][:business_item_title]
+		@business_item = data[:hierarchy]
 
 		@json_ld = json_ld(data)
 		format(data)

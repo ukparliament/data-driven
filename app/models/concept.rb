@@ -37,13 +37,15 @@ class Concept < QueryObject
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 			CONSTRUCT {
 				<#{business_item_uri}>
-					dcterms:subject ?title .
+					dcterms:subject ?title ;
+					dcterms:date ?date .
 			    ?concept
 			        skos:prefLabel ?label .
 			}
 			WHERE {
 			    <#{business_item_uri}>
-			    	dcterms:title ?title .
+			    	dcterms:title ?title ;
+			    	dcterms:date ?date .
 			    OPTIONAL {
 			    	<#{business_item_uri}>
 						dcterms:subject ?concept .
@@ -60,6 +62,12 @@ class Concept < QueryObject
 			:business_item_title)
 		business_item_title = result.first_literal(business_item_title_pattern).to_s
 
+		business_item_date_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(business_item_uri),
+			Dcterms.date,
+			:business_item_date)
+		business_item_date = result.first_literal(business_item_date_pattern).to_s
+
 		concept_label_pattern = RDF::Query::Pattern.new(
 			:subject,
 			Skos.prefLabel,
@@ -72,7 +80,9 @@ class Concept < QueryObject
 		end
 
 		hierarchy = {
-			:business_item_title => business_item_title,
+			:id => self.get_id(business_item_uri),
+			:title => business_item_title,
+			:date => business_item_date.to_datetime,
 			:concepts => concepts
 		}
 
