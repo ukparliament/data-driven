@@ -10,6 +10,15 @@ class BusinessItemsController < ApplicationController
 		format(data)
 	end
 
+	def index_by_concept
+		concept_uri = resource_uri(params[:concept_id])
+		data = BusinessItem.find_by_concept(concept_uri)
+		@concept = data[:hierarchy]
+
+		@json_ld = json_ld(data)
+		format(data)
+	end
+
 	def show
 		business_item_uri = resource_uri(params[:id])
 		data = BusinessItem.find(business_item_uri)

@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     get '/oral_questions(.:format)', to: 'oral_questions#index_by_concept', as: 'oral_questions'
     get '/written_questions(.:format)', to: 'written_questions#index_by_concept', as: 'written_questions'
     get '/divisions(.:format)', to: 'divisions#index_by_concept', as: 'divisions'
+    get '/business_items(.:format)', to: 'business_items#index_by_concept', as: 'business_items'
   end
 
   resources :people, only: [:index, :show] do
