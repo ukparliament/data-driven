@@ -1,0 +1,11 @@
+<h1><%= @concept[:label] %></h1>
+
+<ul>
+	<% @concept[:business_items].each do |item| %>
+		<li>
+			<%= link_to order_paper_business_item_path(item[:date].strftime("%F"), item[:id]) do %>
+				<%= item[:title] %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>
