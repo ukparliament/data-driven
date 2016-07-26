@@ -1,11 +1,15 @@
-<h1><%= @person[:name] %></h1>
+<h1><%= @person[:name] %> Order Paper Items</h1>
 
-<ul>
-	<% @person[:business_items].each do |item| %>
-		<li>
-			<%= link_to order_paper_business_item_path(item[:date].strftime("%F"), item[:id]) do %>
-				<%= item[:title] %>
-			<% end %>
-		</li>
-	<% end %>
-</ul>
+<% if(@person[:business_items].empty?) %>
+    <p>No order paper items</p>
+<% else %>
+	<ul>
+		<% @person[:business_items].each do |item| %>
+			<li>
+				<%= link_to order_paper_business_item_path(item[:date].strftime("%F"), item[:id]) do %>
+					<%= item[:title] %>
+				<% end %>
+			</li>
+		<% end %>
+	</ul>
+<% end %>

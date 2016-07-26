@@ -2,28 +2,28 @@ class Person < QueryObject
 	include Vocabulary 
 
   	def self.most_active_people
-  			result = self.query('
-					PREFIX parl: <http://data.parliament.uk/schema/parl#>
-					PREFIX schema: <http://schema.org/>
-					CONSTRUCT {
-						?person
-							a schema:Person ;
-							schema:name ?name ;
-							parl:count ?count .
-					}
-					WHERE {
-						SELECT ?person ?name (COUNT(?contribution) AS ?count)
-						WHERE {
-							?person
-								a schema:Person ;
-								schema:name ?name .
-							?contribution parl:member ?person .
-						}
-						GROUP BY ?person ?name
-						ORDER BY DESC(?count)
-						LIMIT 100
-					}
-				')
+  		result = self.query('
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX schema: <http://schema.org/>
+			CONSTRUCT {
+				?person
+					a schema:Person ;
+					schema:name ?name ;
+					parl:count ?count .
+			}
+			WHERE {
+				SELECT ?person ?name (COUNT(?contribution) AS ?count)
+				WHERE {
+					?person
+						a schema:Person ;
+						schema:name ?name .
+					?contribution parl:member ?person .
+				}
+				GROUP BY ?person ?name
+				ORDER BY DESC(?count)
+				LIMIT 100
+			}
+		')
 
 		people = result.subjects(unique: true).map do |subject| 
 			name_pattern = RDF::Query::Pattern.new(

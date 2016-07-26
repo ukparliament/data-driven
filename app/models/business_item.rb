@@ -175,14 +175,15 @@ class BusinessItem < QueryObject
 			    	dcterms:title ?title .
 			}
 			WHERE { 
-        		?item
-			       	a parl:OrderPaperItem ;
-        			dcterms:subject ?concept ;
-			       	dcterms:date ?date ;
-			    	dcterms:title ?title .
-			    ?concept
+				?concept
 			    	skos:prefLabel ?label .
-
+			    OPTIONAL {
+			    	?item
+			       		a parl:OrderPaperItem ;
+        				dcterms:subject ?concept ;
+			       		dcterms:date ?date ;
+			    		dcterms:title ?title .
+			    }
          		FILTER(?concept = <#{concept_uri}>)
 			}
 		")
@@ -239,14 +240,16 @@ class BusinessItem < QueryObject
 			    	dcterms:title ?title .
 			}
 			WHERE { 
-        		?item
-			       	a parl:OrderPaperItem ;
-        			dcterms:subject ?concept ;
-			       	dcterms:date ?date ;
-			    	dcterms:title ?title .
-			    ?person
+				?person
 			    	schema:name ?name .
 
+			    OPTIONAL {
+					?item
+			    	   	a parl:OrderPaperItem ;
+        				parl:member ?person ;
+			    	   	dcterms:date ?date ;
+			    		dcterms:title ?title .
+			    }
          		FILTER(?person = <#{person_uri}>)
 			}
 		")
