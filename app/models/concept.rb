@@ -106,6 +106,7 @@ class Concept < QueryObject
 						?concept
 							skos:prefLabel ?label .
 					}
+					UNION
 					{
 						?writtenQuestion
 							a parl:WrittenParliamentaryQuestion ;
