@@ -1,5 +1,9 @@
 <h1>Order Paper <%= @business_item[:date].strftime("%d %B %Y") %> Business Item</h1>
 
+<h3><%= link_to "#{@business_item[:date].strftime("%d %B %Y")} order papers", order_paper_business_items_path(@business_item[:date].strftime("%F")) %></h3>
+
+<h3><%= link_to "Edit", order_paper_business_item_edit_path(@business_item[:date].strftime("%F"), @business_item[:id]) %></h3>
+
 <dl>
 	<dt>Title</dt>
 	<dd>
@@ -22,7 +26,18 @@
 	<% end %>
 </dl>
 
+<% unless @business_item[:concepts].empty? %>
+	<p>Concepts linked to this business item</p>
+	<ul>
+		<% @business_item[:concepts].each do |concept| %>
+			<li>
+				<%= link_to "#{concept[:label]}", concept_path(concept[:id]) %>
+			</li>
+		<% end %>
+	</ul>
+<% end %>
+
 <% unless @business_item[:previousItemId].nil? %>
-	<%= link_to "Previous Item", order_paper_business_item_path(@business_item[:date], @business_item[:previousItemId]) %>
+	<%= link_to "Previous Item", order_paper_business_item_path(@business_item[:date].strftime("%F"), @business_item[:previousItemId]) %>
 <% end %>
 

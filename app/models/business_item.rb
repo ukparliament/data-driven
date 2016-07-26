@@ -60,6 +60,7 @@ class BusinessItem < QueryObject
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 			PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 			PREFIX schema: <http://schema.org/>
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 			CONSTRUCT {
 			    ?item
 			        dcterms:date ?date ;
@@ -67,11 +68,13 @@ class BusinessItem < QueryObject
         			dcterms:identifier ?identifier ;
             		dcterms:abstract ?abstract ;
             		schema:previousItem ?previousItem .
+    			?concept
+        			skos:prefLabel ?label .
             	?person
             		schema:name ?person_name .
 			}
 			WHERE { 
-    			SELECT ?item ?date ?title ?identifier ?person ?abstract ?previousItem ?person_name
+    			SELECT ?item ?date ?title ?identifier ?person ?abstract ?previousItem ?person_name ?concept ?label
     			WHERE {
         			?item
 			        	a parl:OrderPaperItem ;
@@ -87,15 +90,22 @@ class BusinessItem < QueryObject
         		}
         		OPTIONAL {
             		?item
-            			dcterms:abstract ?abstract ;
+            			dcterms:abstract ?abstract .
         		}
             	OPTIONAL {
             		?item
-                       	schema:previousItem ?previousItem ;
-        		}		
+                       	schema:previousItem ?previousItem .
+        		}
+        		OPTIONAL {
+            		?item
+                		dcterms:subject ?concept .
+            		?concept
+                		skos:prefLabel ?label .
+        		}
          		FILTER(?item = <#{uri}>)
     		}      
-		}")
+		}"
+		)
 
 		date_pattern = RDF::Query::Pattern.new(
 		  	RDF::URI.new(uri), 
@@ -124,6 +134,17 @@ class BusinessItem < QueryObject
 		  	:previousItem)
 		previousItemURI = result.first_object(previous_pattern)
 
+		concept_pattern = RDF::Query::Pattern.new(
+			:subject,
+			Skos.prefLabel,
+			:label)
+		concepts = result.query(concept_pattern).map do |statement|
+			{
+        		:id => self.get_id(statement.subject),
+        		:label => statement.object.to_s
+      		}
+		end
+
 		hierarchy = 
 			{
 				:id => self.get_id(uri),
@@ -134,7 +155,8 @@ class BusinessItem < QueryObject
 					:name => person_name
 					},
 				:abstract => abstract,
-				:previousItemId => self.get_id(previousItemURI)
+				:previousItemId => self.get_id(previousItemURI),
+				:concepts => concepts
 			}
 
 		{ :graph => result, :hierarchy => hierarchy }
