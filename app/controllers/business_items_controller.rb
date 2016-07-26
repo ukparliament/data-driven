@@ -20,46 +20,48 @@ class BusinessItemsController < ApplicationController
 	end
 
 	def edit
-		data = Concept.all_alphabetical
-		@concepts = data[:hierarchy].map { |concept| [ concept[:label], concept[:id] ]}.to_h
+		business_item_uri = resource_uri(params[:id])
+		dropdown_data = Concept.all_alphabetical
+		@concepts = dropdown_data[:hierarchy].map { |concept| [ concept[:label], concept[:id] ]}.to_h
 
-		# repo = SPARQL::Client::Repository.new('http://graphdbtest.eastus.cloudapp.azure.com/repositories/test/statements')
-		# client = repo.client
+		data = Concept.find_by_business_item(business_item_uri)
+		@linked_concepts = data[:hierarchy]
 
-		# s = RDF::URI.new('http://id.ukpds.org/23a6596b-bc6c-4577-a9d7-0670fcdfe180')
-		# s1 = RDF::URI.new('http://id.ukpds.org/80916328-918f-4efc-b467-4829ad172121')
-		# p = RDF::URI.new('http://purl.org/dc/terms/subject')
-		# o = RDF::URI.new('http://id.ukpds.org/00091072-0000-0000-0000-000000000002')
-		# statement = RDF::Statement(s, p, o)
-		# statement1 = RDF::Statement(s1, p, o)
-		# graph = RDF::Graph.new << statement
-		# graph1 = RDF::Graph.new << statement1
-		# results = client.delete_data(graph)
-		# results = client.insert_data(graph)
-		# results = client.delete_insert(graph, graph1)
-
-		# render text: results
+		@json_ld = json_ld(data)
+		format(data)
 	end
 
 	def update
-		if params[:x]
-			
-			raise params[:x]
+		if params[:remove]
+			concept_id = params[:remove]
+			item_id = params[:id]
+			repo = SPARQL::Client::Repository.new('http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06/statements')
+			client = repo.client
+
+			s = RDF::URI.new("http://id.ukpds.org/#{item_id}")
+			p = RDF::URI.new("http://purl.org/dc/terms/subject")
+			o = RDF::URI.new("http://id.ukpds.org/#{concept_id}")
+			statement = RDF::Statement(s, p, o)
+			graph = RDF::Graph.new << statement
+
+			results = client.delete_data(graph)
+			redirect_to order_paper_business_item_edit_path(params[:order_paper_id], params[:id])
 		end
 
-		concept_id = params[:concept]
-		item_id = params[:id]
-		repo = SPARQL::Client::Repository.new('http://graphdbtest.eastus.cloudapp.azure.com/repositories/test/statements')
-		client = repo.client
+		if params[:commit]
+			concept_id = params[:concept]
+			item_id = params[:id]
+			repo = SPARQL::Client::Repository.new('http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06/statements')
+			client = repo.client
 
-		s = RDF::URI.new("http://id.ukpds.org/#{item_id}")
-		p = RDF::URI.new("http://purl.org/dc/terms/subject")
-		o = RDF::URI.new("http://id.ukpds.org/#{concept_id}")
-		statement = RDF::Statement(s, p, o)
-		graph = RDF::Graph.new << statement
+			s = RDF::URI.new("http://id.ukpds.org/#{item_id}")
+			p = RDF::URI.new("http://purl.org/dc/terms/subject")
+			o = RDF::URI.new("http://id.ukpds.org/#{concept_id}")
+			statement = RDF::Statement(s, p, o)
+			graph = RDF::Graph.new << statement
 
-		results = client.insert_data(graph)
-
-		raise "#{results}"
+			results = client.insert_data(graph)
+			redirect_to order_paper_business_item_edit_path(params[:order_paper_id], params[:id])
+		end
 	end
 end

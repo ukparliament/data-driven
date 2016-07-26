@@ -4,9 +4,13 @@
 
 	<%= submit_tag("add") %>
 
+	<ul>
+		<% @linked_concepts.each do |concept| %>
+			<li>
+				<span><%= concept[:label] %></span>
+				<button name="remove" value="<%= concept[:id]%>">remove</button>
+			</li>
+		<% end %>
+	</ul>
 
-	<%= foreach concept in {concepts associated with this item} %>
-		<%= concept.label %>
-		<button name="delete" value="concept.id">delete</button>
-	<% end %>
 <% end %>

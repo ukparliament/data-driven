@@ -30,6 +30,27 @@ class Concept < QueryObject
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end
+
+	def self.find_by_business_item(business_item_uri)
+		result = self.query("
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			CONSTRUCT {
+			    ?concept
+			        skos:prefLabel ?label .
+			}
+			WHERE {
+			    <#{business_item_uri}>
+					dcterms:subject ?concept .
+        		?concept
+					skos:prefLabel ?label .
+			}
+			ORDER BY ?label
+		")
+	  	hierarchy = self.find_convert_to_hash(result)
+
+		{ :graph => result, :hierarchy => hierarchy }
+	end
 	
 	def self.most_popular_by_contribution
 		result = self.query('
