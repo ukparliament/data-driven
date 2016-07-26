@@ -1,5 +1,94 @@
 class Concept < QueryObject
 	include Vocabulary
+
+	def self.all_alphabetical
+		result = self.query('
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			CONSTRUCT {
+			    ?concept
+			        skos:prefLabel ?label .
+			}
+			WHERE {
+			    SELECT ?concept ?label (COUNT(?contribution) AS ?count)
+			    WHERE {
+			        ?concept
+						a skos:Concept ;
+						skos:prefLabel ?label .
+			        ?contribution
+						dcterms:subject ?concept .
+			    }
+			    GROUP BY ?concept ?label
+			    ORDER BY DESC(?count)
+			    LIMIT 200
+			}
+			ORDER BY ?label
+		')
+
+	  	hierarchy = self.find_convert_to_hash(result)
+
+		{ :graph => result, :hierarchy => hierarchy }
+	end
+
+	def self.find_by_business_item(business_item_uri)
+		result = self.query("
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			CONSTRUCT {
+				?business_item
+					dcterms:subject ?title ;
+					dcterms:date ?date .
+			    ?concept
+			        skos:prefLabel ?label .
+			}
+			WHERE {
+			    ?business_item
+			    	dcterms:title ?title ;
+			    	dcterms:date ?date .
+			    OPTIONAL {
+			    	?business_item
+						dcterms:subject ?concept .
+					?concept
+						skos:prefLabel ?label .
+			    }
+			    FILTER (?business_item = <#{business_item_uri}>)
+			}
+			ORDER BY ?label
+		")
+
+		business_item_title_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(business_item_uri),
+			Dcterms.subject,
+			:business_item_title)
+		business_item_title = result.first_literal(business_item_title_pattern).to_s
+
+		business_item_date_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(business_item_uri),
+			Dcterms.date,
+			:business_item_date)
+		business_item_date = result.first_literal(business_item_date_pattern).to_s
+
+		concept_label_pattern = RDF::Query::Pattern.new(
+			:subject,
+			Skos.prefLabel,
+			:label)
+		concepts = result.query(concept_label_pattern).map do |statement|
+			{
+    			:id => self.get_id(statement.subject),
+      		  	:label => statement.object.to_s
+      		}
+		end
+
+		hierarchy = {
+			:id => self.get_id(business_item_uri),
+			:title => business_item_title,
+			:date => business_item_date.to_datetime,
+			:concepts => concepts
+		}
+
+		{ :graph => result, :hierarchy => hierarchy }
+	end
 	
 	def self.most_popular_by_contribution
 		result = self.query('
@@ -8,7 +97,7 @@ class Concept < QueryObject
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			CONSTRUCT {
 			    ?concept
-							a skos:Concept ;
+					a skos:Concept ;
 			        skos:prefLabel ?label ;
 			    	parl:count ?count .
 			}
@@ -45,15 +134,17 @@ class Concept < QueryObject
 					parl:label ?label ;
 					parl:writtenQuestionCount ?writtenQuestionCount ;
 					parl:oralQuestionCount ?oralQuestionCount ;
-					parl:divisionCount ?divisionCount .
+					parl:divisionCount ?divisionCount ;
+        			parl:orderPaperItemCount ?orderPaperItemCount .
 			}
 			WHERE {
-				SELECT ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?division) AS ?divisionCount)
+				SELECT ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?division) AS ?divisionCount) (COUNT(DISTINCT ?orderPaperItem) AS ?orderPaperItemCount)
 				WHERE {
 					{
 						?concept
 							skos:prefLabel ?label .
 					}
+					UNION
 					{
 						?writtenQuestion
 							a parl:WrittenParliamentaryQuestion ;
@@ -69,6 +160,12 @@ class Concept < QueryObject
 					{
 						?division
 							a parl:Division ;
+							dcterms:subject ?concept .
+					}
+        			UNION
+					{
+						?orderPaperItem
+							a parl:OrderPaperItem ;
 							dcterms:subject ?concept .
 					}
 					FILTER(?concept = <#{uri}>)
@@ -98,19 +195,26 @@ class Concept < QueryObject
 				Parl.divisionCount,
 				:division_count
 		)
+		order_paper_item_count_pattern = RDF::Query::Pattern.new(
+				RDF::URI::new(uri),
+				Parl.orderPaperItemCount,
+				:order_paper
+		)
 
 		oral_question_count = result.first_literal(oral_question_count_pattern).to_i
 		written_question_count = result.first_literal(written_question_count_pattern).to_i
 		division_count = result.first_literal(division_count_pattern).to_i
+		order_paper_item_count = result.first_literal(order_paper_item_count_pattern).to_i
 
 		hierarchy =
-				{
-						:id => self.get_id(uri),
-						:label => label,
-						:oral_question_count => oral_question_count,
-						:written_question_count => written_question_count,
-						:division_count => division_count
-				}
+			{
+				:id => self.get_id(uri),
+				:label => label,
+				:oral_question_count => oral_question_count,
+				:written_question_count => written_question_count,
+				:division_count => division_count,
+				:order_paper_item_count => order_paper_item_count
+			}
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end

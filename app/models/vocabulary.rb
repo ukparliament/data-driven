@@ -41,6 +41,10 @@ module Vocabulary
 		def self.url
 			RDF::URI.new("#{@@prefix}url")
 		end
+
+		def self.previousItem
+			RDF::URI.new("#{@@prefix}previousItem")
+		end
 	end
 	
 	class Dcterms
@@ -215,6 +219,10 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}membershipCount")
 		end
 
+		def self.orderPaperItemCount
+			RDF::URI.new("#{@@prefix}orderPaperItemCount")
+		end
+
 		def self.label
 			RDF::URI.new("#{@@prefix}label")
 		end
@@ -233,6 +241,10 @@ module Vocabulary
 
 		def self.numberOfSignatures
 			RDF::URI.new("#{@@prefix}numberOfSignatures")
+		end
+
+		def self.OrderPaperItem
+			RDF::URI.new("#{@@prefix}OrderPaperItem")
 		end
 	end
 	
