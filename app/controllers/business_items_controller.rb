@@ -19,6 +19,15 @@ class BusinessItemsController < ApplicationController
 		format(data)
 	end
 
+	def index_by_person
+		person_uri = resource_uri(params[:person_id])
+		data = BusinessItem.find_by_person(person_uri)
+		@person = data[:hierarchy]
+
+		@json_ld = json_ld(data)
+		format(data)
+	end
+
 	def show
 		business_item_uri = resource_uri(params[:id])
 		data = BusinessItem.find(business_item_uri)
@@ -34,15 +43,14 @@ class BusinessItemsController < ApplicationController
 		@concepts = dropdown_data[:hierarchy].map { |concept| [ concept[:label], concept[:id] ]}.to_h
 
 		data = Concept.find_by_business_item(business_item_uri)
-		@linked_concepts = data[:hierarchy][:concepts]
-		@business_item_title = data[:hierarchy][:business_item_title]
+		@business_item = data[:hierarchy]
 
 		@json_ld = json_ld(data)
 		format(data)
 	end
 
 	def update
-		repo = SPARQL::Client::Repository.new('http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06/statements')
+		repo = SPARQL::Client::Repository.new("#{DataDriven::Application.config.database}/statements")		
 		client = repo.client
 
 		if params[:remove]

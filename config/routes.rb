@@ -39,6 +39,7 @@ Rails.application.routes.draw do
     get '/votes(.:format)', to: 'votes#index_by_person', as: 'votes'
     get '/committees(.:format)', to: 'committees#index_by_person', as: 'committees'
     get '/written_answers(.:format)', to: 'written_answers#index_by_person', as: 'written_answers'
+    get '/business_items(.:format)', to: 'business_items#index_by_person', as: 'business_items'
   end
 
   resources :written_questions, only: [:index, :show]

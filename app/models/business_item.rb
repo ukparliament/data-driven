@@ -175,14 +175,15 @@ class BusinessItem < QueryObject
 			    	dcterms:title ?title .
 			}
 			WHERE { 
-        		?item
-			       	a parl:OrderPaperItem ;
-        			dcterms:subject ?concept ;
-			       	dcterms:date ?date ;
-			    	dcterms:title ?title .
-			    ?concept
+				?concept
 			    	skos:prefLabel ?label .
-
+			    OPTIONAL {
+			    	?item
+			       		a parl:OrderPaperItem ;
+        				dcterms:subject ?concept ;
+			       		dcterms:date ?date ;
+			    		dcterms:title ?title .
+			    }
          		FILTER(?concept = <#{concept_uri}>)
 			}
 		")
@@ -190,7 +191,7 @@ class BusinessItem < QueryObject
 		business_items_pattern = RDF::Query::Pattern.new(
 		  	:item, 
 		  	Dcterms.date, 
-		  	:concept)
+		  	:date)
 
 		business_items = result.query(business_items_pattern).subjects.map do |subject|
 			title_pattern = RDF::Query::Pattern.new(
@@ -224,6 +225,73 @@ class BusinessItem < QueryObject
 		}
 
 		{ :graph => result, :hierarchy => hierarchy }
+	end
+
+	def self.find_by_person(person_uri)
+		result = self.query("
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			PREFIX schema: <http://schema.org/>
+			CONSTRUCT {
+				?person
+					schema:name ?name .
+			    ?item
+			        dcterms:date ?date ;
+			    	dcterms:title ?title .
+			}
+			WHERE { 
+				?person
+			    	schema:name ?name .
+
+			    OPTIONAL {
+					?item
+			    	   	a parl:OrderPaperItem ;
+        				parl:member ?person ;
+			    	   	dcterms:date ?date ;
+			    		dcterms:title ?title .
+			    }
+         		FILTER(?person = <#{person_uri}>)
+			}
+		")
+
+		name_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(person_uri), 
+		  	Schema.name, 
+		  	:name)
+		name = result.first_literal(name_pattern).to_s
+
+		business_items_pattern = RDF::Query::Pattern.new(
+		  	:item, 
+		  	Dcterms.date, 
+		  	:date)
+
+		business_items = result.query(business_items_pattern).subjects.map do |subject|
+			title_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Dcterms.title, 
+		  		:title)
+			title = result.first_literal(title_pattern).to_s
+			date_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Dcterms.date, 
+		  		:date)
+			date = result.first_literal(date_pattern).to_s
+
+			{
+				:id => self.get_id(subject),
+				:title => title,
+				:date => date.to_datetime
+			}
+		end
+
+		hierarchy = {
+			:id => self.get_id(person_uri),
+			:name => name,
+			:business_items => business_items
+		}
+
+		{ :graph => result, :hierarchy => hierarchy }
+
 	end
 
 end

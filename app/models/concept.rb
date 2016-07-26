@@ -36,20 +36,23 @@ class Concept < QueryObject
 			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 			CONSTRUCT {
-				<#{business_item_uri}>
-					dcterms:subject ?title .
+				?business_item
+					dcterms:subject ?title ;
+					dcterms:date ?date .
 			    ?concept
 			        skos:prefLabel ?label .
 			}
 			WHERE {
-			    <#{business_item_uri}>
-			    	dcterms:title ?title .
+			    ?business_item
+			    	dcterms:title ?title ;
+			    	dcterms:date ?date .
 			    OPTIONAL {
-			    	<#{business_item_uri}>
+			    	?business_item
 						dcterms:subject ?concept .
 					?concept
 						skos:prefLabel ?label .
 			    }
+			    FILTER (?business_item = <#{business_item_uri}>)
 			}
 			ORDER BY ?label
 		")
@@ -59,6 +62,12 @@ class Concept < QueryObject
 			Dcterms.subject,
 			:business_item_title)
 		business_item_title = result.first_literal(business_item_title_pattern).to_s
+
+		business_item_date_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(business_item_uri),
+			Dcterms.date,
+			:business_item_date)
+		business_item_date = result.first_literal(business_item_date_pattern).to_s
 
 		concept_label_pattern = RDF::Query::Pattern.new(
 			:subject,
@@ -72,7 +81,9 @@ class Concept < QueryObject
 		end
 
 		hierarchy = {
-			:business_item_title => business_item_title,
+			:id => self.get_id(business_item_uri),
+			:title => business_item_title,
+			:date => business_item_date.to_datetime,
 			:concepts => concepts
 		}
 
@@ -196,14 +207,14 @@ class Concept < QueryObject
 		order_paper_item_count = result.first_literal(order_paper_item_count_pattern).to_i
 
 		hierarchy =
-				{
-					:id => self.get_id(uri),
-					:label => label,
-					:oral_question_count => oral_question_count,
-					:written_question_count => written_question_count,
-					:division_count => division_count,
-					:order_paper_item_count => order_paper_item_count
-				}
+			{
+				:id => self.get_id(uri),
+				:label => label,
+				:oral_question_count => oral_question_count,
+				:written_question_count => written_question_count,
+				:division_count => division_count,
+				:order_paper_item_count => order_paper_item_count
+			}
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end
