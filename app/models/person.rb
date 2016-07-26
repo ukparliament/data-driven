@@ -67,55 +67,61 @@ class Person < QueryObject
 				    	parl:membershipCount ?membershipCount ;
 			      		parl:writtenAnswerCount ?writtenAnswerCount ;
 		        		parl:voteCount ?voteCount ;
+		        		parl:orderPaperItemCount ?orderPaperItemsCount ;
 						parl:constituency ?constituency ;
 						parl:constituencyLabel ?constituencyLabel .
 					?house
 						rdfs:label ?label .
 				}
 				WHERE {
-				    SELECT ?name ?house ?label ?constituency ?constituencyLabel (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?writtenAnswer) as ?writtenAnswerCount) (COUNT(DISTINCT ?vote) as ?voteCount) (COUNT(?membership) AS ?membershipCount)
+				    SELECT ?name ?house ?label ?constituency ?constituencyLabel (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?writtenAnswer) as ?writtenAnswerCount) (COUNT(DISTINCT ?vote) as ?voteCount) (COUNT(?membership) AS ?membershipCount) (COUNT(?orderPaperItem) AS ?orderPaperItemsCount)
 				    WHERE {
 				     	?person
-								schema:name ?name ;
-								parl:house ?house .
-							?house
-								rdfs:label ?label .
-							OPTIONAL {
-								?constituency
-									parl:member ?person ;
-									a parl:Constituency ;
-									rdfs:label ?constituencyLabel .
+							schema:name ?name ;
+							parl:house ?house .
+						?house
+							rdfs:label ?label .
+						OPTIONAL {
+							?constituency
+								parl:member ?person ;
+								a parl:Constituency ;
+								rdfs:label ?constituencyLabel .
 							}
-			        {
-			        	?oralQuestion
-			        		a parl:OralParliamentaryQuestion ;
-			        		parl:member ?person .
-			        }
-			        UNION {
-			            ?writtenQuestion
-			                a parl:WrittenParliamentaryQuestion ;
-			                parl:member ?person .
-			        }
-			        UNION {
-			            ?writtenAnswer
-			                a parl:WrittenParliamentaryAnswer ;
-			                parl:member ?person .
-			        }
-			        UNION {
-			            ?vote
-			      			parl:member ?person ;
-			      			parl:division ?division .
-			        }
-			        UNION {
-			            ?membership
-			                parl:member ?person ;
-			                a ?committeeParticipation .
-			            FILTER (?committeeParticipation = parl:CommitteeMember || ?committeeParticipation = parl:CommitteeChair || ?committeeParticipation = parl:CommitteeAdviser)
-			        }
-			    	FILTER(?person = <#{uri}>)
-			    }
+			        	{
+			        		?oralQuestion
+			        			a parl:OralParliamentaryQuestion ;
+			        			parl:member ?person .
+			        	}
+			        	UNION {
+			        	    ?writtenQuestion
+			        	        a parl:WrittenParliamentaryQuestion ;
+			        	        parl:member ?person .
+			        	}
+			        	UNION {
+			        	    ?writtenAnswer
+			        	        a parl:WrittenParliamentaryAnswer ;
+			        	        parl:member ?person .
+			        	}
+			        	UNION {
+            				?orderPaperItem
+                				a parl:OrderPaperItem ;
+                				parl:member ?person .
+        				}
+			        	UNION {
+			        	    ?vote
+			      				parl:member ?person ;
+			      				parl:division ?division .
+			        	}
+			        	UNION {
+			        	    ?membership
+			        	        parl:member ?person ;
+			        	        a ?committeeParticipation .
+			        	    FILTER (?committeeParticipation = parl:CommitteeMember || ?committeeParticipation = parl:CommitteeChair || ?committeeParticipation = parl:CommitteeAdviser)
+			        	}
+			    		FILTER(?person = <#{uri}>)
+			    	}
 			    GROUP BY ?name ?house ?label ?constituency ?constituencyLabel
-				}")
+			}")
 
 		name_pattern = RDF::Query::Pattern.new(
 			RDF::URI.new(uri),
@@ -173,31 +179,37 @@ class Person < QueryObject
 			Parl.membershipCount,
 			:membershipCount
 		)
+		order_paper_items_count_pattern = RDF::Query::Pattern.new(
+			RDF::URI::new(uri),
+			Parl.orderPaperItemCount,
+			:orderPaperItemCount
+		)
 
-		oral_question_count = result.first_literal(oral_question_count_pattern)
-		written_question_count = result.first_literal(written_question_count_pattern)
-		written_answer_count = result.first_literal(written_answer_count_pattern)
-		vote_count = result.first_literal(vote_count_pattern)
-		membership_count = result.first_literal(membership_count_pattern)
-
+		oral_question_count = result.first_literal(oral_question_count_pattern).to_i
+		written_question_count = result.first_literal(written_question_count_pattern).to_i
+		written_answer_count = result.first_literal(written_answer_count_pattern).to_i
+		vote_count = result.first_literal(vote_count_pattern).to_i
+		membership_count = result.first_literal(membership_count_pattern).to_i
+		order_paper_item_count = result.first_literal(order_paper_items_count_pattern).to_i
 
 		hierarchy = 
       		{
-      		  :id => self.get_id(uri),
-      		  :name => name.to_s,
-      		  :house => {
-      		  	:id => self.get_id(house),
-      		  	:label => label.to_s
-      		  },
-						:constituency => {
-							:id => self.get_id(constituency),
-							:label => constituency_label.to_s
-						},
-						:oral_question_count => oral_question_count,
-						:written_question_count => written_question_count,
-						:written_answer_count => written_answer_count,
-						:vote_count => vote_count,
-						:membership_count => membership_count
+      		  	:id => self.get_id(uri),
+      		  	:name => name.to_s,
+      		  	:house => {
+      		  		:id => self.get_id(house),
+      		  		:label => label.to_s
+      		  	},
+				:constituency => {
+					:id => self.get_id(constituency),
+					:label => constituency_label.to_s
+				},
+				:oral_question_count => oral_question_count,
+				:written_question_count => written_question_count,
+				:written_answer_count => written_answer_count,
+				:vote_count => vote_count,
+				:membership_count => membership_count,
+				:order_paper_item_count => order_paper_item_count
       		}
 
 		{ :graph => result, :hierarchy => hierarchy }
