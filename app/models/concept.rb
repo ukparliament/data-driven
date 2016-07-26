@@ -96,10 +96,11 @@ class Concept < QueryObject
 					parl:label ?label ;
 					parl:writtenQuestionCount ?writtenQuestionCount ;
 					parl:oralQuestionCount ?oralQuestionCount ;
-					parl:divisionCount ?divisionCount .
+					parl:divisionCount ?divisionCount ;
+        			parl:orderPaperItemCount ?orderPaperItemCount .
 			}
 			WHERE {
-				SELECT ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?division) AS ?divisionCount)
+				SELECT ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?division) AS ?divisionCount) (COUNT(DISTINCT ?orderPaperItem) AS ?orderPaperItemCount)
 				WHERE {
 					{
 						?concept
@@ -120,6 +121,12 @@ class Concept < QueryObject
 					{
 						?division
 							a parl:Division ;
+							dcterms:subject ?concept .
+					}
+        			UNION
+					{
+						?orderPaperItem
+							a parl:OrderPaperItem ;
 							dcterms:subject ?concept .
 					}
 					FILTER(?concept = <#{uri}>)
@@ -149,10 +156,16 @@ class Concept < QueryObject
 				Parl.divisionCount,
 				:division_count
 		)
+		order_paper_item_count_pattern = RDF::Query::Pattern.new(
+				RDF::URI::new(uri),
+				Parl.orderPaperItemCount,
+				:order_paper
+		)
 
 		oral_question_count = result.first_literal(oral_question_count_pattern).to_i
 		written_question_count = result.first_literal(written_question_count_pattern).to_i
 		division_count = result.first_literal(division_count_pattern).to_i
+		order_paper_item_count = result.first_literal(order_paper_item_count_pattern).to_i
 
 		hierarchy =
 				{
@@ -160,7 +173,8 @@ class Concept < QueryObject
 						:label => label,
 						:oral_question_count => oral_question_count,
 						:written_question_count => written_question_count,
-						:division_count => division_count
+						:division_count => division_count,
+						:order_paper_item_count => order_paper_item_count
 				}
 
 		{ :graph => result, :hierarchy => hierarchy }
