@@ -66,7 +66,13 @@ Rails.application.routes.draw do
   resources :petitions, only: [:index, :show]
 
   resources :order_papers, only: [:index] do
-    resources :business_items, only: [:index, :show, :edit]
+    get '/business_items(.:format)', to: 'business_items#index_by_order_paper', as: 'business_items'
+    get '/business_items/:id(.:format)', to: 'business_items#show', as: 'business_item'
+    get '/business_items/:id/edit(.:format)', to: 'business_items#edit', as: 'business_item_edit'
+    post '/business_items/:id/edit(.:format)', to: 'business_items#update', as: 'business_item_update'
+
+
+    # resources :business_items, only: [:index, :show, :edit]
   end
 
   # Example resource route with sub-resources:

@@ -1,0 +1,16 @@
+<%= form_tag(method: :post) do %>
+	<%= label_tag(:concept, "concept") %>
+	<%= select_tag(:concept, options_for_select(@concepts)) %>
+
+	<%= submit_tag("add") %>
+
+	<ul>
+		<% @linked_concepts.each do |concept| %>
+			<li>
+				<span><%= concept[:label] %></span>
+				<button name="remove" value="<%= concept[:id]%>">remove</button>
+			</li>
+		<% end %>
+	</ul>
+
+<% end %>
