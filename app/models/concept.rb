@@ -198,7 +198,7 @@ class Concept < QueryObject
 					:label => label,
 					:oral_question_count => oral_question_count,
 					:written_question_count => written_question_count,
-					:division_count => division_count
+					:division_count => division_count,
 					:order_paper_item_count => order_paper_item_count
 				}
 
