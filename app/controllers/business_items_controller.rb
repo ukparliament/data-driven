@@ -42,36 +42,37 @@ class BusinessItemsController < ApplicationController
 	end
 
 	def update
+		repo = SPARQL::Client::Repository.new('http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06/statements')
+		client = repo.client
+
 		if params[:remove]
 			concept_id = params[:remove]
 			item_id = params[:id]
-			repo = SPARQL::Client::Repository.new('http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06/statements')
-			client = repo.client
 
-			s = RDF::URI.new("http://id.ukpds.org/#{item_id}")
-			p = RDF::URI.new("http://purl.org/dc/terms/subject")
-			o = RDF::URI.new("http://id.ukpds.org/#{concept_id}")
-			statement = RDF::Statement(s, p, o)
-			graph = RDF::Graph.new << statement
+			graph = update_pattern(item_id, concept_id)
 
-			results = client.delete_data(graph)
+			client.delete_data(graph)
 			redirect_to order_paper_business_item_edit_path(params[:order_paper_id], params[:id])
 		end
 
 		if params[:commit]
 			concept_id = params[:concept]
 			item_id = params[:id]
-			repo = SPARQL::Client::Repository.new('http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06/statements')
-			client = repo.client
 
-			s = RDF::URI.new("http://id.ukpds.org/#{item_id}")
-			p = RDF::URI.new("http://purl.org/dc/terms/subject")
-			o = RDF::URI.new("http://id.ukpds.org/#{concept_id}")
-			statement = RDF::Statement(s, p, o)
-			graph = RDF::Graph.new << statement
+			graph = update_pattern(item_id, concept_id)
 
-			results = client.insert_data(graph)
+			client.insert_data(graph)
 			redirect_to order_paper_business_item_edit_path(params[:order_paper_id], params[:id])
 		end
+	end
+
+	private 
+
+	def update_pattern(item_id, concept_id)
+		s = RDF::URI.new("http://id.ukpds.org/#{item_id}")
+		p = RDF::URI.new("http://purl.org/dc/terms/subject")
+		o = RDF::URI.new("http://id.ukpds.org/#{concept_id}")
+		statement = RDF::Statement(s, p, o)
+		RDF::Graph.new << statement
 	end
 end
