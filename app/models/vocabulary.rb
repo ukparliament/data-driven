@@ -219,6 +219,10 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}membershipCount")
 		end
 
+		def self.orderPaperItemCount
+			RDF::URI.new("#{@@prefix}orderPaperItemCount")
+		end
+
 		def self.label
 			RDF::URI.new("#{@@prefix}label")
 		end

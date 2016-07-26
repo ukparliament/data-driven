@@ -1,19 +1,24 @@
 <h1><%= @concept[:label] %></h1>
 
 <ul>
-<li>
-<%= link_to concept_oral_questions_path(@concept[:id]) do %>
-	Oral questions related to this concept (<%= @concept[:oral_question_count] %>)
-<% end %>
-</li>
-<li>
-<%= link_to concept_written_questions_path(@concept[:id]) do %>
-	Written questions related to this concept (<%= @concept[:written_question_count] %>)
-<% end %>
-</li>
-<li>
-<%= link_to concept_divisions_path(@concept[:id]) do %>
-	Divisions related to this concept (<%= @concept[:division_count] %>)
-<% end %>
-</li>
+	<li>
+		<%= link_to concept_oral_questions_path(@concept[:id]) do %>
+			Oral questions related to this concept (<%= @concept[:oral_question_count] %>)
+		<% end %>
+	</li>
+	<li>
+		<%= link_to concept_written_questions_path(@concept[:id]) do %>
+			Written questions related to this concept (<%= @concept[:written_question_count] %>)
+		<% end %>
+	</li>
+	<li>
+		<%= link_to concept_divisions_path(@concept[:id]) do %>
+			Divisions related to this concept (<%= @concept[:division_count] %>)
+		<% end %>
+	</li>
+	<li>
+		<%= link_to concept_business_items_path(@concept[:id]) do %>
+			Order Paper Items related to this concept (<%= @concept[:order_paper_item_count] %>)
+		<% end %>
+	</li>
 </ul>

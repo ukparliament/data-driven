@@ -162,16 +162,68 @@ class BusinessItem < QueryObject
 		{ :graph => result, :hierarchy => hierarchy }
 	end
 
-	def self.update
-		self.insert("
+	def self.find_by_concept(concept_uri)
+		result = self.query("
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX dcterms: <http://purl.org/dc/terms/>
-			INSERT {
-			    <http://id.ukpds.org/23a6596b-bc6c-4577-a9d7-0670fcdfe180> dcterms:subject <http://id.ukpds.org/00090502-0000-0000-0000-000000000002>
+			CONSTRUCT {
+				?concept
+					skos:prefLabel ?label .
+			    ?item
+			        dcterms:date ?date ;
+			    	dcterms:title ?title .
 			}
-			WHERE {
-			    
+			WHERE { 
+        		?item
+			       	a parl:OrderPaperItem ;
+        			dcterms:subject ?concept ;
+			       	dcterms:date ?date ;
+			    	dcterms:title ?title .
+			    ?concept
+			    	skos:prefLabel ?label .
+
+         		FILTER(?concept = <#{concept_uri}>)
 			}
 		")
+
+		business_items_pattern = RDF::Query::Pattern.new(
+		  	:item, 
+		  	Dcterms.date, 
+		  	:concept)
+
+		business_items = result.query(business_items_pattern).subjects.map do |subject|
+			title_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Dcterms.title, 
+		  		:title)
+			title = result.first_literal(title_pattern).to_s
+			date_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Dcterms.date, 
+		  		:date)
+			date = result.first_literal(date_pattern).to_s
+
+			{
+				:id => self.get_id(subject),
+				:title => title,
+				:date => date.to_datetime
+			}
+		end
+
+		label_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(concept_uri), 
+		  	Skos.prefLabel, 
+		  	:label)
+		label = result.first_literal(label_pattern).to_s
+
+		hierarchy = {
+			:id => self.get_id(concept_uri),
+			:label => label,
+			:business_items => business_items
+		}
+
+		{ :graph => result, :hierarchy => hierarchy }
 	end
+
 end
