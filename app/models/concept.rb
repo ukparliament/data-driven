@@ -43,10 +43,13 @@ class Concept < QueryObject
 			}
 			WHERE {
 			    <#{business_item_uri}>
-			    	dcterms:title ?title ;
-					dcterms:subject ?concept .
-        		?concept
-					skos:prefLabel ?label .
+			    	dcterms:title ?title .
+			    OPTIONAL {
+			    	<#{business_item_uri}>
+						dcterms:subject ?concept .
+					?concept
+						skos:prefLabel ?label .
+			    }
 			}
 			ORDER BY ?label
 		")
