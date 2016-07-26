@@ -36,22 +36,23 @@ class Concept < QueryObject
 			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 			CONSTRUCT {
-				<#{business_item_uri}>
+				?business_item
 					dcterms:subject ?title ;
 					dcterms:date ?date .
 			    ?concept
 			        skos:prefLabel ?label .
 			}
 			WHERE {
-			    <#{business_item_uri}>
+			    ?business_item
 			    	dcterms:title ?title ;
 			    	dcterms:date ?date .
 			    OPTIONAL {
-			    	<#{business_item_uri}>
+			    	?business_item
 						dcterms:subject ?concept .
 					?concept
 						skos:prefLabel ?label .
 			    }
+			    FILTER (?business_item = <#{business_item_uri}>)
 			}
 			ORDER BY ?label
 		")

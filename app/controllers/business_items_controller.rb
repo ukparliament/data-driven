@@ -41,7 +41,7 @@ class BusinessItemsController < ApplicationController
 	end
 
 	def update
-		repo = SPARQL::Client::Repository.new('http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06/statements')
+		repo = SPARQL::Client::Repository.new("#{DataDriven::Application.config.database}/statements")		
 		client = repo.client
 
 		if params[:remove]
