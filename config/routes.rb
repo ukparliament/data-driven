@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     get '/oral_questions(.:format)', to: 'oral_questions#index_by_concept', as: 'oral_questions'
     get '/written_questions(.:format)', to: 'written_questions#index_by_concept', as: 'written_questions'
     get '/divisions(.:format)', to: 'divisions#index_by_concept', as: 'divisions'
-    get '/business_items(.:format)', to: 'business_items#index_by_concept', as: 'business_items'
+    get '/order_paper_items(.:format)', to: 'order_paper_items#index_by_concept', as: 'order_paper_items'
   end
 
   resources :people, only: [:index, :show] do
@@ -39,7 +39,7 @@ Rails.application.routes.draw do
     get '/votes(.:format)', to: 'votes#index_by_person', as: 'votes'
     get '/committees(.:format)', to: 'committees#index_by_person', as: 'committees'
     get '/written_answers(.:format)', to: 'written_answers#index_by_person', as: 'written_answers'
-    get '/business_items(.:format)', to: 'business_items#index_by_person', as: 'business_items'
+    get '/order_paper_items(.:format)', to: 'order_paper_items#index_by_person', as: 'order_paper_items'
   end
 
   resources :written_questions, only: [:index, :show]
@@ -68,13 +68,12 @@ Rails.application.routes.draw do
   resources :petitions, only: [:index, :show]
 
   resources :order_papers, only: [:index] do
-    get '/business_items(.:format)', to: 'business_items#index_by_order_paper', as: 'business_items'
-    get '/business_items/:id(.:format)', to: 'business_items#show', as: 'business_item'
-    get '/business_items/:id/edit(.:format)', to: 'business_items#edit', as: 'business_item_edit'
-    post '/business_items/:id/edit(.:format)', to: 'business_items#update', as: 'business_item_update'
+    get '/order_paper_items(.:format)', to: 'order_paper_items#index_by_order_paper', as: 'business_items'
+  end
 
-
-    # resources :business_items, only: [:index, :show, :edit]
+  resources :order_paper_items, only: [:index, :show] do
+    get '/edit(.:format)', to: 'order_paper_items#edit', as: 'edit'
+    post '/edit(.:format)', to: 'order_paper_items#update', as: 'update'
   end
 
   # Example resource route with sub-resources:

@@ -1,4 +1,4 @@
-class BusinessItem < QueryObject
+class OrderPaperItem < QueryObject
 	include Vocabulary
 
 	def self.all(date)
@@ -188,12 +188,12 @@ class BusinessItem < QueryObject
 			}
 		")
 
-		business_items_pattern = RDF::Query::Pattern.new(
+		order_paper_items_pattern = RDF::Query::Pattern.new(
 		  	:item, 
 		  	Dcterms.date, 
 		  	:date)
 
-		business_items = result.query(business_items_pattern).subjects.map do |subject|
+		order_paper_items = result.query(order_paper_items_pattern).subjects.map do |subject|
 			title_pattern = RDF::Query::Pattern.new(
 		  		subject, 
 		  		Dcterms.title, 
@@ -221,7 +221,7 @@ class BusinessItem < QueryObject
 		hierarchy = {
 			:id => self.get_id(concept_uri),
 			:label => label,
-			:business_items => business_items
+			:order_paper_items => order_paper_items
 		}
 
 		{ :graph => result, :hierarchy => hierarchy }
@@ -260,12 +260,12 @@ class BusinessItem < QueryObject
 		  	:name)
 		name = result.first_literal(name_pattern).to_s
 
-		business_items_pattern = RDF::Query::Pattern.new(
+		order_paper_items_pattern = RDF::Query::Pattern.new(
 		  	:item, 
 		  	Dcterms.date, 
 		  	:date)
 
-		business_items = result.query(business_items_pattern).subjects.map do |subject|
+		order_paper_items = result.query(order_paper_items_pattern).subjects.map do |subject|
 			title_pattern = RDF::Query::Pattern.new(
 		  		subject, 
 		  		Dcterms.title, 
@@ -287,7 +287,7 @@ class BusinessItem < QueryObject
 		hierarchy = {
 			:id => self.get_id(person_uri),
 			:name => name,
-			:business_items => business_items
+			:order_paper_items => order_paper_items
 		}
 
 		{ :graph => result, :hierarchy => hierarchy }

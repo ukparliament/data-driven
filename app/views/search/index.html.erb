@@ -6,7 +6,7 @@
 			<strong>
 				<%= result[:friendly_type]%>:
 			</strong>
-      <% if result[:controller] == "business_items" %>
+      <% if result[:controller] == "order_paper_items" %>
         <%= link_to controller:"#{result[:controller]}", action: "show", order_paper_id: result[:date], id: result[:id] do %>
           <%= strip_tags(result[:text]) %>
         <% end %>
@@ -21,7 +21,7 @@
           <li> <%= link_to "Oral questions", person_oral_questions_path(result[:id]) %> </li>
           <li> <%= link_to "Voting record", person_votes_path(result[:id]) %> </li>
           <li> <%= link_to "Committees", person_committees_path(result[:id]) %> </li>
-          <li> <%= link_to "Order Paper Items", person_business_items_path(result[:id]) %> </li>
+          <li> <%= link_to "Order Paper Items", person_order_paper_items_path(result[:id]) %> </li>
         <% end %>
         <% if result[:controller] == "divisions" %>
           <li> <%= link_to "Votes", division_votes_path(result[:id]) %> </li>
@@ -30,7 +30,7 @@
           <li> <%= link_to "Written questions", concept_written_questions_path(result[:id]) %> </li>
           <li> <%= link_to "Oral questions", concept_oral_questions_path(result[:id]) %> </li>
           <li> <%= link_to "Divisions", concept_divisions_path(result[:id]) %> </li>
-          <li> <%= link_to "Order Paper Items", concept_business_items_path(result[:id]) %> </li>
+          <li> <%= link_to "Order Paper Items", concept_order_paper_items_path(result[:id]) %> </li>
 			  <% end %>
       </ul>
 		</li>
