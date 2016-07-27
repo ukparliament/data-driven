@@ -1,5 +1,14 @@
 <h1>Order Papers</h1>
 
+<form action="<%= url_for(search_index_path) %>" data-automation-context="Oral paper items search">
+	<fieldset>
+		<legend>Order paper search</legend>
+		<input type="hidden" name="filters[parl:OrderPaperItem]" value="on">
+		<input name="q">
+		<button>Search</button>
+	</fieldset>
+</form>
+
 <ul>
 	<% @order_papers.each do |order_paper| %>
 		<li>
