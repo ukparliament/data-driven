@@ -21,6 +21,7 @@
           <li> <%= link_to "Oral questions", person_oral_questions_path(result[:id]) %> </li>
           <li> <%= link_to "Voting record", person_votes_path(result[:id]) %> </li>
           <li> <%= link_to "Committees", person_committees_path(result[:id]) %> </li>
+          <li> <%= link_to "Order Paper Items", person_business_items_path(result[:id]) %> </li>
         <% end %>
         <% if result[:controller] == "divisions" %>
           <li> <%= link_to "Votes", division_votes_path(result[:id]) %> </li>
