@@ -1,9 +1,9 @@
 require 'net/http'
 
-class BusinessItemsController < ApplicationController
+class OrderPaperItemsController < ApplicationController
 	def index_by_order_paper
 		date = params[:order_paper_id]
-		data = BusinessItem.all(date)
+		data = OrderPaperItem.all(date)
 		@order_paper = data[:hierarchy]
 
 		@json_ld = json_ld(data)
@@ -12,7 +12,7 @@ class BusinessItemsController < ApplicationController
 
 	def index_by_concept
 		concept_uri = resource_uri(params[:concept_id])
-		data = BusinessItem.find_by_concept(concept_uri)
+		data = OrderPaperItem.find_by_concept(concept_uri)
 		@concept = data[:hierarchy]
 
 		@json_ld = json_ld(data)
@@ -21,7 +21,7 @@ class BusinessItemsController < ApplicationController
 
 	def index_by_person
 		person_uri = resource_uri(params[:person_id])
-		data = BusinessItem.find_by_person(person_uri)
+		data = OrderPaperItem.find_by_person(person_uri)
 		@person = data[:hierarchy]
 
 		@json_ld = json_ld(data)
@@ -29,21 +29,21 @@ class BusinessItemsController < ApplicationController
 	end
 
 	def show
-		business_item_uri = resource_uri(params[:id])
-		data = BusinessItem.find(business_item_uri)
-		@business_item = data[:hierarchy]
+		order_paper_item_uri = resource_uri(params[:id])
+		data = OrderPaperItem.find(order_paper_item_uri)
+		@order_paper_item = data[:hierarchy]
 
 		@json_ld = json_ld(data)
 		format(data)
 	end
 
 	def edit
-		business_item_uri = resource_uri(params[:id])
+		order_paper_item_uri = resource_uri(params[:order_paper_item_id])
 		dropdown_data = Concept.all_alphabetical
 		@concepts = dropdown_data[:hierarchy].map { |concept| [ concept[:label], concept[:id] ]}.to_h
 
-		data = Concept.find_by_business_item(business_item_uri)
-		@business_item = data[:hierarchy]
+		data = Concept.find_by_order_paper_item(order_paper_item_uri)
+		@order_paper_item = data[:hierarchy]
 
 		@json_ld = json_ld(data)
 		format(data)
@@ -55,22 +55,22 @@ class BusinessItemsController < ApplicationController
 
 		if params[:remove]
 			concept_id = params[:remove]
-			item_id = params[:id]
+			item_id = params[:order_paper_item_id]
 
 			graph = update_pattern(item_id, concept_id)
 
 			client.delete_data(graph)
-			redirect_to order_paper_business_item_edit_path(params[:order_paper_id], params[:id])
+			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 		end
 
 		if params[:commit]
 			concept_id = params[:concept]
-			item_id = params[:id]
+			item_id = params[:order_paper_item_id]
 
 			graph = update_pattern(item_id, concept_id)
 
 			client.insert_data(graph)
-			redirect_to order_paper_business_item_edit_path(params[:order_paper_id], params[:id])
+			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 		end
 	end
 

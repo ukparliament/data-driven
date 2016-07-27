@@ -1,11 +1,11 @@
 <h1>Order Paper Items about <%= @concept[:label] %></h1>
-<% if(@concept[:business_items].empty?) %>
+<% if(@concept[:order_paper_items].empty?) %>
     <p>No order paper items</p>
 <% else %>
 	<ul>
-		<% @concept[:business_items].each do |item| %>
+		<% @concept[:order_paper_items].each do |item| %>
 			<li>
-				<%= link_to order_paper_business_item_path(item[:date].strftime("%F"), item[:id]) do %>
+				<%= link_to order_paper_item_path(item[:id]) do %>
 					<%= item[:title] %>
 				<% end %>
 			</li>

@@ -1,4 +1,4 @@
-<h1><%= @business_item[:title] %></h1>
+<h1><%= @order_paper_item[:title] %></h1>
 
 <%= form_tag(method: :post) do %>
 	<%= label_tag(:concept, "Concept") %>
@@ -7,7 +7,7 @@
 	<%= submit_tag("add") %>
 
 	<ul>
-		<% @business_item[:concepts].each do |concept| %>
+		<% @order_paper_item[:concepts].each do |concept| %>
 			<li>
 				<span><%= concept[:label] %></span>
 				<button name="remove" value="<%= concept[:id]%>">remove</button>
@@ -17,8 +17,8 @@
 
 <% end %>
 
-<%= link_to order_paper_business_item_path(@business_item[:date].strftime("%F"), @business_item[:id]) do %>
-	Back to business item
+<%= link_to order_paper_item_path(@order_paper_item[:id]) do %>
+	Back to order paper item
 <% end %>
 
 
