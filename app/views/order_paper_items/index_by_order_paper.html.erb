@@ -2,7 +2,7 @@
 <ul>
 	<% @order_paper[:order_paper_items].each do |item| %>
 		<li>
-			<%= link_to order_paper_business_item_path(@order_paper[:date].strftime("%F"), item[:id]) do %>
+			<%= link_to order_paper_item_path(item[:id]) do %>
 				<%= item[:title] %>
 			<% end %>
 		</li>

@@ -31,7 +31,7 @@ class Concept < QueryObject
 		{ :graph => result, :hierarchy => hierarchy }
 	end
 
-	def self.find_by_business_item(business_item_uri)
+	def self.find_by_order_paper_item(order_paper_item_uri)
 		result = self.query("
 			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 			PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -52,19 +52,19 @@ class Concept < QueryObject
 					?concept
 						skos:prefLabel ?label .
 			    }
-			    FILTER (?business_item = <#{business_item_uri}>)
+			    FILTER (?business_item = <#{order_paper_item_uri}>)
 			}
 			ORDER BY ?label
 		")
 
 		business_item_title_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(business_item_uri),
+			RDF::URI.new(order_paper_item_uri),
 			Dcterms.subject,
 			:business_item_title)
 		business_item_title = result.first_literal(business_item_title_pattern).to_s
 
 		business_item_date_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(business_item_uri),
+			RDF::URI.new(order_paper_item_uri),
 			Dcterms.date,
 			:business_item_date)
 		business_item_date = result.first_literal(business_item_date_pattern).to_s
@@ -81,7 +81,7 @@ class Concept < QueryObject
 		end
 
 		hierarchy = {
-			:id => self.get_id(business_item_uri),
+			:id => self.get_id(order_paper_item_uri),
 			:title => business_item_title,
 			:date => business_item_date.to_datetime,
 			:concepts => concepts

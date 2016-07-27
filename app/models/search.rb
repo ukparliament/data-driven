@@ -106,7 +106,7 @@ class Search < QueryObject
 				when Skos.Concept
 					"concepts"
 				when Parl.OrderPaperItem
-					"business_items"
+					"order_paper_items"
 				end
 
 			friendly_type = 
