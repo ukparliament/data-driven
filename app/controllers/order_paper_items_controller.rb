@@ -50,37 +50,37 @@ class OrderPaperItemsController < ApplicationController
 	end
 
 	def update
-		repo = SPARQL::Client::Repository.new("#{DataDriven::Application.config.database}/statements")		
-		client = repo.client
 
 		if params[:remove]
 			concept_id = params[:remove]
 			item_id = params[:order_paper_item_id]
+			update_graph(item_id, 'http://purl.org/dc/terms/subject', concept_id, false)
 
-			graph = update_pattern(item_id, concept_id)
-
-			client.delete_data(graph)
 			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 		end
 
 		if params[:commit]
 			concept_id = params[:concept]
 			item_id = params[:order_paper_item_id]
+			update_graph(item_id, 'http://purl.org/dc/terms/subject', concept_id, true)
 
-			graph = update_pattern(item_id, concept_id)
-
-			client.insert_data(graph)
 			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 		end
 	end
 
 	private 
 
-	def update_pattern(item_id, concept_id)
-		s = RDF::URI.new("http://id.ukpds.org/#{item_id}")
-		p = RDF::URI.new("http://purl.org/dc/terms/subject")
-		o = RDF::URI.new("http://id.ukpds.org/#{concept_id}")
-		statement = RDF::Statement(s, p, o)
-		RDF::Graph.new << statement
+	def update_graph(subject_id, predicate, object_id, is_insert)
+		repo = SPARQL::Client::Repository.new("#{DataDriven::Application.config.database}/statements")		
+		client = repo.client
+		graph = RDF::Graph.new << create_pattern(subject_id, predicate, object_id)
+		is_insert == true ? client.insert_data(graph) : client.delete_data(graph)
+	end
+
+	def create_pattern(subject_id, predicate, object_id)
+		s = RDF::URI.new("http://id.ukpds.org/#{subject_id}")
+		p = RDF::URI.new("#{predicate}")
+		o = RDF::URI.new("http://id.ukpds.org/#{object_id}")
+		RDF::Statement(s, p, o)
 	end
 end
