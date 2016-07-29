@@ -42,7 +42,7 @@ class OrderPaperItemsController < ApplicationController
 		dropdown_data = Concept.all_alphabetical
 		@concepts = dropdown_data[:hierarchy].map { |concept| [ concept[:label], concept[:id] ]}.to_h
 
-		data = Concept.find_by_order_paper_item(order_paper_item_uri)
+		data = OrderPaperItem.find(order_paper_item_uri)
 		@order_paper_item = data[:hierarchy]
 
 		@json_ld = json_ld(data)
@@ -50,7 +50,6 @@ class OrderPaperItemsController < ApplicationController
 	end
 
 	def update
-
 		if params[:remove]
 			if params[:linked_concepts]
 				concept_ids = params[:linked_concepts]
@@ -62,14 +61,14 @@ class OrderPaperItemsController < ApplicationController
 
 			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 		end
-
 		if params[:commit]
 			concept_id = params[:concept]
-			item_id = params[:order_paper_item_id]
-			update_graph(item_id, 'http://purl.org/dc/terms/subject', concept_id, true)
-
-			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
+			insert = true
 		end
+		item_id = params[:order_paper_item_id]
+		update_graph(item_id, 'http://purl.org/dc/terms/subject', concept_id, insert)
+
+		redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 	end
 
 	private 

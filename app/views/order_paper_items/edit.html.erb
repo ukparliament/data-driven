@@ -1,4 +1,4 @@
-<h1><%= @order_paper_item[:title] %></h1>
+<%= render "order_paper_item_info" %>
 
 <%= form_tag(method: :post) do %>
 	<%= label_tag(:concept, "Concept") %>

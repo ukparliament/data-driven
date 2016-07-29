@@ -1,0 +1,25 @@
+<dl>
+	<dt>Title</dt>
+	<dd>
+		<%= @order_paper_item[:title] %>
+	</dd>
+	<dt>Order Paper</dt>
+	<dd>
+		<%= link_to "#{@order_paper_item[:date].strftime("%d %B %Y")}", order_paper_business_items_path(@order_paper_item[:date].strftime("%F")) %>
+	</dd>
+	<% if @order_paper_item[:abstract] != "" %> 
+		<dt>Abstract</dt>
+			<dd>
+				<%= strip_tags(@order_paper_item[:abstract]) %>
+			</dd>
+	<% end %>
+
+	<% unless @order_paper_item[:person][:id].nil? %> 
+		<dt>Member</dt>
+			<dd>
+				<%= link_to person_path(@order_paper_item[:person][:id]) do %>
+					<%= @order_paper_item[:person][:name] %>
+				<% end %>
+			</dd>
+	<% end %>
+</dl>
