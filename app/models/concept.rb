@@ -30,65 +30,6 @@ class Concept < QueryObject
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end
-
-	def self.find_by_order_paper_item(order_paper_item_uri)
-		result = self.query("
-			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-			PREFIX dcterms: <http://purl.org/dc/terms/>
-			CONSTRUCT {
-				?business_item
-					dcterms:subject ?title ;
-					dcterms:date ?date .
-			    ?concept
-			        skos:prefLabel ?label .
-			}
-			WHERE {
-			    ?business_item
-			    	dcterms:title ?title ;
-			    	dcterms:date ?date .
-			    OPTIONAL {
-			    	?business_item
-						dcterms:subject ?concept .
-					?concept
-						skos:prefLabel ?label .
-			    }
-			    FILTER (?business_item = <#{order_paper_item_uri}>)
-			}
-			ORDER BY ?label
-		")
-
-		business_item_title_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(order_paper_item_uri),
-			Dcterms.subject,
-			:business_item_title)
-		business_item_title = result.first_literal(business_item_title_pattern).to_s
-
-		business_item_date_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(order_paper_item_uri),
-			Dcterms.date,
-			:business_item_date)
-		business_item_date = result.first_literal(business_item_date_pattern).to_s
-
-		concept_label_pattern = RDF::Query::Pattern.new(
-			:subject,
-			Skos.prefLabel,
-			:label)
-		concepts = result.query(concept_label_pattern).map do |statement|
-			{
-    			:id => self.get_id(statement.subject),
-      		  	:label => statement.object.to_s
-      		}
-		end
-
-		hierarchy = {
-			:id => self.get_id(order_paper_item_uri),
-			:title => business_item_title,
-			:date => business_item_date.to_datetime,
-			:concepts => concepts
-		}
-
-		{ :graph => result, :hierarchy => hierarchy }
-	end
 	
 	def self.most_popular_by_contribution
 		result = self.query('
