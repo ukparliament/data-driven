@@ -1,6 +1,13 @@
 <%= render "order_paper_item_info" %>
 
 <%= form_tag(method: :post) do %>
+	<label>
+		<%= check_box_tag "index_checked", "checked", @indexed_status %>
+		Indexed
+	</label>
+	<button name="update_index">update</button>
+	<br>
+
 	<%= label_tag(:concept, "Concept") %>
 	<%= select_tag(:concept, options_for_select(@concepts)) %>
 	

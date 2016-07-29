@@ -1,0 +1,16 @@
+<% if(@order_paper_items.empty?) %>
+    <p>No order paper items</p>
+<% else %>
+	<ul>
+		<% @order_paper_items.each do |item| %>
+			<li>
+				<%= link_to order_paper_item_path(item[:id]) do %>
+					<%= item[:title] %>
+				<% end %>
+				<% if item[:index_label] == "indexed" %>
+					- Indexed
+				<% end %>
+			</li>
+		<% end %>
+	</ul>
+<% end %>

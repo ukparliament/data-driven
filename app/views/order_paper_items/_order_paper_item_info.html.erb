@@ -3,6 +3,10 @@
 	<dd>
 		<%= @order_paper_item[:title] %>
 	</dd>
+	<dt>Index status: </dt>
+	<dd>
+		<%= @order_paper_item[:index_label] == "indexed" ? "Indexed" : "Not indexed" %>	
+	</dd>
 	<dt>Order Paper</dt>
 	<dd>
 		<%= link_to "#{@order_paper_item[:date].strftime("%d %B %Y")}", order_paper_business_items_path(@order_paper_item[:date].strftime("%F")) %>
