@@ -51,8 +51,15 @@ class OrderPaperItemsController < ApplicationController
 
 	def update
 		if params[:remove]
-			concept_id = params[:remove] 
-			insert = false
+			if params[:linked_concepts]
+				concept_ids = params[:linked_concepts]
+				item_id = params[:order_paper_item_id]
+				concept_ids.each do |concept_id|
+					update_graph(item_id, 'http://purl.org/dc/terms/subject', concept_id, false)
+				end
+			end
+
+			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 		end
 		if params[:commit]
 			concept_id = params[:concept]
