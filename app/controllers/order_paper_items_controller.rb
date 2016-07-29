@@ -5,6 +5,7 @@ class OrderPaperItemsController < ApplicationController
 		date = params[:order_paper_id]
 		data = OrderPaperItem.all(date)
 		@order_paper = data[:hierarchy]
+		@order_paper_items = data[:hierarchy][:order_paper_items]
 
 		@json_ld = json_ld(data)
 		format(data)
@@ -14,6 +15,7 @@ class OrderPaperItemsController < ApplicationController
 		concept_uri = resource_uri(params[:concept_id])
 		data = OrderPaperItem.find_by_concept(concept_uri)
 		@concept = data[:hierarchy]
+		@order_paper_items = data[:hierarchy][:order_paper_items]
 
 		@json_ld = json_ld(data)
 		format(data)
@@ -23,6 +25,7 @@ class OrderPaperItemsController < ApplicationController
 		person_uri = resource_uri(params[:person_id])
 		data = OrderPaperItem.find_by_person(person_uri)
 		@person = data[:hierarchy]
+		@order_paper_items = data[:hierarchy][:order_paper_items]
 
 		@json_ld = json_ld(data)
 		format(data)

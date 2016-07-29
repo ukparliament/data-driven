@@ -32,30 +32,7 @@ class OrderPaperItem < QueryObject
 			}
 		")
 
-		order_paper_items = result.subjects.map do |subject|
-			title_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Dcterms.title, 
-		  		:title)
-			title = result.first_literal(title_pattern).to_s
-			previous_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Schema.previousItem, 
-		  		:previousItem)
-			previousItemURI = result.first_object(previous_pattern)
-			indexed_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.indexed,
-				:indexedProperty)
-			indexed_property = result.first_object(indexed_pattern).to_s
-
-			{
-				:id => self.get_id(subject),
-				:title => title,
-				:index_label => indexed_property,
-				:previousItemId => self.get_id(previousItemURI)
-			}
-		end
+		order_paper_items = OrderPaperItem.order_paper_items_mapper(result, result.subjects)
 
 		hierarchy = {
 			:date => date.to_datetime,
@@ -194,7 +171,8 @@ class OrderPaperItem < QueryObject
 					skos:prefLabel ?label .
 			    ?item
 			        dcterms:date ?date ;
-			    	dcterms:title ?title .
+			    	dcterms:title ?title ;
+			    	parl:indexed ?indexedProperty .
 			}
 			WHERE { 
 				?concept
@@ -206,6 +184,10 @@ class OrderPaperItem < QueryObject
 			       		dcterms:date ?date ;
 			    		dcterms:title ?title .
 			    }
+			    OPTIONAL {
+    				?item
+    					parl:indexed ?indexedProperty .
+    			}
          		FILTER(?concept = <#{concept_uri}>)
 			}
 		")
@@ -215,24 +197,7 @@ class OrderPaperItem < QueryObject
 		  	Dcterms.date, 
 		  	:date)
 
-		order_paper_items = result.query(order_paper_items_pattern).subjects.map do |subject|
-			title_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Dcterms.title, 
-		  		:title)
-			title = result.first_literal(title_pattern).to_s
-			date_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Dcterms.date, 
-		  		:date)
-			date = result.first_literal(date_pattern).to_s
-
-			{
-				:id => self.get_id(subject),
-				:title => title,
-				:date => date.to_datetime
-			}
-		end
+		order_paper_items = OrderPaperItem.order_paper_items_mapper(result, result.query(order_paper_items_pattern).subjects)
 
 		label_pattern = RDF::Query::Pattern.new(
 		  	RDF::URI.new(concept_uri), 
@@ -259,7 +224,8 @@ class OrderPaperItem < QueryObject
 					schema:name ?name .
 			    ?item
 			        dcterms:date ?date ;
-			    	dcterms:title ?title .
+			    	dcterms:title ?title ;
+			    	parl:indexed ?indexedProperty .
 			}
 			WHERE { 
 				?person
@@ -272,6 +238,10 @@ class OrderPaperItem < QueryObject
 			    	   	dcterms:date ?date ;
 			    		dcterms:title ?title .
 			    }
+			    OPTIONAL {
+    				?item
+    					parl:indexed ?indexedProperty .
+    			}
          		FILTER(?person = <#{person_uri}>)
 			}
 		")
@@ -287,24 +257,7 @@ class OrderPaperItem < QueryObject
 		  	Dcterms.date, 
 		  	:date)
 
-		order_paper_items = result.query(order_paper_items_pattern).subjects.map do |subject|
-			title_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Dcterms.title, 
-		  		:title)
-			title = result.first_literal(title_pattern).to_s
-			date_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Dcterms.date, 
-		  		:date)
-			date = result.first_literal(date_pattern).to_s
-
-			{
-				:id => self.get_id(subject),
-				:title => title,
-				:date => date.to_datetime
-			}
-		end
+		order_paper_items = OrderPaperItem.order_paper_items_mapper(result, result.query(order_paper_items_pattern).subjects)
 
 		hierarchy = {
 			:id => self.get_id(person_uri),
@@ -314,6 +267,36 @@ class OrderPaperItem < QueryObject
 
 		{ :graph => result, :hierarchy => hierarchy }
 
+	end
+
+
+	private
+
+	def self.order_paper_items_mapper(result, subjects)
+		subjects.map do |subject|
+			title_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Dcterms.title, 
+		  		:title)
+			title = result.first_literal(title_pattern).to_s
+			previous_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Schema.previousItem, 
+		  		:previousItem)
+			previousItemURI = result.first_object(previous_pattern)
+			indexed_pattern = RDF::Query::Pattern.new(
+				subject,
+				Parl.indexed,
+				:indexedProperty)
+			indexed_property = result.first_object(indexed_pattern).to_s
+
+			{
+				:id => self.get_id(subject),
+				:title => title,
+				:index_label => indexed_property,
+				:previousItemId => self.get_id(previousItemURI)
+			}
+		end
 	end
 
 end

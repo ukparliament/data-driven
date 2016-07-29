@@ -1,7 +1,2 @@
 <h1><%= @person[:name] %> Order Paper Items</h1>
-
-<% if(@person[:order_paper_items].empty?) %>
-    <p>No order paper items</p>
-<% else %>
-	<%= render "order_paper_items_list" %>
-<% end %>
+<%= render "order_paper_items_list" %>
