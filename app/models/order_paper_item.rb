@@ -10,10 +10,11 @@ class OrderPaperItem < QueryObject
 			CONSTRUCT {
 			    ?orderPaperItem
 			        dcterms:title ?title ;
-    				schema:previousItem ?previousItem .
+    				schema:previousItem ?previousItem ;
+    				parl:indexed ?indexedProperty .
 			}
 			WHERE { 
-    			SELECT ?orderPaperItem ?title ?previousItem 
+    			SELECT ?orderPaperItem ?title ?previousItem ?indexedProperty
     			WHERE {
         			?orderPaperItem 
 			        	a parl:OrderPaperItem ;
@@ -22,6 +23,10 @@ class OrderPaperItem < QueryObject
         			OPTIONAL {
     					?orderPaperItem 
     						schema:previousItem ?previousItem .
+    				}
+    				OPTIONAL {
+    					?orderPaperItem
+    						parl:indexed ?indexedProperty .
     				}
 				}
 			}
@@ -38,10 +43,16 @@ class OrderPaperItem < QueryObject
 		  		Schema.previousItem, 
 		  		:previousItem)
 			previousItemURI = result.first_object(previous_pattern)
+			indexed_pattern = RDF::Query::Pattern.new(
+				subject,
+				Parl.indexed,
+				:indexedProperty)
+			indexed_property = result.first_object(indexed_pattern).to_s
 
 			{
 				:id => self.get_id(subject),
 				:title => title,
+				:index_label => indexed_property,
 				:previousItemId => self.get_id(previousItemURI)
 			}
 		end
@@ -67,14 +78,15 @@ class OrderPaperItem < QueryObject
 			    	dcterms:title ?title ;
         			dcterms:identifier ?identifier ;
             		dcterms:abstract ?abstract ;
-            		schema:previousItem ?previousItem .
+            		schema:previousItem ?previousItem ;
+            		parl:indexed ?indexedProperty .
     			?concept
         			skos:prefLabel ?label .
             	?person
             		schema:name ?person_name .
 			}
 			WHERE { 
-    			SELECT ?item ?date ?title ?identifier ?person ?abstract ?previousItem ?person_name ?concept ?label
+    			SELECT ?item ?date ?title ?identifier ?person ?abstract ?previousItem ?person_name ?concept ?label ?indexedProperty
     			WHERE {
         			?item
 			        	a parl:OrderPaperItem ;
@@ -101,6 +113,10 @@ class OrderPaperItem < QueryObject
                 		dcterms:subject ?concept .
             		?concept
                 		skos:prefLabel ?label .
+        		}
+        		OPTIONAL {
+        			?item
+        				parl:indexed ?indexedProperty
         		}
          		FILTER(?item = <#{uri}>)
     		}      
@@ -133,6 +149,11 @@ class OrderPaperItem < QueryObject
 		  	Schema.previousItem, 
 		  	:previousItem)
 		previousItemURI = result.first_object(previous_pattern)
+		indexed_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(uri),
+			Parl.indexed,
+			:indexedProperty)
+		indexed_property = result.first_object(indexed_pattern)
 
 		concept_pattern = RDF::Query::Pattern.new(
 			:subject,
@@ -156,6 +177,7 @@ class OrderPaperItem < QueryObject
 					},
 				:abstract => abstract,
 				:previousItemId => self.get_id(previousItemURI),
+				:indexed => indexed_property,
 				:concepts => concepts
 			}
 

@@ -1,0 +1,9 @@
+<ul>
+	<% @concept[:order_paper_items].each do |item| %>
+		<li>
+			<%= link_to order_paper_item_path(item[:id]) do %>
+				<%= item[:title] %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>

@@ -2,13 +2,5 @@
 <% if(@concept[:order_paper_items].empty?) %>
     <p>No order paper items</p>
 <% else %>
-	<ul>
-		<% @concept[:order_paper_items].each do |item| %>
-			<li>
-				<%= link_to order_paper_item_path(item[:id]) do %>
-					<%= item[:title] %>
-				<% end %>
-			</li>
-		<% end %>
-	</ul>
+	<%= render "order_paper_items_list" %>
 <% end %>

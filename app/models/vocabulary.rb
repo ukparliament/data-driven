@@ -246,6 +246,10 @@ module Vocabulary
 		def self.OrderPaperItem
 			RDF::URI.new("#{@@prefix}OrderPaperItem")
 		end
+
+		def self.indexed
+			RDF::URI.new("#{@@prefix}indexed")
+		end
 	end
 	
 	class Rdfs
