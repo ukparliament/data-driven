@@ -58,17 +58,16 @@ class OrderPaperItemsController < ApplicationController
 					update_graph(item_id, 'http://purl.org/dc/terms/subject', concept_id, false)
 				end
 			end
+			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
+		end
+
+		if params[:commit]
+			concept_id = params[:concept]
+			item_id = params[:order_paper_item_id]
+			update_graph(item_id, 'http://purl.org/dc/terms/subject', concept_id, true)
 
 			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 		end
-		if params[:commit]
-			concept_id = params[:concept]
-			insert = true
-		end
-		item_id = params[:order_paper_item_id]
-		update_graph(item_id, 'http://purl.org/dc/terms/subject', concept_id, insert)
-
-		redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 	end
 
 	private 
