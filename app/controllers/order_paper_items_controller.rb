@@ -42,7 +42,7 @@ class OrderPaperItemsController < ApplicationController
 		dropdown_data = Concept.all_alphabetical
 		@concepts = dropdown_data[:hierarchy].map { |concept| [ concept[:label], concept[:id] ]}.to_h
 
-		data = Concept.find_by_order_paper_item(order_paper_item_uri)
+		data = OrderPaperItem.find(order_paper_item_uri)
 		@order_paper_item = data[:hierarchy]
 
 		@json_ld = json_ld(data)
