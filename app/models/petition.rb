@@ -32,6 +32,7 @@ class Petition < QueryObject
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 			PREFIX schema: <http://schema.org/>
 			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 	
 			CONSTRUCT {
 			    ?petition 
@@ -42,6 +43,8 @@ class Petition < QueryObject
         			dcterms:modified ?dateUpdated ;
         			dcterms:identifier ?identifier ;
         			schema:url ?externalURL .
+        		?concept
+        			skos:prefLabel ?label .
         		?constituency
             		rdfs:label ?constituencyLabel ;
             		parl:numberOfSignatures ?numberOfSignatures .
@@ -63,7 +66,12 @@ class Petition < QueryObject
     			?constituency
         			a parl:Constituency ;
         			rdfs:label ?constituencyLabel .
-        
+        	OPTIONAL {
+        		?petition
+            		dcterms:subject ?concept .
+        		?concept
+            		skos:prefLabel ?label .
+    		}
 			FILTER(?petition = <#{uri}>)
 			}
 			ORDER BY ASC(?constituencyLabel)
@@ -125,6 +133,24 @@ class Petition < QueryObject
 			}
 		end
 
+		concept_pattern = RDF::Query::Pattern.new(
+		  	:concept, 
+		  	Skos.prefLabel, 
+		  	:concept_label)
+
+		concepts = result.query(concept_pattern).subjects.map do |subject|
+			concept_label_pattern = RDF::Query::Pattern.new(
+		  	subject, 
+		  	Skos.prefLabel, 
+		  	:concept_label)
+			concept_label = result.first_literal(concept_label_pattern).to_s
+
+			{
+				:id => self.get_id(subject),
+				:label => concept_label
+			}
+		end
+
 		hierarchy = {
 			:id => self.get_id(uri),
 			:title => title,
@@ -133,6 +159,7 @@ class Petition < QueryObject
 			:created => date_created,
 			:updated => date_modified,
 			:external_url => external_url,
+			:concepts => concepts,
 			:constituencies => constituencies
 		}
 
