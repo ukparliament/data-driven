@@ -7,19 +7,37 @@ class Petition < QueryObject
 			PREFIX dcterms: <http://purl.org/dc/terms/>
 	
 			CONSTRUCT {
-			    ?petition dcterms:title ?title .
+			    ?petition 
+			    	dcterms:title ?title ;
+			    	parl:indexed ?indexed .
 			}
 			WHERE { 
 				?petition 
 			        a parl:EPetition ;
-			        dcterms:title ?title .
+			        dcterms:title ?title ;
+			    OPTIONAL {
+			    	?petition
+			    	    parl:indexed ?indexed .
+			    }
 			}
 		")
 
-		hierarchy = result.map do |statement|
+		hierarchy = result.subjects.map do |subject|
+			title_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Dcterms.title, 
+		  		:title)
+			indexed_pattern = RDF::Query::Pattern.new(
+			  	subject, 
+			  	Parl.indexed, 
+			  	:index_label)
+			title = result.first_literal(title_pattern).to_s
+			index_label = result.first_literal(indexed_pattern).to_s
+
 			{
-				:id => self.get_id(statement.subject),
-				:title => statement.object.to_s
+				:id => self.get_id(subject),
+				:title => title,
+				:index_label => index_label
 			}
 		end
 
@@ -42,7 +60,8 @@ class Petition < QueryObject
         			dcterms:created ?dateCreated ;
         			dcterms:modified ?dateUpdated ;
         			dcterms:identifier ?identifier ;
-        			schema:url ?externalURL .
+        			schema:url ?externalURL ;
+        			parl:indexed ?indexed .
         		?concept
         			skos:prefLabel ?label .
         		?constituency
@@ -71,6 +90,10 @@ class Petition < QueryObject
             		dcterms:subject ?concept .
         		?concept
             		skos:prefLabel ?label .
+    		}
+    		OPTIONAL {
+    			?petition
+    				parl:indexed ?indexed .
     		}
 			FILTER(?petition = <#{uri}>)
 			}
@@ -105,11 +128,16 @@ class Petition < QueryObject
 		  	:constituency, 
 		  	Rdfs.label, 
 		  	:constituency_label)
+		indexed_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(uri), 
+		  	Parl.indexed, 
+		  	:index_label)
 
 		title = result.first_literal(title_pattern).to_s
 		summary = result.first_literal(summary_pattern).to_s
 		external_url = result.first_object(external_url_pattern).to_s
 		status = result.first_literal(status_pattern).to_s
+		index_label = result.first_literal(indexed_pattern).to_s
 		date_created = result.first_object(date_created_pattern).to_s.to_datetime.strftime("%d %B %Y")
 		date_modified = result.first_object(date_modified_pattern).to_s.to_datetime.strftime("%d %B %Y")
 
@@ -156,6 +184,7 @@ class Petition < QueryObject
 			:title => title,
 			:summary => summary,
 			:status => status,
+			:index_label => index_label,
 			:created => date_created,
 			:updated => date_modified,
 			:external_url => external_url,
