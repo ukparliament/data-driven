@@ -130,7 +130,7 @@ class OrderPaperItem < QueryObject
 			RDF::URI.new(uri),
 			Parl.indexed,
 			:indexedProperty)
-		indexed_property = result.first_object(indexed_pattern)
+		indexed_property = result.first_object(indexed_pattern).to_s
 
 		concept_pattern = RDF::Query::Pattern.new(
 			:subject,
@@ -154,7 +154,7 @@ class OrderPaperItem < QueryObject
 					},
 				:abstract => abstract,
 				:previousItemId => self.get_id(previousItemURI),
-				:indexed => indexed_property,
+				:index_label => indexed_property,
 				:concepts => concepts
 			}
 
@@ -289,7 +289,6 @@ class OrderPaperItem < QueryObject
 				Parl.indexed,
 				:indexedProperty)
 			indexed_property = result.first_object(indexed_pattern).to_s
-
 			{
 				:id => self.get_id(subject),
 				:title => title,

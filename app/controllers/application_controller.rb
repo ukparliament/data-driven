@@ -30,6 +30,11 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+  def rdf_uri(id)
+    uri = resource_uri(id)
+    RDF::URI.new(uri)
+  end
+
   def resource_uri(id)
     "http://id.ukpds.org/#{id}"
     # "http://data.parliament.uk/resource/#{id}"
