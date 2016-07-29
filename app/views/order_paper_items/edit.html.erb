@@ -6,14 +6,18 @@
 	
 	<%= submit_tag("add") %>
 
-	<ul>
-		<% @order_paper_item[:concepts].each do |concept| %>
-			<li>
-				<span><%= concept[:label] %></span>
-				<button name="remove" value="<%= concept[:id]%>">remove</button>
-			</li>
-		<% end %>
-	</ul>
+	<% unless @order_paper_item[:concepts].empty? %>
+		<p>Concepts linked to this item</p>
+		<ul>
+			<% @order_paper_item[:concepts].each do |concept| %>
+				<li>
+					<input type="checkbox" name="linked_concepts[]" value="<%= concept[:id] %>"/>
+					<label><%= concept[:label] %></label>
+				</li>
+			<% end %>
+		</ul>
+		<button name="remove">remove</button>
+	<% end %>
 
 <% end %>
 
