@@ -1,7 +1,46 @@
 class OrderPaperItem < QueryObject
 	include Vocabulary
 
-	def self.all(date)
+	def self.all
+		result = self.query('
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+			PREFIX schema: <http://schema.org/>
+			CONSTRUCT {
+			    ?orderPaperItem
+			        dcterms:title ?title ;
+    				schema:previousItem ?previousItem ;
+    				parl:indexed ?indexedProperty .
+			}
+			WHERE { 
+    			SELECT ?orderPaperItem ?title ?previousItem ?indexedProperty
+    			WHERE {
+        			?orderPaperItem 
+			        	a parl:OrderPaperItem ;
+			        	dcterms:date ?date ;
+			    		dcterms:title ?title . 
+        			OPTIONAL {
+    					?orderPaperItem 
+    						schema:previousItem ?previousItem .
+    				}
+    				OPTIONAL {
+    					?orderPaperItem
+    						parl:indexed ?indexedProperty .
+    				}
+				}
+			}')
+
+		order_paper_items = OrderPaperItem.order_paper_items_mapper(result, result.subjects)
+
+		hierarchy = {
+			:order_paper_items => order_paper_items
+		}
+
+		{ :graph => result, :hierarchy => hierarchy }
+	end
+
+	def self.all_by_date(date)
 		result = self.query("
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX dcterms: <http://purl.org/dc/terms/>
