@@ -1,15 +1,24 @@
-<%= render "order_paper_item_info" %>
+<%= render "order_paper_item_details" %>
 
 <%= form_tag(method: :post) do %>
 	<label>
 		<%= check_box_tag "index_checked", "checked", @indexed_status %>
 		Indexed
 	</label>
+	<br>
 	<label>
 		<%= check_box_tag "junk_checked", "junk", @junk_status %>
 		Mark as Junk
 	</label>
-	<button name="update_index">update</button>
+	<br>
+	<label>
+		Enter a business item type: 
+		<%= hidden_field_tag 'current_business_item_type', @business_item_type %>
+		<%= text_field_tag 'new_business_item_type', @business_item_type %>
+	</label>
+	<br>
+	<button name="update">update</button>
+	<br>
 	<br>
 
 	<%= label_tag(:concept, "Concept") %>

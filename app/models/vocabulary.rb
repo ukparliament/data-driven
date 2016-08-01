@@ -254,6 +254,10 @@ module Vocabulary
 		def self.junk
 			RDF::URI.new("#{@@prefix}junk")
 		end
+
+		def self.businessItemType
+			RDF::URI.new("#{@@prefix}businessItemType")
+		end
 	end
 	
 	class Rdfs

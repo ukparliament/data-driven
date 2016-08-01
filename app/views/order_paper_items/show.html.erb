@@ -1,7 +1,7 @@
 <h1>Order Paper Item Detail</h1>
 <h3><%= link_to "Edit", order_paper_item_edit_path(@order_paper_item[:id]) %></h3>
 
-<%= render "order_paper_item_info" %>
+<%= render "order_paper_item_details" %>
 
 <% unless @order_paper_item[:concepts].empty? %>
 	<p>Concepts linked to this order paper item</p>
