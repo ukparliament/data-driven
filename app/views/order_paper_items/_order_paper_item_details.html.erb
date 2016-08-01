@@ -3,6 +3,14 @@
 	<dd>
 		<%= @order_paper_item[:title] %>
 	</dd>
+	<dt>Business Item type:</dt>
+	<dd>
+		<% unless @order_paper_item[:business_item_type] == "" %>
+			<%= @order_paper_item[:business_item_type] %>
+		<% else %>
+			Not specified yet
+		<% end %>
+	</dd>
 	<dt>Index status: </dt>
 	<dd>
 		<%= @order_paper_item[:index_label] == "indexed" ? "Indexed" : "Indexing required" %>	
