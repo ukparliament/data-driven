@@ -1,12 +1,4 @@
 <h1>Business items for Order Paper <%= @order_paper[:date].strftime("%d %B %Y") %></h1>
-<ul>
-	<% @order_paper[:order_paper_items].each do |item| %>
-		<li>
-			<%= link_to order_paper_item_path(item[:id]) do %>
-				<%= item[:title] %>
-			<% end %>
-		</li>
-	<% end %>	
-</ul>
+<%= render "order_paper_items_list" %>
 
 

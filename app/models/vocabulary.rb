@@ -251,6 +251,9 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}indexed")
 		end
 
+		def self.junk
+			RDF::URI.new("#{@@prefix}junk")
+		end
 	end
 	
 	class Rdfs

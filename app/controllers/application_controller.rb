@@ -18,7 +18,8 @@ class ApplicationController < ActionController::Base
         :committees => url_for(controller: 'committees'),
         :petitions => url_for(controller: 'petitions'),
         :constituencies => url_for(controller: 'constituencies',
-        :order_papers => url_for(controller: 'order_papers'))
+        :order_papers => url_for(controller: 'order_papers'),
+        :order_paper_items => url_for(controller: 'order_paper_items'))
       }
     }
 
@@ -30,6 +31,11 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+  def rdf_uri(id)
+    uri = resource_uri(id)
+    RDF::URI.new(uri)
+  end
+
   def resource_uri(id)
     "http://id.ukpds.org/#{id}"
     # "http://data.parliament.uk/resource/#{id}"
