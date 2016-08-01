@@ -56,6 +56,7 @@ class OrderPaperItemsController < ApplicationController
 		data = OrderPaperItem.find(order_paper_item_uri)
 		@order_paper_item = data[:hierarchy]
 		@indexed_status = @order_paper_item[:index_label] == "indexed"
+		@junk_status = @order_paper_item[:junk_label] == "junk"
 
 		@json_ld = json_ld(data)
 		format(data)
@@ -63,7 +64,7 @@ class OrderPaperItemsController < ApplicationController
 
 	def update
 		if params[:remove]
-			index_check
+			index_junk_check
 			if params[:linked_concepts]
 				concept_ids = params[:linked_concepts]
 				item_id = params[:order_paper_item_id]
@@ -75,7 +76,7 @@ class OrderPaperItemsController < ApplicationController
 		end
 
 		if params[:commit]
-			index_check
+			index_junk_check
 			concept_id = params[:concept]
 			item_id = params[:order_paper_item_id]
 			update_graph(item_id, 'http://purl.org/dc/terms/subject', rdf_uri(concept_id), true)
@@ -84,7 +85,7 @@ class OrderPaperItemsController < ApplicationController
 		end
 
 		if params[:update_index]
-			index_check
+			index_junk_check
 			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 		end
 	end
@@ -105,12 +106,9 @@ class OrderPaperItemsController < ApplicationController
 		RDF::Statement(s, p, o)
 	end
 
-	def index_check
+	def index_junk_check
 		item_id = params[:order_paper_item_id]
-		if params[:index_checked]
-			update_graph(item_id, 'http://data.parliament.uk/schema/parl#indexed', 'indexed', true)
-		else
-			update_graph(item_id, 'http://data.parliament.uk/schema/parl#indexed', 'indexed', false)
-		end
+		params[:index_checked] ? update_graph(item_id, 'http://data.parliament.uk/schema/parl#indexed', 'indexed', true) : update_graph(item_id, 'http://data.parliament.uk/schema/parl#indexed', 'indexed', false)
+		params[:junk_checked] ? update_graph(item_id, 'http://data.parliament.uk/schema/parl#junk', 'junk', true) : update_graph(item_id, 'http://data.parliament.uk/schema/parl#junk', 'junk', false)
 	end
 end

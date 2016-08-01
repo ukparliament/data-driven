@@ -11,10 +11,11 @@ class OrderPaperItem < QueryObject
 			    ?orderPaperItem
 			        dcterms:title ?title ;
     				schema:previousItem ?previousItem ;
-    				parl:indexed ?indexedProperty .
+    				parl:indexed ?indexedProperty ;
+    				parl:junk ?junkProperty .
 			}
 			WHERE { 
-    			SELECT ?orderPaperItem ?title ?previousItem ?indexedProperty
+    			SELECT ?orderPaperItem ?title ?previousItem ?indexedProperty ?junkProperty
     			WHERE {
         			?orderPaperItem 
 			        	a parl:OrderPaperItem ;
@@ -27,6 +28,10 @@ class OrderPaperItem < QueryObject
     				OPTIONAL {
     					?orderPaperItem
     						parl:indexed ?indexedProperty .
+    				}
+    				OPTIONAL {
+    					?orderPaperItem
+    						parl:junk ?junkProperty .
     				}
 				}
 			}')
@@ -50,10 +55,11 @@ class OrderPaperItem < QueryObject
 			    ?orderPaperItem
 			        dcterms:title ?title ;
     				schema:previousItem ?previousItem ;
-    				parl:indexed ?indexedProperty .
+    				parl:indexed ?indexedProperty ;
+    				parl:junk ?junkProperty .
 			}
 			WHERE { 
-    			SELECT ?orderPaperItem ?title ?previousItem ?indexedProperty
+    			SELECT ?orderPaperItem ?title ?previousItem ?indexedProperty ?junkProperty
     			WHERE {
         			?orderPaperItem 
 			        	a parl:OrderPaperItem ;
@@ -66,6 +72,10 @@ class OrderPaperItem < QueryObject
     				OPTIONAL {
     					?orderPaperItem
     						parl:indexed ?indexedProperty .
+    				}
+    				OPTIONAL {
+    					?orderPaperItem
+    						parl:junk ?junkProperty .
     				}
 				}
 			}
@@ -95,14 +105,15 @@ class OrderPaperItem < QueryObject
         			dcterms:identifier ?identifier ;
             		dcterms:abstract ?abstract ;
             		schema:previousItem ?previousItem ;
-            		parl:indexed ?indexedProperty .
+            		parl:indexed ?indexedProperty ;
+            		parl:junk ?junkProperty .
     			?concept
         			skos:prefLabel ?label .
             	?person
             		schema:name ?person_name .
 			}
 			WHERE { 
-    			SELECT ?item ?date ?title ?identifier ?person ?abstract ?previousItem ?person_name ?concept ?label ?indexedProperty
+    			SELECT ?item ?date ?title ?identifier ?person ?abstract ?previousItem ?person_name ?concept ?label ?indexedProperty ?junkProperty
     			WHERE {
         			?item
 			        	a parl:OrderPaperItem ;
@@ -132,7 +143,11 @@ class OrderPaperItem < QueryObject
         		}
         		OPTIONAL {
         			?item
-        				parl:indexed ?indexedProperty
+        				parl:indexed ?indexedProperty .
+        		}
+        		OPTIONAL {
+        			?item
+        				parl:junk ?junkProperty .
         		}
          		FILTER(?item = <#{uri}>)
     		}      
@@ -170,6 +185,11 @@ class OrderPaperItem < QueryObject
 			Parl.indexed,
 			:indexedProperty)
 		indexed_property = result.first_object(indexed_pattern).to_s
+		junk_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(uri),
+			Parl.junk,
+			:junkProperty)
+		junk_property = result.first_object(junk_pattern).to_s
 
 		concept_pattern = RDF::Query::Pattern.new(
 			:subject,
@@ -194,6 +214,7 @@ class OrderPaperItem < QueryObject
 				:abstract => abstract,
 				:previousItemId => self.get_id(previousItemURI),
 				:index_label => indexed_property,
+				:junk_label => junk_property,
 				:concepts => concepts
 			}
 
@@ -211,7 +232,8 @@ class OrderPaperItem < QueryObject
 			    ?item
 			        dcterms:date ?date ;
 			    	dcterms:title ?title ;
-			    	parl:indexed ?indexedProperty .
+			    	parl:indexed ?indexedProperty ;
+			    	parl:junk ?junkProperty .
 			}
 			WHERE { 
 				?concept
@@ -226,6 +248,10 @@ class OrderPaperItem < QueryObject
 			    OPTIONAL {
     				?item
     					parl:indexed ?indexedProperty .
+    			}
+    			OPTIONAL {
+    				?orderPaperItem
+    					parl:junk ?junkProperty .
     			}
          		FILTER(?concept = <#{concept_uri}>)
 			}
@@ -264,7 +290,8 @@ class OrderPaperItem < QueryObject
 			    ?item
 			        dcterms:date ?date ;
 			    	dcterms:title ?title ;
-			    	parl:indexed ?indexedProperty .
+			    	parl:indexed ?indexedProperty ;
+			    	parl:junk ?junkProperty .
 			}
 			WHERE { 
 				?person
@@ -280,6 +307,10 @@ class OrderPaperItem < QueryObject
 			    OPTIONAL {
     				?item
     					parl:indexed ?indexedProperty .
+    			}
+    			OPTIONAL {
+    				?orderPaperItem
+    					parl:junk ?junkProperty .
     			}
          		FILTER(?person = <#{person_uri}>)
 			}
@@ -328,10 +359,16 @@ class OrderPaperItem < QueryObject
 				Parl.indexed,
 				:indexedProperty)
 			indexed_property = result.first_object(indexed_pattern).to_s
+			junk_pattern = RDF::Query::Pattern.new(
+				subject,
+				Parl.junk,
+				:junkProperty)
+			junk_property = result.first_object(junk_pattern).to_s
 			{
 				:id => self.get_id(subject),
 				:title => title,
 				:index_label => indexed_property,
+				:junk_label => junk_property,
 				:previousItemId => self.get_id(previousItemURI)
 			}
 		end

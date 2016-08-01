@@ -5,7 +5,11 @@
 	</dd>
 	<dt>Index status: </dt>
 	<dd>
-		<%= @order_paper_item[:index_label] == "indexed" ? "Indexed" : "Not indexed" %>	
+		<%= @order_paper_item[:index_label] == "indexed" ? "Indexed" : "Indexing required" %>	
+	</dd>
+	<dt>Junk status: </dt>
+	<dd>
+		<%= @order_paper_item[:junk_label] == "junk" ? "Marked as junk" : "Not marked as junk" %>
 	</dd>
 	<dt>Order Paper</dt>
 	<dd>

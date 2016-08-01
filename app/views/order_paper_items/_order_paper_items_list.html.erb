@@ -9,6 +9,11 @@
 				<% end %>
 				<% if item[:index_label] == "indexed" %>
 					- Indexed
+				<% else %>
+					- Requires indexing
+				<% end %>
+				<% if item[:junk_label] == "junk" %>
+					- Marked as "junk"
 				<% end %>
 			</li>
 		<% end %>
