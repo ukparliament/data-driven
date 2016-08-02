@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
   def rdf_uri(id)
     uri = resource_uri(id)
     RDF::URI.new(uri)
@@ -58,15 +59,27 @@ class ApplicationController < ActionController::Base
   end
 
   def json_ld(data)
-    # context = JSON.parse '{
-    #   "@context": ""
-    # }'
     json_ld = nil
     JSON::LD::API::fromRDF(data[:graph]) do |expanded|
       json_ld = JSON::LD::API.compact(expanded, nil)
     end
     json_ld.to_json
   end
+
+  def update_graph(subject_id, predicate, object, is_insert)
+    repo = SPARQL::Client::Repository.new("#{DataDriven::Application.config.database}/statements")    
+    client = repo.client
+    graph = RDF::Graph.new << create_pattern(subject_id, predicate, object)
+    is_insert == true ? client.insert_data(graph) : client.delete_data(graph)
+  end
+
+  def create_pattern(subject_id, predicate, object)
+    s = rdf_uri(subject_id)
+    p = predicate
+    o = object
+    RDF::Statement(s, p, o)
+  end
+
 
 end
 

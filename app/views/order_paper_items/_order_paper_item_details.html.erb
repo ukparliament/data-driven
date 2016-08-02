@@ -37,11 +37,9 @@
 					<%= @order_paper_item[:person][:name] %>
 				<% end %>
 			</dd>
-			<% unless @order_paper_item[:person][:role].nil? || @order_paper_item[:person][:role] == "" %>
-				<dt>Member role:</dt>
-				<dd>
-					<%= @order_paper_item[:person][:role] %>
-				</dd>
-			<% end %>
+			<dt>Member role:</dt>
+			<dd>
+				<%= @order_paper_item[:person][:role] == "" ? "Not specified" : @order_paper_item[:person][:role] %>
+			</dd>
 	<% end %>
 </dl>
