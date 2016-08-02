@@ -130,9 +130,11 @@ class OrderPaperItemsController < ApplicationController
 	end
 
 	def member_role_update(item_id)
-		current_role = params[:current_member_role]
-		new_role = params[:new_member_role]
-		update_graph(item_id, Parl.memberRole, current_role, false) 
-		update_graph(item_id, Parl.memberRole, new_role, true) unless new_role == ""
+		if params[:current_member_role]
+			current_role = params[:current_member_role]
+			new_role = params[:new_member_role]
+			update_graph(item_id, Parl.memberRole, current_role, false) 
+			update_graph(item_id, Parl.memberRole, new_role, true) unless new_role == ""
+		end
 	end
 end
