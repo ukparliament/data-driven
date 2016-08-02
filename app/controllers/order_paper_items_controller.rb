@@ -97,20 +97,6 @@ class OrderPaperItemsController < ApplicationController
 
 	private 
 
-	def update_graph(subject_id, predicate, object, is_insert)
-		repo = SPARQL::Client::Repository.new("#{DataDriven::Application.config.database}/statements")		
-		client = repo.client
-		graph = RDF::Graph.new << create_pattern(subject_id, predicate, object)
-		is_insert == true ? client.insert_data(graph) : client.delete_data(graph)
-	end
-
-	def create_pattern(subject_id, predicate, object)
-		s = rdf_uri(subject_id)
-		p = predicate
-		o = object
-		RDF::Statement(s, p, o)
-	end
-
 	def update_business_item(item_id)
 		index_junk_check(item_id)
 		business_item_type_update(item_id)
