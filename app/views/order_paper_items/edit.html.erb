@@ -17,6 +17,14 @@
 		<%= text_field_tag 'new_business_item_type', @business_item_type %>
 	</label>
 	<br>
+	<% unless @order_paper_item[:person][:id].nil?  %>
+		<label>
+			Enter a role for the member:
+			<%= hidden_field_tag 'current_member_role', @member_role %>
+			<%= text_field_tag 'new_member_role', @member_role %>
+		</label>
+	<% end %>
+	<br>
 	<button name="update">update</button>
 	<br>
 	<br>

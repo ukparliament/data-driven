@@ -60,6 +60,7 @@ class OrderPaperItemsController < ApplicationController
 		@indexed_status = @order_paper_item[:index_label] == "indexed"
 		@junk_status = @order_paper_item[:junk_label] == "junk"
 		@business_item_type = @order_paper_item[:business_item_type]
+		@member_role = @order_paper_item[:person][:role]
 
 		@json_ld = json_ld(data)
 		format(data)
@@ -113,6 +114,7 @@ class OrderPaperItemsController < ApplicationController
 	def update_business_item(item_id)
 		index_junk_check(item_id)
 		business_item_type_update(item_id)
+		member_role_update(item_id)
 	end
 
 	def index_junk_check(item_id)
@@ -124,6 +126,13 @@ class OrderPaperItemsController < ApplicationController
 		current_business_item_type = params[:current_business_item_type]
 		new_business_item_type = params[:new_business_item_type]
 		update_graph(item_id, Parl.businessItemType, current_business_item_type, false) 
-		update_graph(item_id, Parl.businessItemType, new_business_item_type, true) 
+		update_graph(item_id, Parl.businessItemType, new_business_item_type, true) unless new_business_item_type == "" 
+	end
+
+	def member_role_update(item_id)
+		current_role = params[:current_member_role]
+		new_role = params[:new_member_role]
+		update_graph(item_id, Parl.memberRole, current_role, false) 
+		update_graph(item_id, Parl.memberRole, new_role, true) unless new_role == ""
 	end
 end
