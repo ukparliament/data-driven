@@ -15,8 +15,8 @@ class OrderPaperItemsController < ApplicationController
 		date = params[:order_paper_id]
 		data = OrderPaperItem.all_by_date(date)
 		@order_paper = data[:hierarchy]
-		@order_paper_items = data[:hierarchy][:order_paper_items]
-
+		params[:sort] == "indexed" ? @order_paper_items = OrderPaperItem.sort_indexed(data[:hierarchy][:order_paper_items]) : 
+															@order_paper_items = data[:hierarchy][:order_paper_items]
 		@json_ld = json_ld(data)
 		format(data)
 	end
