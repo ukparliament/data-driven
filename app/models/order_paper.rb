@@ -10,13 +10,19 @@ class OrderPaper < QueryObject
 			{
 			    _:x dcterms:date ?date .
 			    _:x parl:count ?count .
+			    _:x parl:indexedCount ?indexedCount .
 			}
 			WHERE {
-			    SELECT ?date (COUNT(?s) AS ?count)
+			    SELECT ?date (COUNT(?s) AS ?count) (COUNT(?indexed) AS ?indexedCount)
 			    WHERE 
 			        {
 			            ?s rdf:type parl:OrderPaperItem ;
 			               dcterms:date ?date .
+			            OPTIONAL
+			            {
+			            	?s
+			            		parl:indexed ?indexed .
+			            }
 			        }
 			    GROUP BY ?date
 			    ORDER BY ?date
@@ -32,16 +38,25 @@ class OrderPaper < QueryObject
       		id = result.first_literal(date_pattern).to_s
       		date = result.first_literal(date_pattern).to_s.to_datetime
 
-      		count_pattern = RDF::Query::Pattern.new(
+      		items_count_pattern = RDF::Query::Pattern.new(
           		subject,
           		Parl.count,
           		:count
       		)
-      		count = result.first_literal(count_pattern).to_s
+      		items_count = result.first_literal(items_count_pattern).to_s
+
+      		indexed_items_count_pattern = RDF::Query::Pattern.new(
+          		subject,
+          		Parl.indexedCount,
+          		:indexed_count
+      		)
+      		indexed_items_count = result.first_literal(indexed_items_count_pattern).to_s
+
       		{
       			:id => id,
       			:date => date,
-      			:items_count => count
+      			:items_count => items_count,
+      			:indexed_items_count => indexed_items_count
       		}
 		end
 

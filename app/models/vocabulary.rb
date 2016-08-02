@@ -258,6 +258,10 @@ module Vocabulary
 		def self.businessItemType
 			RDF::URI.new("#{@@prefix}businessItemType")
 		end
+
+		def self.indexedCount
+			RDF::URI.new("#{@@prefix}indexedCount")
+		end
 	end
 	
 	class Rdfs
