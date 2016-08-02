@@ -101,6 +101,7 @@ class OrderPaperItemsController < ApplicationController
 		index_junk_check(item_id)
 		business_item_type_update(item_id)
 		member_role_update(item_id)
+		title_update(item_id)
 	end
 
 	def index_junk_check(item_id)
@@ -121,6 +122,15 @@ class OrderPaperItemsController < ApplicationController
 			new_role = params[:new_member_role]
 			update_graph(item_id, Parl.memberRole, current_role, false) 
 			update_graph(item_id, Parl.memberRole, new_role, true) unless new_role == ""
+		end
+	end
+
+	def title_update(item_id)
+		current_title = params[:current_title]
+		new_title = params[:new_title]
+		if(current_title != new_title && new_title != "")
+			update_graph(item_id, Dcterms.title, current_title, false) 
+			update_graph(item_id, Dcterms.title, new_title, true) unless new_title == ""
 		end
 	end
 end

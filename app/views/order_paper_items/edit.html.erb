@@ -12,6 +12,12 @@
 	</label>
 	<br>
 	<label>
+		Edit title: 
+		<%= hidden_field_tag 'current_title', @order_paper_item[:title] %>
+		<%= text_field_tag 'new_title', @order_paper_item[:title] %>
+	</label>
+	<br>
+	<label>
 		Enter a business item type: 
 		<%= hidden_field_tag 'current_business_item_type', @business_item_type %>
 		<%= text_field_tag 'new_business_item_type', @business_item_type %>
