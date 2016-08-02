@@ -1,6 +1,8 @@
 require 'net/http'
 
 class OrderPaperItemsController < ApplicationController
+	include Vocabulary
+
 	def index
 		data = OrderPaperItem.all
 		@order_paper_items = data[:hierarchy][:order_paper_items]
@@ -58,6 +60,7 @@ class OrderPaperItemsController < ApplicationController
 		@indexed_status = @order_paper_item[:index_label] == "indexed"
 		@junk_status = @order_paper_item[:junk_label] == "junk"
 		@business_item_type = @order_paper_item[:business_item_type]
+		@member_role = @order_paper_item[:person][:role]
 
 		@json_ld = json_ld(data)
 		format(data)
@@ -70,7 +73,7 @@ class OrderPaperItemsController < ApplicationController
 			if params[:linked_concepts]
 				concept_ids = params[:linked_concepts]
 				concept_ids.each do |concept_id|
-					update_graph(item_id, 'http://purl.org/dc/terms/subject', rdf_uri(concept_id), false)
+					update_graph(item_id, Dcterms.subject, rdf_uri(concept_id), false)
 				end
 			end
 			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
@@ -80,7 +83,7 @@ class OrderPaperItemsController < ApplicationController
 			item_id = params[:order_paper_item_id]
 			update_business_item(item_id)
 			concept_id = params[:concept]
-			update_graph(item_id, 'http://purl.org/dc/terms/subject', rdf_uri(concept_id), true)
+			update_graph(item_id, Dcterms.subject, rdf_uri(concept_id), true)
 
 			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
 		end
@@ -102,8 +105,8 @@ class OrderPaperItemsController < ApplicationController
 	end
 
 	def create_pattern(subject_id, predicate, object)
-		s = RDF::URI.new("http://id.ukpds.org/#{subject_id}")
-		p = RDF::URI.new("#{predicate}")
+		s = rdf_uri(subject_id)
+		p = predicate
 		o = object
 		RDF::Statement(s, p, o)
 	end
@@ -111,17 +114,25 @@ class OrderPaperItemsController < ApplicationController
 	def update_business_item(item_id)
 		index_junk_check(item_id)
 		business_item_type_update(item_id)
+		member_role_update(item_id)
 	end
 
 	def index_junk_check(item_id)
-		params[:index_checked] ? update_graph(item_id, 'http://data.parliament.uk/schema/parl#indexed', 'indexed', true) : update_graph(item_id, 'http://data.parliament.uk/schema/parl#indexed', 'indexed', false)
-		params[:junk_checked] ? update_graph(item_id, 'http://data.parliament.uk/schema/parl#junk', 'junk', true) : update_graph(item_id, 'http://data.parliament.uk/schema/parl#junk', 'junk', false)
+		params[:index_checked] ? update_graph(item_id, Parl.indexed, 'indexed', true) : update_graph(item_id, Parl.indexed, 'indexed', false)
+		params[:junk_checked] ? update_graph(item_id, Parl.junk, 'junk', true) : update_graph(item_id, Parl.junk, 'junk', false)
 	end
 
 	def business_item_type_update(item_id)
 		current_business_item_type = params[:current_business_item_type]
 		new_business_item_type = params[:new_business_item_type]
-		update_graph(item_id, 'http://data.parliament.uk/schema/parl#businessItemType', current_business_item_type, false) 
-		update_graph(item_id, 'http://data.parliament.uk/schema/parl#businessItemType', new_business_item_type, true) 
+		update_graph(item_id, Parl.businessItemType, current_business_item_type, false) 
+		update_graph(item_id, Parl.businessItemType, new_business_item_type, true) unless new_business_item_type == "" 
+	end
+
+	def member_role_update(item_id)
+		current_role = params[:current_member_role]
+		new_role = params[:new_member_role]
+		update_graph(item_id, Parl.memberRole, current_role, false) 
+		update_graph(item_id, Parl.memberRole, new_role, true) unless new_role == ""
 	end
 end
