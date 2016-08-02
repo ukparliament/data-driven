@@ -361,6 +361,11 @@ class OrderPaperItem < QueryObject
 
 	end
 
+	def self.sort_indexed(order_paper_items)
+		indexed_items = order_paper_items.select { |item| item[:index_label] != "" }
+		non_indexed_items = order_paper_items.select { |item| item[:index_label] == "" }
+		non_indexed_items + indexed_items
+	end
 
 	private
 

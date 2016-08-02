@@ -1,4 +1,11 @@
 <h1>Business items for Order Paper <%= @order_paper[:date].strftime("%d %B %Y") %></h1>
+<h3>
+	<%= link_to "Sort in order", order_paper_business_items_path(@order_paper[:date].strftime("%F")) %>
+</h3>
+<h3>
+	<%= link_to "Sort indexed items", order_paper_business_items_path(@order_paper[:date].strftime("%F"), :sort => "indexed") %>	
+</h3>
+
 <%= render "order_paper_items_list" %>
 
 
