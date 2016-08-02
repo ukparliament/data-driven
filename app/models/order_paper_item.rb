@@ -272,7 +272,7 @@ class OrderPaperItem < QueryObject
     					parl:indexed ?indexedProperty .
     			}
     			OPTIONAL {
-    				?orderPaperItem
+    				?item
     					parl:junk ?junkProperty .
     			}
          		FILTER(?concept = <#{concept_uri}>)
@@ -331,7 +331,7 @@ class OrderPaperItem < QueryObject
     					parl:indexed ?indexedProperty .
     			}
     			OPTIONAL {
-    				?orderPaperItem
+    				?item
     					parl:junk ?junkProperty .
     			}
          		FILTER(?person = <#{person_uri}>)
