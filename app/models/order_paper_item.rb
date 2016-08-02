@@ -107,14 +107,15 @@ class OrderPaperItem < QueryObject
             		schema:previousItem ?previousItem ;
             		parl:indexed ?indexedProperty ;
             		parl:junk ?junkProperty ;
-            		parl:businessItemType ?businessItemType .
+            		parl:businessItemType ?businessItemType ;
+            		parl:memberRole ?memberRole .
     			?concept
         			skos:prefLabel ?label .
             	?person
             		schema:name ?person_name .
 			}
 			WHERE { 
-    			SELECT ?item ?date ?title ?identifier ?person ?abstract ?previousItem ?person_name ?concept ?label ?indexedProperty ?junkProperty ?businessItemType
+    			SELECT ?item ?date ?title ?identifier ?person ?abstract ?previousItem ?person_name ?concept ?label ?indexedProperty ?junkProperty ?businessItemType ?memberRole
     			WHERE {
         			?item
 			        	a parl:OrderPaperItem ;
@@ -153,6 +154,10 @@ class OrderPaperItem < QueryObject
         		OPTIONAL {
         			?item
         				parl:businessItemType ?businessItemType .
+        		}
+        		OPTIONAL {
+        			?item
+        				parl:memberRole ?memberRole .
         		}
          		FILTER(?item = <#{uri}>)
     		}      
@@ -200,6 +205,11 @@ class OrderPaperItem < QueryObject
 			Parl.businessItemType,
 			:businessItemType)
 		business_item_type_property = result.first_object(business_item_type_pattern).to_s
+		member_role_pattern = RDF::Query::Pattern.new(
+			RDF::URI.new(uri),
+			Parl.memberRole,
+			:memberRole)
+		member_role = result.first_object(member_role_pattern).to_s
 
 		concept_pattern = RDF::Query::Pattern.new(
 			:subject,
@@ -219,7 +229,8 @@ class OrderPaperItem < QueryObject
 				:title => title,
 				:person => {
 					:id => self.get_id(person),
-					:name => person_name
+					:name => person_name,
+					:role => member_role
 					},
 				:abstract => abstract,
 				:previousItemId => self.get_id(previousItemURI),

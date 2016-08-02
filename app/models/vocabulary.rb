@@ -262,6 +262,10 @@ module Vocabulary
 		def self.indexedCount
 			RDF::URI.new("#{@@prefix}indexedCount")
 		end
+
+		def self.memberRole
+			RDF::URI.new("#{@@prefix}memberRole")
+		end
 	end
 	
 	class Rdfs
