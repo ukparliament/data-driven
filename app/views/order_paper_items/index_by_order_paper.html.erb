@@ -1,3 +1,5 @@
+<h3><%= link_to "Back to all order papers", order_papers_path %></h3>
+
 <h1>Business items for Order Paper <%= @order_paper[:date].strftime("%d %B %Y") %></h1>
 <h3>
 	<%= link_to "Sort in order", order_paper_business_items_path(@order_paper[:date].strftime("%F")) %>
