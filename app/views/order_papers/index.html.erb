@@ -14,6 +14,9 @@
 		<li>
 			<%= link_to order_paper_business_items_path(order_paper[:id]) do %>
 				<%= order_paper[:date].strftime("%d/%m/%Y") %> (<%= order_paper[:items_count] %>, of which <%= order_paper[:indexed_items_count] %> indexed)
+				<% if order_paper[:items_count] == order_paper[:indexed_items_count] %>
+					- all items indexed for this date
+				<% end %>
 			<% end %>
 		</li>
 	<% end %>
