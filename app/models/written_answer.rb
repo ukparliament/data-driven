@@ -18,8 +18,6 @@ class WrittenAnswer < QueryObject
 
 		question = result.first_object(question_pattern)
 
-		p question
-
 		{ :id => self.get_id(question) }
  	end
 
