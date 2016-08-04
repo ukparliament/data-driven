@@ -14,12 +14,7 @@ class OralQuestion < QueryObject
           schema:text ?text;
       }')
 
-    questions = result.map do |statement| 
-      {
-        :id => self.get_id(statement.subject),
-        :text => statement.object.to_s
-      }
-    end
+    questions = OralQuestion.map_questions(result)
 
     hierarchy = 
     {
@@ -166,12 +161,7 @@ class OralQuestion < QueryObject
 
 
     house_label = result.first_literal(house_label_pattern).to_s
-    questions = result.query(questions_pattern).map do |statement| 
-      {
-        :id => self.get_id(statement.subject),
-        :text => statement.object.to_s
-      }
-    end
+    questions = OralQuestion.map_questions(result.query(questions_pattern))
 
     hierarchy = {
       :house_id => self.get_id(house_uri),
@@ -218,12 +208,7 @@ class OralQuestion < QueryObject
 
 
     concept_label = result.first_literal(concept_label_pattern).to_s
-    questions = result.query(questions_pattern).map do |statement| 
-      {
-        :id => self.get_id(statement.subject),
-        :text => statement.object.to_s
-      }
-    end
+    questions = OralQuestion.map_questions(result.query(questions_pattern))
 
     hierarchy = {
       :concept_id => self.get_id(concept_uri),
@@ -268,12 +253,7 @@ class OralQuestion < QueryObject
 
 
     person_name = result.first_literal(person_name_pattern).to_s
-    questions = result.query(questions_pattern).map do |statement| 
-      {
-        :id => self.get_id(statement.subject),
-        :text => statement.object.to_s
-      }
-    end
+    questions = OralQuestion.map_questions(result.query(questions_pattern))
 
     hierarchy = {
       :person_id => self.get_id(person_uri),
@@ -283,4 +263,14 @@ class OralQuestion < QueryObject
 
     { :graph => result, :hierarchy => hierarchy }
   end
+
+  def self.map_questions(statements)
+    statements.map do |statement| 
+      {
+          :id => self.get_id(statement.subject),
+          :text => statement.object.to_s
+      }
+    end
+  end
+
 end
