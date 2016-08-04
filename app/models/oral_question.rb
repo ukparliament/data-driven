@@ -264,13 +264,4 @@ class OralQuestion < QueryObject
     { :graph => result, :hierarchy => hierarchy }
   end
 
-  def self.map_questions(statements)
-    statements.map do |statement| 
-      {
-          :id => self.get_id(statement.subject),
-          :text => statement.object.to_s
-      }
-    end
-  end
-
 end
