@@ -1,6 +1,7 @@
 require 'socket'
 
 class ApplicationController < ActionController::Base
+  include Vocabulary
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -80,6 +81,25 @@ class ApplicationController < ActionController::Base
     RDF::Statement(s, p, o)
   end
 
+  def index_junk_check(item_id)
+    params[:index_checked] ? update_graph(item_id, Parl.indexed, 'indexed', true) : update_graph(item_id, Parl.indexed, 'indexed', false)
+    params[:junk_checked] ? update_graph(item_id, Parl.junk, 'junk', true) : update_graph(item_id, Parl.junk, 'junk', false)
+  end
+
+  def concepts_dropdown_list
+    dropdown_data = Concept.all_alphabetical
+    dropdown_data[:hierarchy].map { |concept| [ concept[:label], concept[:id] ]}.to_h
+  end
+
+  def remove_concepts(item_id, concept_ids)
+    concept_ids.each do |concept_id|
+      update_graph(item_id, Dcterms.subject, rdf_uri(concept_id), false)
+    end
+  end
+
+  def add_concept(item_id, concept_id)
+    update_graph(item_id, Dcterms.subject, rdf_uri(concept_id), true)
+  end
 
 end
 

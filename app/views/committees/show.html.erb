@@ -1,10 +1,5 @@
-<h1><%= @committee[:committee_name] %></h1>
-
-<p>House:
-  <%= link_to house_path(@committee[:house][:id]) do %>
-    <%= @committee[:house][:label] %>
-  <% end %>
-</p>
+<%= render "committee_details" %>
+<h3><%= link_to "Edit", committee_edit_path(@committee[:id]) %></h3>
 
 <h2><%= @committee[:chairs_count] %> Chairs</h2>
 
