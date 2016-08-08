@@ -1,24 +1,40 @@
 class Committee < QueryObject
-	include Vocabulary
 
 	def self.all
 		result = self.query('
 			PREFIX parl: <http://data.parliament.uk/schema/parl#>
 			PREFIX schema: <http://schema.org/>
 			CONSTRUCT {
-			    ?committee schema:name ?name
+			    ?committee parl:committeeName ?name ;
+        				   parl:indexed ?indexedProperty ;
+        				   parl:junk ?junkProperty .
 			}
 			WHERE {
 				?committee
 					a parl:Committee ;
-			        schema:name ?name
+			        schema:name ?name ;
+        		OPTIONAL {
+        			?committee parl:indexed ?indexedProperty .
+    			}
+        		OPTIONAL {
+        			?committee parl:junk ?junkProperty .
+    			}
 			}
 			')
 
-		hierarchy = result.map do |statement|
+		hierarchy = result.subjects.map do |subject|
+			committee_name_pattern = RDF::Query::Pattern.new(
+				subject,
+				Parl.committeeName,
+				:committee_name)
+			committee_name = result.first_literal(committee_name_pattern).to_s
+			indexed_property = self.map_indexed_property(result, subject)
+			junk_property = self.map_junk_property(result, subject)
 			{
-				:id => self.get_id(statement.subject),
-				:name => statement.object.to_s
+				:id => self.get_id(subject),
+				:name => committee_name,
+				:index_label => indexed_property,
+				:junk_label => junk_property
 			}
 		end
 		{ :graph => result, :hierarchy => hierarchy }
@@ -30,11 +46,15 @@ class Committee < QueryObject
       PREFIX schema: <http://schema.org/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      CONSTRUCT {
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+	  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+		CONSTRUCT {
         <#{uri}>
             parl:committeeName ?committeeName ;
           	parl:house ?house ;
-            parl:houseLabel ?houseLabel .
+            parl:houseLabel ?houseLabel ;
+        	parl:indexed ?indexedProperty ;
+            parl:junk ?junkProperty .
         ?role
             parl:membershipType ?roleType ;
             parl:member ?member ;
@@ -42,16 +62,18 @@ class Committee < QueryObject
             schema:name ?memberName ;
             schema:endDate ?endDate ;
             schema:startDate ?startDate .
+    	?concept
+        	skos:prefLabel ?label .
       }
       WHERE {
-        <#{uri}>
+        ?committee
               schema:name ?committeeName ;
               parl:house ?house .
           ?house
               rdfs:label ?houseLabel .
-					OPTIONAL {
+		OPTIONAL {
           	?role
-				parl:committee <#{uri}> ;
+				parl:committee ?committee ;
 				rdf:type ?roleType ;
 				parl:member ?member ;
 				schema:endDate ?endDate ;
@@ -59,6 +81,21 @@ class Committee < QueryObject
 			?member
 				schema:name ?memberName .
 			}
+    	    OPTIONAL {
+            		?committee
+                		dcterms:subject ?concept .
+            		?concept
+                		skos:prefLabel ?label .
+        		}
+        		OPTIONAL {
+        			?committee
+        				parl:indexed ?indexedProperty .
+        		}
+        		OPTIONAL {
+        			?committee
+        				parl:junk ?junkProperty .
+        		}
+    	FILTER(?committee = <#{uri}>)
       	}
       ")
 
@@ -79,16 +116,17 @@ class Committee < QueryObject
 		end
 
 		id = self.get_id(uri)
+		subject_uri = RDF::URI.new(uri)
 		committee_name_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(uri),
+				subject_uri,
 				Parl.committeeName,
 				:committee_name)
 		house_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(uri),
+				subject_uri,
 				Parl.house,
 				:house)
 		house_label_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(uri),
+				subject_uri,
 				Parl.houseLabel,
 				:house_label)
 
@@ -97,19 +135,26 @@ class Committee < QueryObject
 		house_id = self.get_id(house)
 		house_label = result.first_literal(house_label_pattern).to_s
 
+		concepts = self.map_linked_concepts(result)
+		indexed_property = self.map_indexed_property(result, subject_uri)
+		junk_property = self.map_junk_property(result, subject_uri)
+
 		hierarchy = {
 				:id => id,
 				:committee_name => committee_name,
 				:house => {
-						:id => house_id,
-						:label => house_label
+					:id => house_id,
+					:label => house_label
 				},
 				:chairs_count => chairships.count,
 				:members_count => memberships.count,
 				:advisers_count => adviserships.count,
 				:memberships => membership_details,
 				:chairships => chairship_details,
-				:adviserships => advisership_details
+				:adviserships => advisership_details,
+				:concepts => concepts,
+				:index_label => indexed_property,
+				:junk_label => junk_property
 		}
 
 		{ :graph => result, :hierarchy => hierarchy}

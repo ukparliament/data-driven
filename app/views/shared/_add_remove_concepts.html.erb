@@ -1,0 +1,17 @@
+	<%= label_tag(:concept, "Concept") %>
+	<%= select_tag(:concept, options_for_select(@concepts)) %>
+	
+	<%= submit_tag("add") %>
+
+	<% unless @linked_concepts.empty? %>
+		<p>Concepts linked to this item</p>
+		<ul>
+			<% @linked_concepts.each do |concept| %>
+				<li>
+					<input type="checkbox" name="linked_concepts[]" value="<%= concept[:id] %>"/>
+					<label><%= concept[:label] %></label>
+				</li>
+			<% end %>
+		</ul>
+		<button name="remove">remove</button>
+	<% end %>

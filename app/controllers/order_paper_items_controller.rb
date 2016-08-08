@@ -1,7 +1,6 @@
 require 'net/http'
 
 class OrderPaperItemsController < ApplicationController
-	include Vocabulary
 
 	def index
 		data = OrderPaperItem.all
@@ -52,46 +51,39 @@ class OrderPaperItemsController < ApplicationController
 
 	def edit
 		order_paper_item_uri = resource_uri(params[:order_paper_item_id])
-		dropdown_data = Concept.all_alphabetical
-		@concepts = dropdown_data[:hierarchy].map { |concept| [ concept[:label], concept[:id] ]}.to_h
-
+		@concepts = concepts_dropdown_list
 		data = OrderPaperItem.find(order_paper_item_uri)
 		@order_paper_item = data[:hierarchy]
 		@indexed_status = @order_paper_item[:index_label] == "indexed"
 		@junk_status = @order_paper_item[:junk_label] == "junk"
 		@business_item_type = @order_paper_item[:business_item_type]
 		@member_role = @order_paper_item[:person][:role]
+		@linked_concepts = @order_paper_item[:concepts]
 
 		@json_ld = json_ld(data)
 		format(data)
 	end
 
 	def update
+		item_id = params[:order_paper_item_id]
 		if params[:remove]
-			item_id = params[:order_paper_item_id]
 			update_business_item(item_id)
 			if params[:linked_concepts]
-				concept_ids = params[:linked_concepts]
-				concept_ids.each do |concept_id|
-					update_graph(item_id, Dcterms.subject, rdf_uri(concept_id), false)
-				end
+				remove_concepts(item_id, params[:linked_concepts])
 			end
-			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
+			redirect_to order_paper_item_edit_path(item_id)
 		end
 
 		if params[:commit]
-			item_id = params[:order_paper_item_id]
 			update_business_item(item_id)
-			concept_id = params[:concept]
-			update_graph(item_id, Dcterms.subject, rdf_uri(concept_id), true)
+			add_concept(item_id, params[:concept])
 
-			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
+			redirect_to order_paper_item_edit_path(item_id)
 		end
 
 		if params[:update]
-			item_id = params[:order_paper_item_id]
 			update_business_item(item_id)
-			redirect_to order_paper_item_edit_path(params[:order_paper_item_id])
+			redirect_to order_paper_item_edit_path(item_id)
 		end
 	end
 
@@ -102,11 +94,6 @@ class OrderPaperItemsController < ApplicationController
 		business_item_type_update(item_id)
 		member_role_update(item_id)
 		title_update(item_id)
-	end
-
-	def index_junk_check(item_id)
-		params[:index_checked] ? update_graph(item_id, Parl.indexed, 'indexed', true) : update_graph(item_id, Parl.indexed, 'indexed', false)
-		params[:junk_checked] ? update_graph(item_id, Parl.junk, 'junk', true) : update_graph(item_id, Parl.junk, 'junk', false)
 	end
 
 	def business_item_type_update(item_id)

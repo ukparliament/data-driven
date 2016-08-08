@@ -46,7 +46,10 @@ Rails.application.routes.draw do
 
   resources :oral_questions, only: [:index, :show]
 
-  resources :committees, only: [:index, :show]
+  resources :committees, only: [:index, :show] do
+    get '/edit(.:format)', to: 'committees#edit', as: 'edit'
+    post '/edit(.:format)', to: 'committees#update', as: 'update'
+  end
 
   resources :search, only: [:index]
 
