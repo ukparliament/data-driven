@@ -8,4 +8,13 @@ class QueryObject
 		uri.to_s.split("/").last
 	end
 
+	def self.map_questions(statements)
+    statements.map do |statement| 
+      {
+          :id => self.get_id(statement.subject),
+          :text => statement.object.to_s
+      }
+    end
+  end
+
 end
