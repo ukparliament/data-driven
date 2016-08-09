@@ -223,6 +223,14 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}orderPaperItemCount")
 		end
 
+		def self.petitionCount
+			RDF::URI.new("#{@@prefix}petitionCount")
+		end
+
+		def self.committeeCount
+			RDF::URI.new("#{@@prefix}committeeCount")
+		end
+
 		def self.label
 			RDF::URI.new("#{@@prefix}label")
 		end

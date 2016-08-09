@@ -1,4 +1,16 @@
 <%= render "committee_details" %>
+
+<% unless @committee[:concepts].empty? %>
+  <p>Concepts linked to this order paper item</p>
+  <ul>
+    <% @committee[:concepts].each do |concept| %>
+      <li>
+        <%= link_to "#{concept[:label]}", concept_path(concept[:id]) %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
 <h3><%= link_to "Edit", committee_edit_path(@committee[:id]) %></h3>
 
 <h2><%= @committee[:chairs_count] %> Chairs</h2>
