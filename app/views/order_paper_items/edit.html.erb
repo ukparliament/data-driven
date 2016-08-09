@@ -2,16 +2,6 @@
 
 <%= form_tag(method: :post) do %>
 	<label>
-		<%= check_box_tag "index_checked", "checked", @indexed_status %>
-		Indexed
-	</label>
-	<br>
-	<label>
-		<%= check_box_tag "junk_checked", "junk", @junk_status %>
-		Mark as Junk
-	</label>
-	<br>
-	<label>
 		Edit title: 
 		<%= hidden_field_tag 'current_title', @order_paper_item[:title] %>
 		<%= text_field_tag 'new_title', @order_paper_item[:title] %>
@@ -31,27 +21,12 @@
 		</label>
 	<% end %>
 	<br>
+	<%= render "shared/index_junk_checkboxes" %>
 	<button name="update">update</button>
 	<br>
 	<br>
 
-	<%= label_tag(:concept, "Concept") %>
-	<%= select_tag(:concept, options_for_select(@concepts)) %>
-	
-	<%= submit_tag("add") %>
-
-	<% unless @order_paper_item[:concepts].empty? %>
-		<p>Concepts linked to this item</p>
-		<ul>
-			<% @order_paper_item[:concepts].each do |concept| %>
-				<li>
-					<input type="checkbox" name="linked_concepts[]" value="<%= concept[:id] %>"/>
-					<label><%= concept[:label] %></label>
-				</li>
-			<% end %>
-		</ul>
-		<button name="remove">remove</button>
-	<% end %>
+	<%= render "shared/add_remove_concepts" %>
 
 <% end %>
 

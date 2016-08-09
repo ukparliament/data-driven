@@ -1,0 +1,16 @@
+<%= render "committee_details" %>
+
+<%= form_tag(method: :post) do %>
+	<%= render "shared/index_junk_checkboxes" %>
+	<button name="update">update</button>
+	<br>
+
+	<%= render "shared/add_remove_concepts" %>
+
+<% end %>
+
+<%= link_to committee_path(@committee[:id]) do %>
+	Back to committee
+<% end %>
+
+

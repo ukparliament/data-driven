@@ -9,11 +9,26 @@
 	</fieldset>
 </form>
 
+<h3>
+	<%= link_to "Sort in order", committees_path %>
+</h3>
+<h3>
+	<%= link_to "Sort indexed items", committees_path(:sort => "indexed") %>	
+</h3>
+
 <ul>
 	<% @committees.each do |committee| %>
 		<li>
 			<%= link_to committee_path(committee[:id]) do %>
 				<%= committee[:name] %>
+			<% end %>
+			<% if committee[:index_label] == "indexed" %>
+					- Indexed
+				<% else %>
+					- Requires indexing
+				<% end %>
+				<% if committee[:junk_label] == "junk" %>
+					- Marked as "junk"
 			<% end %>
 		</li>
 	<% end %>

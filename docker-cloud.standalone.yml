@@ -1,0 +1,4 @@
+web:
+  image: 'ukparliament/data-driven'
+  ports:
+    - '80:3000'

@@ -1,5 +1,4 @@
 class OrderPaperItem < QueryObject
-	include Vocabulary
 
 	def self.all
 		result = self.query('
@@ -164,13 +163,15 @@ class OrderPaperItem < QueryObject
 		}"
 		)
 
+		subject_uri = RDF::URI.new(uri)
+
 		date_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
+		  	subject_uri, 
 		  	Dcterms.date, 
 		  	:date)
 		date = result.first_object(date_pattern).to_s.to_datetime
 		title_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
+		  	subject_uri, 
 		  	Dcterms.title, 
 		  	:title)
 		title = result.first_literal(title_pattern).to_s
@@ -181,46 +182,32 @@ class OrderPaperItem < QueryObject
 		person = result.first_subject(person_pattern)
 		person_name = result.first_literal(person_pattern).to_s
 		abstract_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
+		  	subject_uri, 
 		  	Dcterms.abstract, 
 		  	:abstract)
 		abstract = result.first_literal(abstract_pattern).to_s
 		previous_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
+		  	subject_uri, 
 		  	Schema.previousItem, 
 		  	:previousItem)
 		previousItemURI = result.first_object(previous_pattern)
-		indexed_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
-			Parl.indexed,
-			:indexedProperty)
-		indexed_property = result.first_object(indexed_pattern).to_s
-		junk_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
-			Parl.junk,
-			:junkProperty)
-		junk_property = result.first_object(junk_pattern).to_s
+
+		indexed_property = self.map_indexed_property(result, subject_uri)
+
+		junk_property = self.map_junk_property(result, subject_uri)
+
 		business_item_type_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
+			subject_uri,
 			Parl.businessItemType,
 			:businessItemType)
 		business_item_type_property = result.first_object(business_item_type_pattern).to_s
 		member_role_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
+			subject_uri,
 			Parl.memberRole,
 			:memberRole)
 		member_role = result.first_object(member_role_pattern).to_s
 
-		concept_pattern = RDF::Query::Pattern.new(
-			:subject,
-			Skos.prefLabel,
-			:label)
-		concepts = result.query(concept_pattern).map do |statement|
-			{
-        		:id => self.get_id(statement.subject),
-        		:label => statement.object.to_s
-      		}
-		end
+		concepts = self.map_linked_concepts(result)
 
 		hierarchy = 
 			{
@@ -361,12 +348,6 @@ class OrderPaperItem < QueryObject
 
 	end
 
-	def self.sort_indexed(order_paper_items)
-		indexed_items = order_paper_items.select { |item| item[:index_label] != "" }
-		non_indexed_items = order_paper_items.select { |item| item[:index_label] == "" }
-		non_indexed_items + indexed_items
-	end
-
 	private
 
 	def self.order_paper_items_mapper(result, subjects)
@@ -381,16 +362,8 @@ class OrderPaperItem < QueryObject
 		  		Schema.previousItem, 
 		  		:previousItem)
 			previousItemURI = result.first_object(previous_pattern)
-			indexed_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.indexed,
-				:indexedProperty)
-			indexed_property = result.first_object(indexed_pattern).to_s
-			junk_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.junk,
-				:junkProperty)
-			junk_property = result.first_object(junk_pattern).to_s
+			indexed_property = self.map_indexed_property(result, subject)
+			junk_property = self.map_junk_property(result, subject)
 			{
 				:id => self.get_id(subject),
 				:title => title,

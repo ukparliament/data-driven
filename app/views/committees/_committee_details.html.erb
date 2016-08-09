@@ -1,0 +1,16 @@
+<h1><%= @committee[:committee_name] %></h1>
+
+<p>House:
+  <%= link_to house_path(@committee[:house][:id]) do %>
+    <%= @committee[:house][:label] %>
+  <% end %>
+</p>
+
+<dt>Index status: </dt>
+<dd>
+	<%= @committee[:index_label] == "indexed" ? "Indexed" : "Indexing required" %>	
+</dd>
+<dt>Junk status: </dt>
+<dd>
+	<%= @committee[:junk_label] == "junk" ? "Marked as junk" : "Not marked as junk" %>
+</dd>
