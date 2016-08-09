@@ -12,12 +12,20 @@ class PetitionsController < ApplicationController
 	end
 
 	def index_by_concept
+		if(request.format.html?)
+			redirect_to("http://petitions-data-driven.ukpds.org/concepts/#{params[:concept_id]}/petitions")
+			return ''
+		end
+
+		concept_uri = resource_uri(params[:concept_id])
+		data = Petition.find_by_concept(concept_uri)
 		
+		format(data)
 	end
 
 	def show
 		if(request.format.html?)
-			redirect_to("http://petitions-data-driven.ukpds.org/constituencies/#{params[:id]}")
+			redirect_to("http://petitions-data-driven.ukpds.org/petitions/#{params[:id]}")
 			return ''
 		end
 
