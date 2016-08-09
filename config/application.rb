@@ -18,6 +18,7 @@ require "rails/test_unit/railtie"
 
 # Single
 DATABASE = 'http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06'
+PETITIONS = 'http://petitions-data-driven.ukpds.org'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -38,6 +39,7 @@ module DataDriven
     # config.i18n.default_locale = :de
 
     config.database = DATABASE
+    config.petitions = PETITIONS
   end
 end
 

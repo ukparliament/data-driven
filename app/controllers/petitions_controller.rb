@@ -2,7 +2,7 @@ class PetitionsController < ApplicationController
 
 	def index
 		if(request.format.html?)
-			redirect_to('http://petitions-data-driven.ukpds.org/petitions')
+			redirect_to("#{DataDriven::Application.config.petitions}/petitions")
 			return ''
 		end
 
@@ -13,7 +13,7 @@ class PetitionsController < ApplicationController
 
 	def index_by_concept
 		if(request.format.html?)
-			redirect_to("http://petitions-data-driven.ukpds.org/concepts/#{params[:concept_id]}/petitions")
+			redirect_to("#{DataDriven::Application.config.petitions}/concepts/#{params[:concept_id]}/petitions")
 			return ''
 		end
 
@@ -25,7 +25,7 @@ class PetitionsController < ApplicationController
 
 	def show
 		if(request.format.html?)
-			redirect_to("http://petitions-data-driven.ukpds.org/petitions/#{params[:id]}")
+			redirect_to("#{DataDriven::Application.config.petitions}/petitions/#{params[:id]}")
 			return ''
 		end
 
