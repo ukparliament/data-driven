@@ -19,6 +19,7 @@ class PetitionsController < ApplicationController
 
 		concept_uri = resource_uri(params[:concept_id])
 		data = Petition.find_by_concept(concept_uri)
+		
 		format(data)
 	end
 
