@@ -222,7 +222,7 @@ class Committee < QueryObject
 				:person_name)
 
 		person_id = self.get_id(person_uri)
-		person_name = result.first_literal(person_name_pattern)
+		person_name = result.first_literal(person_name_pattern).to_s
 
 		hierarchy = {
 				:person => {
@@ -235,6 +235,62 @@ class Committee < QueryObject
 				:chairships => chairship_details,
 				:memberships => membership_details,
 				:adviserships => advisership_details
+		}
+
+		{ :graph => result, :hierarchy => hierarchy}
+	end
+
+	def self.find_by_concept(concept_uri)
+		result = self.query("
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX schema: <http://schema.org/>
+			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			CONSTRUCT {
+				?concept skos:prefLabel ?label .
+				?committee
+					schema:name ?committeeName .
+			}
+			WHERE {
+					?concept
+						skos:prefLabel ?label .
+				OPTIONAL {
+					?committee
+							a parl:Committee ;
+            				schema:name ?committeeName;
+							dcterms:subject ?concept .
+    			}
+				FILTER (?concept = <#{concept_uri}>)
+			}
+			")
+
+
+		concept_label_pattern = RDF::Query::Pattern.new(
+				RDF::URI.new(concept_uri),
+				Skos.prefLabel,
+				:label)
+
+		concept_id = self.get_id(concept_uri)
+		label = result.first_literal(concept_label_pattern).to_s
+
+		committee_pattern = RDF::Query::Pattern.new(
+			:subject,
+			Schema.name,
+			:name)
+		committees = result.query(committee_pattern).map do |statement|
+			{
+	       		:id => self.get_id(statement.subject),
+	       		:name => statement.object.to_s
+	  		}
+		end
+
+		hierarchy = {
+			:concept => {
+					:id => concept_id,
+					:label => label
+			},
+			:committees => committees
 		}
 
 		{ :graph => result, :hierarchy => hierarchy}
@@ -294,71 +350,6 @@ class Committee < QueryObject
 				:start_date => start_date,
 				:end_date => end_date
 		}
-	end
-
-	def self.find_by_concept(concept_uri)
-		result = self.query("
-			PREFIX parl: <http://data.parliament.uk/schema/parl#>
-			PREFIX schema: <http://schema.org/>
-			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-			CONSTRUCT {
-				?person parl:personName ?personName .
-				?membership
-					parl:membershipType ?membershipType ;
-					schema:startDate ?start ;
-					schema:endDate ?end ;
-					parl:committee ?committee ;
-					parl:committeeName ?committeeName ;
-					parl:house ?house ;
-					parl:houseLabel ?houseLabel .
-				?member
-					a schema:Person .
-			}
-			WHERE {
-					?person
-						schema:name ?personName .
-				OPTIONAL {
-					?membership
-							parl:member ?person ;
-							a ?membershipType ;
-							parl:committee ?committee ;
-							schema:startDate ?start ;
-							schema:endDate ?end .
-					?committee
-							schema:name ?committeeName ;
-							parl:house ?house .
-					?house
-							rdfs:label ?houseLabel .
-
-					FILTER (?membershipType = parl:CommitteeAdviser || ?membershipType = parl:CommitteeChair || ?membershipType = parl:CommitteeMember)
-				}
-				FILTER (?person = <#{person_uri}>)
-			}
-			")
-
-
-		person_name_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(person_uri),
-				Parl.personName,
-				:person_name)
-
-		person_id = self.get_id(person_uri)
-		person_name = result.first_literal(person_name_pattern)
-
-		hierarchy = {
-				:concept => {
-						:id => concept_id,
-						:label => label
-				},
-				:chairs_count => chairships.count,
-				:members_count => memberships.count,
-				:advisers_count => adviserships.count,
-				:chairships => chairship_details,
-				:memberships => membership_details,
-				:adviserships => advisership_details
-		}
-
-		{ :graph => result, :hierarchy => hierarchy}
 	end
 
 	def self.get_committee_details(result, membership)

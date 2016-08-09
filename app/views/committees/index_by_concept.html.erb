@@ -1,0 +1,13 @@
+<h1>Divisions about <%= @concept[:label] %></h1>
+
+<% if @committees.empty? %>
+	<p>There are no committees related to <%= @concept[:label] %></p>
+<% else %>
+	<ul>
+		<% @committees.each do |committee| %>
+			<%= link_to committee_path(committee[:id]) do %>
+					<%= committee[:name] %>
+			<% end %>
+		<% end %>
+	</ul>
+<% end %>
