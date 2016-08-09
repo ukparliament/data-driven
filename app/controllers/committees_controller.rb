@@ -19,7 +19,17 @@ class CommitteesController < ApplicationController
   	def index_by_person
 		person_uri = resource_uri(params[:person_id])
 		data = Committee.find_by_person(person_uri)
-		@committees = data[:hierarchy]
+		@committees = data[:hierarchy][:committees]
+
+		@json_ld = json_ld(data)
+		format(data)
+	end
+
+	def index_by_concept
+		concept_uri = resource_uri(params[:concept_id])
+		data = Committee.find_by_concept(concept_uri)
+		@concept = data[:hierarchy][:concept]
+		@committees = data[:hierarchy][:committees]
 
 		@json_ld = json_ld(data)
 		format(data)

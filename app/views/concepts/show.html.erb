@@ -26,4 +26,9 @@
 			Petitions related to this concept (<%= @concept[:petition_count] %>)
 		<% end %>
 	</li>
+	<li>
+		<%= link_to concept_committees_path(@concept[:id]) do %>
+			Committees related to this concept (<%= @concept[:committee_count] %>)
+		<% end %>
+	</li>
 </ul>
