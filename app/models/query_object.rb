@@ -31,20 +31,12 @@ class QueryObject
 		end
     end
 
-    def self.map_indexed_property(graph, subject)
-    	indexed_pattern = RDF::Query::Pattern.new(
+    def self.get_object(graph, subject, predicate)
+    	pattern = RDF::Query::Pattern.new(
 			subject,
-			Parl.indexed,
-			:indexedProperty)
-		graph.first_object(indexed_pattern).to_s
-    end
-
-    def self.map_junk_property(result, subject)
-    	junk_pattern = RDF::Query::Pattern.new(
-			subject,
-			Parl.junk,
-			:junkProperty)
-		result.first_object(junk_pattern).to_s
+			predicate,
+			:object)
+		graph.first_object(pattern)
     end
 
     def self.sort_indexed(items)
