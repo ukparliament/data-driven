@@ -18,12 +18,12 @@ class QueryObject
 	    end
 	end
 
-    def self.map_linked_concepts(result)
+    def self.map_linked_concepts(graph)
     	concept_pattern = RDF::Query::Pattern.new(
 			:subject,
 			Skos.prefLabel,
 			:label)
-		result.query(concept_pattern).map do |statement|
+		graph.query(concept_pattern).map do |statement|
 			{
         		:id => self.get_id(statement.subject),
         		:label => statement.object.to_s
@@ -31,12 +31,12 @@ class QueryObject
 		end
     end
 
-    def self.map_indexed_property(result, subject)
+    def self.map_indexed_property(graph, subject)
     	indexed_pattern = RDF::Query::Pattern.new(
 			subject,
 			Parl.indexed,
 			:indexedProperty)
-		result.first_object(indexed_pattern).to_s
+		graph.first_object(indexed_pattern).to_s
     end
 
     def self.map_junk_property(result, subject)
