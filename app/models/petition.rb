@@ -195,4 +195,71 @@ class Petition < QueryObject
 		{ :graph => result, :hierarchy => hierarchy }
 	end
 
+	def self.find_by_concept(concept_uri)
+		result = self.query("
+			PREFIX parl: <http://data.parliament.uk/schema/parl#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+			PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+	
+			CONSTRUCT {
+			    ?petition 
+			    	dcterms:title ?title ;
+			    	parl:indexed ?indexed .
+    			?concept
+        			skos:prefLabel ?label .
+			}
+			WHERE { 
+				?petition 
+			        a parl:EPetition ;
+        			dcterms:subject ?concept ;
+			        dcterms:title ?title .
+        		?concept
+                	skos:prefLabel ?label .
+			    OPTIONAL {
+			    	?petition
+			    	    parl:indexed ?indexed .
+			    }
+    		FILTER (?concept = <#{concept_uri}>)
+			}
+		")
+
+		label_pattern = RDF::Query::Pattern.new(
+		  	RDF::URI.new(concept_uri), 
+		  	Skos.prefLabel, 
+		  	:label)
+		label = result.first_literal(label_pattern).to_s
+
+		petition_pattern = RDF::Query::Pattern.new(
+		  	:petition, 
+		  	Dcterms.title, 
+		  	:title)
+
+		petitions = result.query(petition_pattern).subjects.map do |subject|
+			title_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Dcterms.title, 
+		  		:title)
+			indexed_pattern = RDF::Query::Pattern.new(
+		  		subject, 
+		  		Parl.indexed, 
+		  		:index_label)
+			title = result.first_literal(title_pattern).to_s
+			index_label = result.first_literal(indexed_pattern).to_s
+
+			{
+				:id => self.get_id(subject),
+				:title => title,
+				:index_label => index_label
+			}
+		end
+
+		hierarchy = 
+			{
+				:id => self.get_id(concept_uri),
+				:label => label,
+				:petitions => petitions
+			}
+
+		{ :graph => result, :hierarchy => hierarchy }
+	end
 end
