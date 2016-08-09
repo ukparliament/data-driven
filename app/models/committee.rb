@@ -150,7 +150,7 @@ class Committee < QueryObject
 			PREFIX schema: <http://schema.org/>
 			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 			CONSTRUCT {
-				?person parl:personName ?personName .
+				?person schema:name ?personName .
 				?membership
 					parl:membershipType ?membershipType ;
 					schema:startDate ?start ;
@@ -200,13 +200,8 @@ class Committee < QueryObject
 			self.get_committee_details_by_member(result, advisership)
 		end
 
-		person_name_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(person_uri),
-				Parl.personName,
-				:person_name)
-
 		person_id = self.get_id(person_uri)
-		person_name = result.first_literal(person_name_pattern).to_s
+		person_name = self.get_object(result, RDF::URI.new(person_uri), Schema.name).to_s
 
 		hierarchy = {
 				:person => {
@@ -283,39 +278,15 @@ class Committee < QueryObject
 	end
 
 	def self.get_committee_details_by_member(result, membership)
-		committee_pattern = RDF::Query::Pattern.new(
-				membership,
-				Parl.committee,
-				:committee)
-		committee_name_pattern = RDF::Query::Pattern.new(
-				membership,
-				Parl.committeeName,
-				:committee_name)
-		start_date_pattern = RDF::Query::Pattern.new(
-				membership,
-				Schema.startDate,
-				:start_date)
-		end_date_pattern = RDF::Query::Pattern.new(
-				membership,
-				Schema.endDate,
-				:end_date)
-		house_pattern = RDF::Query::Pattern.new(
-				membership,
-				Parl.house,
-				:house)
-		house_label_pattern = RDF::Query::Pattern.new(
-				membership,
-				Parl.houseLabel,
-				:house_label)
 
-		committee = result.first_object(committee_pattern)
+		committee = self.get_object(result, membership, Parl.committee)
 		committee_id = self.get_id(committee)
-		committee_name = result.first_literal(committee_name_pattern).to_s
-		house = result.first_object(house_pattern)
+		committee_name = self.get_object(result, membership, Parl.committeeName).to_s
+		house = self.get_object(result, membership, Parl.house)
 		house_id = self.get_id(house)
-		house_label = result.first_literal(house_label_pattern).to_s
-		start_date = result.first_object(start_date_pattern).to_s.to_datetime
-		end_date = result.first_object(end_date_pattern).to_s.to_datetime
+		house_label = self.get_object(result, membership, Parl.houseLabel).to_s
+		start_date = self.get_object(result, membership, Schema.startDate).to_s.to_datetime
+		end_date = self.get_object(result, membership, Schema.endDate).to_s.to_datetime
 		{
 				:committee => {
 						:name => committee_name,
@@ -331,28 +302,12 @@ class Committee < QueryObject
 	end
 
 	def self.get_committee_details(result, membership)
-		person_pattern = RDF::Query::Pattern.new(
-				membership,
-				Parl.member,
-				:committee)
-		person_name_pattern = RDF::Query::Pattern.new(
-				membership,
-				Schema.name,
-				:committee_name)
-		start_date_pattern = RDF::Query::Pattern.new(
-				membership,
-				Schema.startDate,
-				:start_date)
-		end_date_pattern = RDF::Query::Pattern.new(
-				membership,
-				Schema.endDate,
-				:end_date)
 
-		person = result.first_object(person_pattern)
+		person = self.get_object(result, membership, Parl.member)
 		person_id = self.get_id(person)
-		person_name = result.first_literal(person_name_pattern).to_s
-		start_date = result.first_object(start_date_pattern).to_s.to_datetime
-		end_date = result.first_object(end_date_pattern).to_s.to_datetime
+		person_name = self.get_object(result, membership, Schema.name).to_s
+		start_date = self.get_object(result, membership, Schema.startDate).to_s.to_datetime
+		end_date = self.get_object(result, membership, Schema.endDate).to_s.to_datetime
 		{
 				:person => {
 						:name => person_name,
