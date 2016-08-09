@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     get '/divisions(.:format)', to: 'divisions#index_by_concept', as: 'divisions'
     get '/order_paper_items(.:format)', to: 'order_paper_items#index_by_concept', as: 'order_paper_items'
     get '/petitions(.:format)', to: 'petitions#index_by_concept', as: 'petitions'
+    get '/committees(.:format)', to: 'committees#index_by_concept', as: 'committees'
   end
 
   resources :people, only: [:index, :show] do
