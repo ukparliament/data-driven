@@ -2,7 +2,7 @@ class ConstituenciesController < ApplicationController
 
   def index
     if(request.format.html?)
-      redirect_to('http://petitions-data-driven.ci.ukpds.org/constituencies')
+      redirect_to("#{DataDriven::Application.config.petitions}/constituencies")
       return ''
     end
 
@@ -13,7 +13,7 @@ class ConstituenciesController < ApplicationController
 
   def show
     if(request.format.html?)
-      redirect_to("http://petitions-data-driven.ci.ukpds.org/constituencies/#{params[:id]}")
+      redirect_to("#{DataDriven::Application.config.petitions}/constituencies/#{params[:id]}")
       return ''
     end
 
