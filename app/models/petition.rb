@@ -22,7 +22,7 @@ class Petition < QueryObject
 			}
 		")
 
-		hierarchy = result.subjects.map do |subject|
+		petitions = result.subjects.map do |subject|
 			title_pattern = RDF::Query::Pattern.new(
 		  		subject, 
 		  		Dcterms.title, 
@@ -40,6 +40,10 @@ class Petition < QueryObject
 				:index_label => index_label
 			}
 		end
+
+		hierarchy = {
+			:petitions => petitions
+		}
 
 		{ :graph => result, :hierarchy => hierarchy }
 	end
