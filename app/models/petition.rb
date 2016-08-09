@@ -212,13 +212,15 @@ class Petition < QueryObject
     			?concept
         			skos:prefLabel ?label .
 			}
-			WHERE { 
-				?petition 
-			        a parl:EPetition ;
-        			dcterms:subject ?concept ;
-			        dcterms:title ?title .
-        		?concept
+			WHERE {
+				?concept
                 	skos:prefLabel ?label .
+                OPTIONAL {
+                	?petition 
+			        	a parl:EPetition ;
+        				dcterms:subject ?concept ;
+			        	dcterms:title ?title .
+                }
 			    OPTIONAL {
 			    	?petition
 			    	    parl:indexed ?indexed .
