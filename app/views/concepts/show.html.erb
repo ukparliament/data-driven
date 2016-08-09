@@ -21,4 +21,9 @@
 			Order Paper Items related to this concept (<%= @concept[:order_paper_item_count] %>)
 		<% end %>
 	</li>
+	<li>
+		<%= link_to concept_petitions_path(@concept[:id]) do %>
+			Petitions related to this concept (<%= @concept[:petition_count] %>)
+		<% end %>
+	</li>
 </ul>

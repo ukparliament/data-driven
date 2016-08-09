@@ -76,10 +76,11 @@ class Concept < QueryObject
 					parl:writtenQuestionCount ?writtenQuestionCount ;
 					parl:oralQuestionCount ?oralQuestionCount ;
 					parl:divisionCount ?divisionCount ;
-        			parl:orderPaperItemCount ?orderPaperItemCount .
+        			parl:orderPaperItemCount ?orderPaperItemCount ;
+        			parl:EPetition ?petitionCount .
 			}
 			WHERE {
-				SELECT ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?division) AS ?divisionCount) (COUNT(DISTINCT ?orderPaperItem) AS ?orderPaperItemCount)
+				SELECT ?label (COUNT(DISTINCT ?oralQuestion) AS ?oralQuestionCount) (COUNT(DISTINCT ?writtenQuestion) AS ?writtenQuestionCount) (COUNT(DISTINCT ?division) AS ?divisionCount) (COUNT(DISTINCT ?orderPaperItem) AS ?orderPaperItemCount) (COUNT(DISTINCT ?petition) AS ?petitionCount)
 				WHERE {
 					{
 						?concept
@@ -107,6 +108,12 @@ class Concept < QueryObject
 						?orderPaperItem
 							a parl:OrderPaperItem ;
 							dcterms:subject ?concept .
+					}
+					UNION
+					{
+						?petition
+							a parl:EPetition ;
+							dcterms:title ?title .
 					}
 					FILTER(?concept = <#{uri}>)
 				}
@@ -140,11 +147,17 @@ class Concept < QueryObject
 				Parl.orderPaperItemCount,
 				:order_paper
 		)
+		petition_count_pattern = RDF::Query::Pattern.new(
+				RDF::URI::new(uri),
+				Parl.petitionCount,
+				:petition
+		)
 
 		oral_question_count = result.first_literal(oral_question_count_pattern).to_i
 		written_question_count = result.first_literal(written_question_count_pattern).to_i
 		division_count = result.first_literal(division_count_pattern).to_i
 		order_paper_item_count = result.first_literal(order_paper_item_count_pattern).to_i
+		petition_count = result.first_literal(petition_count_pattern).to_i
 
 		hierarchy =
 			{
@@ -153,7 +166,8 @@ class Concept < QueryObject
 				:oral_question_count => oral_question_count,
 				:written_question_count => written_question_count,
 				:division_count => division_count,
-				:order_paper_item_count => order_paper_item_count
+				:order_paper_item_count => order_paper_item_count,
+				:petition_count => petition_count
 			}
 
 		{ :graph => result, :hierarchy => hierarchy }

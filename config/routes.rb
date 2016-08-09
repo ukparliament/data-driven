@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     get '/written_questions(.:format)', to: 'written_questions#index_by_concept', as: 'written_questions'
     get '/divisions(.:format)', to: 'divisions#index_by_concept', as: 'divisions'
     get '/order_paper_items(.:format)', to: 'order_paper_items#index_by_concept', as: 'order_paper_items'
+    get '/petitions(.:format)', to: 'petitions#index_by_concept', as: 'petitions'
   end
 
   resources :people, only: [:index, :show] do
