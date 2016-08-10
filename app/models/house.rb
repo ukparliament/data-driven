@@ -68,38 +68,13 @@ class House < QueryObject
 				GROUP BY ?label
 			}
 		")
-
-		house_label_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(uri),
-				Parl.label,
-				:label)
-		label = result.first_literal(house_label_pattern).to_s
-
-		oral_question_count_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(uri),
-				Parl.oralQuestionCount,
-				:oral_question_count
-		)
-		written_question_count_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(uri),
-				Parl.writtenQuestionCount,
-				:written_question_count
-		)
-		division_count_pattern = RDF::Query::Pattern.new(
-				RDF::URI::new(uri),
-				Parl.divisionCount,
-				:division_count
-		)
-		people_count_pattern = RDF::Query::Pattern.new(
-				RDF::URI::new(uri),
-				Parl.peopleCount,
-				:people_count
-		)
-
-		oral_question_count = result.first_literal(oral_question_count_pattern).to_i
-		written_question_count = result.first_literal(written_question_count_pattern).to_i
-		people_count = result.first_literal(people_count_pattern).to_i
-		division_count = result.first_literal(division_count_pattern).to_i
+		subject_uri = RDF::URI.new(uri)
+		
+		label = self.get_object(result, subject_uri, Parl.label).to_s
+		oral_question_count = self.get_object(result, subject_uri, Parl.oralQuestionCount).to_i
+		written_question_count = self.get_object(result, subject_uri, Parl.writtenQuestionCount).to_i
+		people_count = self.get_object(result, subject_uri, Parl.peopleCount).to_i
+		division_count = self.get_object(result, subject_uri, Parl.divisionCount).to_i
 
 		hierarchy =
 			{

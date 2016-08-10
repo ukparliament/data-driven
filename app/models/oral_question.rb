@@ -61,47 +61,21 @@ class OralQuestion < QueryObject
           schema:name ?member_label .
       }
       ")
+      subject_uri = RDF::URI.new(uri)
 
-      text_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Schema.text,
-        :text)
-      date_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Dcterms.date,
-        :date)
-      house_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Parl.house,
-        :house)
-      member_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Parl.member,
-        :member)
-      
       id = self.get_id(uri)
-      text = result.first_literal(text_pattern).to_s
-      date = result.first_literal(date_pattern).to_s.to_datetime
-      house = result.first_object(house_pattern)
-      member = result.first_object(member_pattern)
+      text = self.get_object(result, subject_uri, Schema.text).to_s
+      date = self.get_object(result, subject_uri, Dcterms.date).to_s.to_datetime
+      house = self.get_object(result, subject_uri, Parl.house)
+      house_label = self.get_object(result, house, Rdfs.label).to_s
+      member = self.get_object(result, subject_uri, Parl.member)
+      member_name = self.get_object(result, member, Schema.name).to_s
 
-      house_label_pattern = RDF::Query::Pattern.new(
-        house,
-        Rdfs.label,
-        :house_label)
-      member_name_pattern = RDF::Query::Pattern.new(
-        member,
-        Schema.name,
-        :member_name)
       subject_pattern = RDF::Query::Pattern.new(
         :subject,
         Skos.prefLabel,
         :subject_label)
-
-      house_label = result.first_literal(house_label_pattern).to_s
-      member_name = result.first_literal(member_name_pattern).to_s
       subject_statements = result.query(subject_pattern)
-
       subjects = subject_statements.map do |statement|
         {
           :id => self.get_id(statement.subject),
@@ -149,18 +123,14 @@ class OralQuestion < QueryObject
         }
         FILTER(?house = <#{house_uri}>)
       }")
-        
-    house_label_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(house_uri),
-      Rdfs.label,
-      :house_label)
+
+    subject_uri = RDF::URI.new(house_uri)
+    house_label = self.get_object(result, subject_uri, Rdfs.label).to_s
+
     questions_pattern = RDF::Query::Pattern.new(
       :question,
       Schema.text,
       :text)
-
-
-    house_label = result.first_literal(house_label_pattern).to_s
     questions = OralQuestion.map_questions(result.query(questions_pattern))
 
     hierarchy = {
@@ -197,17 +167,13 @@ class OralQuestion < QueryObject
         FILTER(?concept = <#{concept_uri}>) 
       }")
 
-    concept_label_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(concept_uri),
-      Skos.prefLabel,
-      :concept_label)
+    subject_uri = RDF::URI.new(concept_uri)
+    concept_label = self.get_object(result, subject_uri, Skos.prefLabel).to_s
+
     questions_pattern = RDF::Query::Pattern.new(
       :question,
       Schema.text,
       :text)
-
-
-    concept_label = result.first_literal(concept_label_pattern).to_s
     questions = OralQuestion.map_questions(result.query(questions_pattern))
 
     hierarchy = {
@@ -241,18 +207,13 @@ class OralQuestion < QueryObject
         }
         FILTER(?person = <#{person_uri}>)    
       }")
-
-    person_name_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(person_uri),
-      Schema.name,
-      :name)
+    subject_uri = RDF::URI.new(person_uri)
+    person_name = self.get_object(result, subject_uri, Schema.name).to_s
+    
     questions_pattern = RDF::Query::Pattern.new(
       :question,
       Schema.text,
       :text)
-
-
-    person_name = result.first_literal(person_name_pattern).to_s
     questions = OralQuestion.map_questions(result.query(questions_pattern))
 
     hierarchy = {

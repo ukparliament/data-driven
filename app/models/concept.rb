@@ -130,49 +130,13 @@ class Concept < QueryObject
 
 		subject = RDF::URI.new(uri)
 
-		concept_label_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.label,
-				:label)
-		label = result.first_literal(concept_label_pattern).to_s
-
-		oral_question_count_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.oralQuestionCount,
-				:oral_question_count
-		)
-		written_question_count_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.writtenQuestionCount,
-				:written_question_count
-		)
-		division_count_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.divisionCount,
-				:division_count
-		)
-		order_paper_item_count_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.orderPaperItemCount,
-				:order_paper
-		)
-		petition_count_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.petitionCount,
-				:petition
-		)
-		committee_count_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.committeeCount,
-				:petition
-		)
-
-		oral_question_count = result.first_literal(oral_question_count_pattern).to_i
-		written_question_count = result.first_literal(written_question_count_pattern).to_i
-		division_count = result.first_literal(division_count_pattern).to_i
-		order_paper_item_count = result.first_literal(order_paper_item_count_pattern).to_i
-		petition_count = result.first_literal(petition_count_pattern).to_i
-		committee_count = result.first_literal(committee_count_pattern).to_i
+		label = self.get_object(result, subject, Parl.label).to_s
+		oral_question_count = self.get_object(result, subject, Parl.oralQuestionCount).to_i
+		written_question_count = self.get_object(result, subject, Parl.writtenQuestionCount).to_i
+		division_count = self.get_object(result, subject, Parl.divisionCount).to_i
+		order_paper_item_count = self.get_object(result, subject, Parl.orderPaperItemCount).to_i
+		petition_count = self.get_object(result, subject, Parl.petitionCount).to_i
+		committee_count = self.get_object(result, subject, Parl.committeeCount).to_i
 
 		hierarchy =
 			{
@@ -193,21 +157,13 @@ class Concept < QueryObject
 
 	def self.all_convert_to_hash(graph)
 		graph.subjects(unique: true).map do |subject| 
-			label_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Skos.prefLabel, 
-		  		:label)
-			label = graph.first_literal(label_pattern)
-			count_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Parl.count, 
-		  		:count)
-			count = graph.first_literal(count_pattern)
+			label = self.get_object(graph, subject, Skos.prefLabel).to_s
+			count = self.get_object(graph, subject, Parl.count).to_i
 
 			{
 				:id => self.get_id(subject),
-				:label => label.to_s,
-				:count => count.to_i
+				:label => label,
+				:count => count
 			}
 		end
 	end

@@ -26,21 +26,12 @@ class Person < QueryObject
 		')
 
 		people = result.subjects(unique: true).map do |subject| 
-			name_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Schema.name, 
-		  		:name)
-			name = result.first_literal(name_pattern)
-			count_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Parl.count, 
-		  		:count)
-			count = result.first_literal(count_pattern)
-
+			name = self.get_object(result, subject, Schema.name).to_s
+			count = self.get_object(result, subject, Parl.count).to_i
 			{
 				:id => self.get_id(subject),
-				:name => name.to_s,
-				:count => count.to_i
+				:name => name,
+				:count => count
 			}
 		end
 
@@ -123,86 +114,31 @@ class Person < QueryObject
 			    GROUP BY ?name ?house ?label ?constituency ?constituencyLabel
 			}")
 
-		name_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
-			Schema.name,
-			:name)
-		house_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
-			Parl.house,
-			:house)
-		constituency_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
-			Parl.constituency,
-			:constituency)
+  		subject_uri = RDF::URI.new(uri)
+		name = self.get_object(result, subject_uri, Schema.name).to_s
+		house = self.get_object(result, subject_uri, Parl.house)
+		label = self.get_object(result, house, Rdfs.label).to_s
+		constituency = self.get_object(result, subject_uri, Parl.constituency)
+		constituency_label = self.get_object(result, constituency, Parl.constituencyLabel).to_s
 
-		name = result.first_literal(name_pattern)
-		house = result.first_object(house_pattern)
-		constituency = result.first_object(constituency_pattern)
-
-		house_label_pattern = RDF::Query::Pattern.new(
-			house,
-			Rdfs.label,
-			:label
-		)
-		label = result.first_literal(house_label_pattern)
-
-		constituency_label_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
-			Parl.constituencyLabel,
-			:constituency_label
-		)
-		constituency_label = result.first_literal(constituency_label_pattern)
-
-		oral_question_count_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
-			Parl.oralQuestionCount,
-			:oral_question_count
-		)
-		written_question_count_pattern = RDF::Query::Pattern.new(
-			RDF::URI.new(uri),
-			Parl.writtenQuestionCount,
-			:written_question_count
-		)
-		written_answer_count_pattern = RDF::Query::Pattern.new(
-			RDF::URI::new(uri),
-			Parl.writtenAnswerCount,
-			:written_answer_count
-		)
-		vote_count_pattern = RDF::Query::Pattern.new(
-			RDF::URI::new(uri),
-			Parl.voteCount,
-			:voteCount
-		)
-		membership_count_pattern = RDF::Query::Pattern.new(
-			RDF::URI::new(uri),
-			Parl.membershipCount,
-			:membershipCount
-		)
-		order_paper_items_count_pattern = RDF::Query::Pattern.new(
-			RDF::URI::new(uri),
-			Parl.orderPaperItemCount,
-			:orderPaperItemCount
-		)
-
-		oral_question_count = result.first_literal(oral_question_count_pattern).to_i
-		written_question_count = result.first_literal(written_question_count_pattern).to_i
-		written_answer_count = result.first_literal(written_answer_count_pattern).to_i
-		vote_count = result.first_literal(vote_count_pattern).to_i
-		membership_count = result.first_literal(membership_count_pattern).to_i
-		order_paper_item_count = result.first_literal(order_paper_items_count_pattern).to_i
+		oral_question_count = self.get_object(result, subject_uri, Parl.oralQuestionCount).to_i
+		written_question_count = self.get_object(result, subject_uri, Parl.writtenQuestionCount).to_i
+		written_answer_count = self.get_object(result, subject_uri, Parl.writtenAnswerCount).to_i
+		vote_count = self.get_object(result, subject_uri, Parl.voteCount).to_i
+		membership_count = self.get_object(result, subject_uri, Parl.membershipCount).to_i
+		order_paper_item_count = self.get_object(result, subject_uri, Parl.orderPaperItemCount).to_i
 
 		hierarchy = 
       		{
       		  	:id => self.get_id(uri),
-      		  	:name => name.to_s,
+      		  	:name => name,
       		  	:house => {
       		  		:id => self.get_id(house),
-      		  		:label => label.to_s
+      		  		:label => label
       		  	},
 				:constituency => {
 					:id => self.get_id(constituency),
-					:label => constituency_label.to_s
+					:label => constituency_label
 				},
 				:oral_question_count => oral_question_count,
 				:written_question_count => written_question_count,
@@ -251,41 +187,24 @@ class Person < QueryObject
   			Schema.name,
   			:name
   		)
-
   		people = result.query(person_pattern).subjects.map do |subject| 
-  			person_name_pattern = RDF::Query::Pattern.new(
-  				subject,
-  				Schema.name,
-  				:name
-  			)
-  			count_pattern = RDF::Query::Pattern.new(
-  				subject,
-  				Parl.count,
-  				:count
-  			)
-
-  			person_name = result.first_literal(person_name_pattern)
-  			count = result.first_literal(count_pattern)
+  			person_name = self.get_object(result, subject, Schema.name).to_s
+  			count = self.get_object(result, subject, Parl.count).to_i
 
   			{
   				:id => self.get_id(subject),
-  				:name => person_name.to_s,
-  				:count => count.to_i
+  				:name => person_name,
+  				:count => count
   			}
   		end
 
-  		house_label_pattern = RDF::Query::Pattern.new(
-  			RDF::URI.new(house_uri),
-  			Rdfs.label,
-  			:house_label
-  		)
-
-  		house_label = result.first_literal(house_label_pattern)
-
+  		subject_uri = RDF::URI.new(house_uri)
+  		house_label = self.get_object(result, subject_uri, Rdfs.label).to_s
+  		
   		hierarchy = 
       		{
       			:id => self.get_id(house_uri),
-      			:house_label => house_label.to_s,
+      			:house_label => house_label,
       			:people => people
       		}
 
