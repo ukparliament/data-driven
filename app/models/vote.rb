@@ -1,5 +1,4 @@
 class Vote < QueryObject
-	include Vocabulary
 
 	def self.find_by_division(division_uri)
 	result = self.query("

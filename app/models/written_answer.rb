@@ -1,5 +1,4 @@
 class WrittenAnswer < QueryObject
-	include Vocabulary
 
  	def self.find_question(uri)
  		result = self.query("

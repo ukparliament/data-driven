@@ -1,5 +1,4 @@
 class WrittenQuestion < QueryObject
-  include Vocabulary
 
   def self.all
     result = self.query('
