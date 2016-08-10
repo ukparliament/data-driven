@@ -155,17 +155,13 @@ class WrittenQuestion < QueryObject
       }
       LIMIT 200")
 
-    house_label_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(house_uri),
-      Rdfs.label,
-      :house_label)
+    house_label = self.get_object(result, RDF::URI.new(house_uri), Rdfs.label).to_s
+
     questions_pattern = RDF::Query::Pattern.new(
       :question,
       Schema.text,
       :text)
 
-
-    house_label = result.first_literal(house_label_pattern).to_s
     questions = self.map_questions(result.query(questions_pattern))
 
     hierarchy = {
@@ -202,17 +198,13 @@ class WrittenQuestion < QueryObject
         FILTER(?concept = <#{concept_uri}>)    
       }")
 
-    concept_label_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(concept_uri),
-      Skos.prefLabel,
-      :concept_label)
+    concept_label = self.get_object(result, RDF::URI.new(concept_uri), Skos.prefLabel).to_s
+
     questions_pattern = RDF::Query::Pattern.new(
       :question,
       Schema.text,
       :text)
 
-
-    concept_label = result.first_literal(concept_label_pattern).to_s
     questions = self.map_questions(result.query(questions_pattern))
 
     hierarchy = {
@@ -247,17 +239,13 @@ class WrittenQuestion < QueryObject
         FILTER(?person = <#{person_uri}>)      
       }")
 
-    person_name_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(person_uri),
-      Schema.name,
-      :name)
+    person_name = self.get_object(result, RDF::URI.new(person_uri), Schema.name).to_s
+
     questions_pattern = RDF::Query::Pattern.new(
       :question,
       Schema.text,
       :text)
 
-
-    person_name = result.first_literal(person_name_pattern).to_s
     questions = self.map_questions(result.query(questions_pattern))
 
     hierarchy = {
