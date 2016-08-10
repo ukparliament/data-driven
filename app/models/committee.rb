@@ -124,21 +124,21 @@ class Committee < QueryObject
 		junk_property = self.get_object(result, subject_uri, Parl.junk).to_s
 
 		hierarchy = {
-				:id => id,
-				:committee_name => committee_name,
-				:house => {
-					:id => house_id,
-					:label => house_label
-				},
-				:chairs_count => chairships.count,
-				:members_count => memberships.count,
-				:advisers_count => adviserships.count,
-				:memberships => membership_details,
-				:chairships => chairship_details,
-				:adviserships => advisership_details,
-				:concepts => concepts,
-				:index_label => indexed_property,
-				:junk_label => junk_property
+			:id => id,
+			:committee_name => committee_name,
+			:house => {
+				:id => house_id,
+				:label => house_label
+			},
+			:chairs_count => chairships.count,
+			:members_count => memberships.count,
+			:advisers_count => adviserships.count,
+			:memberships => membership_details,
+			:chairships => chairship_details,
+			:adviserships => advisership_details,
+			:concepts => concepts,
+			:index_label => indexed_property,
+			:junk_label => junk_property
 		}
 
 		{ :graph => result, :hierarchy => hierarchy}
@@ -204,16 +204,16 @@ class Committee < QueryObject
 		person_name = self.get_object(result, RDF::URI.new(person_uri), Schema.name).to_s
 
 		hierarchy = {
-				:person => {
-						:id => person_id,
-						:name => person_name
-				},
-				:chairs_count => chairships.count,
-				:members_count => memberships.count,
-				:advisers_count => adviserships.count,
-				:chairships => chairship_details,
-				:memberships => membership_details,
-				:adviserships => advisership_details
+			:person => {
+				:id => person_id,
+				:name => person_name
+			},
+			:chairs_count => chairships.count,
+			:members_count => memberships.count,
+			:advisers_count => adviserships.count,
+			:chairships => chairship_details,
+			:memberships => membership_details,
+			:adviserships => advisership_details
 		}
 
 		{ :graph => result, :hierarchy => hierarchy}
@@ -260,8 +260,8 @@ class Committee < QueryObject
 
 		hierarchy = {
 			:concept => {
-					:id => concept_id,
-					:label => label
+				:id => concept_id,
+				:label => label
 			},
 			:committees => committees
 		}
@@ -289,12 +289,12 @@ class Committee < QueryObject
 		end_date = self.get_object(result, membership, Schema.endDate).to_s.to_datetime
 		{
 				:committee => {
-						:name => committee_name,
-						:id => committee_id,
+					:name => committee_name,
+					:id => committee_id,
 				},
 				:house => {
-						:id => house_id,
-						:label => house_label
+					:id => house_id,
+					:label => house_label
 				},
 				:start_date => start_date,
 				:end_date => end_date
@@ -310,8 +310,8 @@ class Committee < QueryObject
 		end_date = self.get_object(result, membership, Schema.endDate).to_s.to_datetime
 		{
 				:person => {
-						:name => person_name,
-						:id => person_id,
+					:name => person_name,
+					:id => person_id,
 				},
 				:start_date => start_date,
 				:end_date => end_date

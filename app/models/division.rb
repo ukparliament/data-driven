@@ -52,43 +52,23 @@ class Division < QueryObject
           rdfs:label ?house_label .
       }")
 
-      title_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Dcterms.title,
-        :title)
-      description_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Dcterms.description,
-        :description)
-      date_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Dcterms.date,
-        :date)
-      house_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Parl.house,
-        :house)
+      subject_uri = RDF::URI.new(uri)
 
-      title = result.first_literal(title_pattern)
-      description = result.first_literal(description_pattern)
-      date = result.first_literal(date_pattern)
-      house = result.first_object(house_pattern)
-
-      house_label_pattern = RDF::Query::Pattern.new(
-        house,
-        Rdfs.label,
-        :label)
-      house_label = result.first_literal(house_label_pattern)
+      title = self.get_object(result, subject_uri, Dcterms.title).to_s
+      description = self.get_object(result, subject_uri, Dcterms.description).to_s
+      date = self.get_object(result, subject_uri, Dcterms.date).to_s.to_datetime
+      house = self.get_object(result, subject_uri, Parl.house)
+      house_label = self.get_object(result, house, Rdfs.label).to_s
 
       hierarchy = result.map do |statement| 
       {
         :id => self.get_id(statement.subject),
-        :title => title.to_s,
-        :description => description.to_s,
-        :date => date.to_s.to_datetime,
+        :title => title,
+        :description => description,
+        :date => date,
         :house => {
           :id => self.get_id(house),
-          :label => house_label.to_s
+          :label => house_label
         }
       }
     end.first
@@ -120,17 +100,13 @@ class Division < QueryObject
         FILTER(?house = <#{house_uri}>)
       }")
 
-    house_label_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(house_uri),
-      Rdfs.label,
-      :house_label)
+    house_uri = RDF::URI.new(house_uri)
+    house_label = self.get_object(result, house_uri, Rdfs.label).to_s
+
     divisions_pattern = RDF::Query::Pattern.new(
       :division,
       Dcterms.title,
       :title)
-
-
-    house_label = result.first_literal(house_label_pattern).to_s
     divisions = result.query(divisions_pattern).map do |statement| 
       {
         :id => self.get_id(statement.subject),
@@ -173,18 +149,13 @@ class Division < QueryObject
           FILTER(?concept = <#{concept_uri}>)
       }")
 
-    concept_label_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(concept_uri),
-      Skos.prefLabel,
-      :concept_label)
+    concept_uri = RDF::URI.new(concept_uri)
+    concept_label = self.get_object(result, concept_uri, Skos.prefLabel).to_s
+
     divisions_pattern = RDF::Query::Pattern.new(
       :division,
       Dcterms.title,
-      :title)
-
-
-    concept_label = result.first_literal(concept_label_pattern)
-    
+      :title)    
     divisions = result.query(divisions_pattern).map do |statement| 
       {
         :id => self.get_id(statement.subject),

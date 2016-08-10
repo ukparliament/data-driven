@@ -21,24 +21,13 @@ class Constituency < QueryObject
     ')
 
     hierarchy = result.subjects(unique: true).map do |subject|
-      constituency_label_pattern = RDF::Query::Pattern.new(
-          subject,
-          Rdfs.label,
-          :constituency_label
-      )
-      constituency_label = result.first_literal(constituency_label_pattern)
-
-      gss_code_pattern = RDF::Query::Pattern.new(
-          subject,
-          Osadm.gssCode,
-          :gss_code
-      )
-      gss_code = result.first_literal(gss_code_pattern)
+      constituency_label = self.get_object(result, subject, Rdfs.label).to_s
+      gss_code = self.get_object(result, subject, Osadm.gssCode).to_s
 
       {
           :id => self.get_id(subject),
-          :constituency_label => constituency_label.to_s,
-          :gss_code => gss_code.to_s
+          :constituency_label => constituency_label,
+          :gss_code => gss_code
       }
     end
 
@@ -81,33 +70,17 @@ class Constituency < QueryObject
           FILTER ( ?constituency = <#{uri}> )
       }")
 
-    constituency_label_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(uri),
-      Rdfs.label,
-      :constituency_label
-    )
-    constituency_label = result.first_literal(constituency_label_pattern).to_s
-
-    gss_code_pattern = RDF::Query::Pattern.new(
-        RDF::URI.new(uri),
-        Osadm.gssCode,
-        :gss_code
-    )
-    gss_code = result.first_literal(gss_code_pattern).to_s
+    subject_uri = RDF::URI.new(uri)
+    constituency_label = self.get_object(result, subject_uri, Rdfs.label).to_s
+    gss_code = self.get_object(result, subject_uri, Osadm.gssCode).to_s
 
     member_pattern = RDF::Query::Pattern.new(
         :member,
         Schema.name,
         :member_name
     )
-
     members = result.query(member_pattern).subjects.map do |subject|
-      member_name_pattern = RDF::Query::Pattern.new(
-        subject,
-        Schema.name,
-        :member_name
-      )
-      member_name = result.first_literal(member_name_pattern).to_s
+      member_name = self.get_object(result, subject, Schema.name).to_s
       {
         :id => self.get_id(subject),
         :name => member_name
@@ -119,20 +92,9 @@ class Constituency < QueryObject
       Dcterms.title,
       :petition_title
     )
-
     petitions = result.query(petition_pattern).subjects.map do |subject|
-        petition_title_pattern = RDF::Query::Pattern.new(
-          subject,
-          Dcterms.title,
-          :petition_title
-        )
-        petition_title = result.first_literal(petition_title_pattern).to_s
-        number_of_signatures_pattern = RDF::Query::Pattern.new(
-          subject,
-          Parl.numberOfSignatures,
-          :number_of_signatures
-        )
-        number_of_signatures = result.first_literal(number_of_signatures_pattern).to_s
+        petition_title = self.get_object(result, subject, Dcterms.title).to_s
+        number_of_signatures = self.get_object(result, subject, Parl.numberOfSignatures).to_s
       {
           :id => self.get_id(subject),
           :title => petition_title,

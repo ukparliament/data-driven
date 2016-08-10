@@ -30,28 +30,10 @@ class OrderPaper < QueryObject
 		')
 
 		hierarchy = result.subjects(unique: true).map do |subject|
-			date_pattern = RDF::Query::Pattern.new(
-          		subject,
-          		Dcterms.date,
-          		:date
-      		)
-      		id = result.first_literal(date_pattern).to_s
-      		date = result.first_literal(date_pattern).to_s.to_datetime
-
-      		items_count_pattern = RDF::Query::Pattern.new(
-          		subject,
-          		Parl.count,
-          		:count
-      		)
-      		items_count = result.first_literal(items_count_pattern).to_s
-
-      		indexed_items_count_pattern = RDF::Query::Pattern.new(
-          		subject,
-          		Parl.indexedCount,
-          		:indexed_count
-      		)
-      		indexed_items_count = result.first_literal(indexed_items_count_pattern).to_s
-
+      		id = self.get_object(result, subject, Dcterms.date).to_s
+      		date = self.get_object(result, subject, Dcterms.date).to_s.to_datetime
+      		items_count = self.get_object(result, subject, Parl.count).to_s
+      		indexed_items_count = self.get_object(result, subject, Parl.indexedCount).to_s
       		{
       			:id => id,
       			:date => date,
