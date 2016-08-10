@@ -35,129 +35,93 @@ class WrittenQuestion < QueryObject
       PREFIX dcterms: <http://purl.org/dc/terms/>
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       CONSTRUCT {
-          <#{uri}> 
-            parl:questionText ?text ;
-            parl:questionDate ?date ;
-            parl:answerText ?answerText ;
-            parl:answerDate ?answerDate ;
-            dcterms:subject ?concept .
-          ?house 
-            parl:houseLabel ?houseLabel .
-          ?member
-            a schema:Person ;
-            parl:questionMemberName ?memberName .
-          ?answeringMember
-            a schema:Person ;
-            parl:answerMemberName ?answeringMemberName .
-          ?concept
-            a skos:Concept ;
-            skos:prefLabel ?conceptLabel .
+        ?question 
+          parl:questionText ?text ;
+          parl:questionDate ?date ;
+          parl:house ?house ;
+          parl:member ?member ;
+          parl:answer ?answer .
+        ?house 
+          parl:houseLabel ?houseLabel .
+        ?member
+          parl:questionMemberName ?memberName .
+        ?answer
+          parl:answerText ?answerText ;
+          parl:answerDate ?answerDate ;
+          parl:answeringMember ?answeringMember .
+        ?answeringMember
+          parl:answerMemberName ?answeringMemberName .
+        ?concept
+          skos:prefLabel ?conceptLabel .
       }
       WHERE { 
-          <#{uri}>
-              schema:text ?text ;
-              parl:house ?house ;
-              parl:member ?member ;
-              dcterms:date ?date ;
-              dcterms:subject ?concept .
-          ?house 
-              rdfs:label ?houseLabel .
-          ?member
-              schema:name ?memberName .
-          ?answer
-              parl:question <#{uri}> ;
-              parl:member ?answeringMember ;
-              schema:text ?answerText ;
-              dcterms:date ?answerDate .
-          ?answeringMember 
-              schema:name ?answeringMemberName .
-          ?concept
-              skos:prefLabel ?conceptLabel .          
-      }      
+        ?question
+          schema:text ?text ;
+          parl:house ?house ;
+          parl:member ?member ;
+          dcterms:date ?date ;
+          dcterms:subject ?concept .
+        ?house 
+          rdfs:label ?houseLabel .
+        ?member
+          schema:name ?memberName .
+        ?answer
+          parl:question ?question ;
+          parl:member ?answeringMember ;
+          schema:text ?answerText ;
+          dcterms:date ?answerDate .
+        ?answeringMember 
+          schema:name ?answeringMemberName .
+        ?concept
+          skos:prefLabel ?conceptLabel .  
+
+        FILTER(?question = <#{uri}>)
+      } 
     ")
 
-    house_pattern = RDF::Query::Pattern.new(
-      :house,
-      Parl.houseLabel,
-      :house)
-
-    question_member_pattern = RDF::Query::Pattern.new(
-      :questionMember,
-      Parl.questionMemberName,
-      :questionMemberName)
-
-    answer_member_pattern = RDF::Query::Pattern.new(
-      :answerMember,
-      Parl.answerMemberName,
-      :answerMemberName)
-
-    question_text_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(uri),
-      Parl.questionText,
-      :questionText)
-    question_date_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(uri),
-      Parl.questionDate,
-      :questionDate)    
-
-    answer_text_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(uri),
-      Parl.answerText,
-      :answerText)
-    answer_date_pattern = RDF::Query::Pattern.new(
-      RDF::URI.new(uri),
-      Parl.answerDate,
-      :answerDate)  
+    question_uri = RDF::URI.new(uri)
+    house = self.get_object(result, question_uri, Parl.house)
+    house_label = self.get_object(result, house, Parl.houseLabel).to_s
+    question_member = self.get_object(result, question_uri, Parl.member)
+    question_member_name = self.get_object(result, question_member, Parl.questionMemberName).to_s
+    question_date = self.get_object(result, question_uri, Parl.questionDate).to_s.to_datetime
+    question_text = self.get_object(result, question_uri, Parl.questionText).to_s
+    answer = self.get_object(result, question_uri, Parl.answer)
+    answer_date = self.get_object(result, answer, Parl.answerDate).to_s.to_datetime
+    answer_text = self.get_object(result, answer, Parl.answerText).to_s
+    answer_member = self.get_object(result, answer, Parl.answeringMember)
+    answer_member_name = self.get_object(result, answer_member, Parl.answerMemberName).to_s 
 
     subject_pattern = RDF::Query::Pattern.new(
       :subject,
       Skos.prefLabel,
       :subject_label)
 
-    question_id = self.get_id(uri)
-
-    house_statement = result.query(house_pattern)
-    house_id = self.get_id(house_statement.first_subject.to_s)
-    house_label = house_statement.first_object.to_s
-
-    question_member_statement = result.query(question_member_pattern)
-    question_member_id = self.get_id(question_member_statement.first_subject.to_s)
-    question_member_name = question_member_statement.first_object.to_s
-    question_text = result.first_literal(question_text_pattern).to_s
-    question_date = result.first_literal(question_date_pattern).to_s.to_datetime
-
-    answer_member_statement = result.query(answer_member_pattern)
-    answer_member_id = self.get_id(answer_member_statement.first_subject.to_s)
-    answer_member_name = answer_member_statement.first_object.to_s
-    answer_text = result.first_literal(answer_text_pattern).to_s
-    answer_date = result.first_literal(answer_date_pattern).to_s.to_datetime
-
-    subject_statements = result.query(subject_pattern)
-
-    subjects = subject_statements.map do |statement|
+    subjects = result.query(subject_pattern).map do |statement|
       {
-        :id => self.get_id(statement.subject.to_s),
+        :id => self.get_id(statement.subject),
         :label => statement.object.to_s
       }
     end
 
     hierarchy = {
-      :id => question_id,
+      :id => self.get_id(uri),
       :house => {
-        :id => house_id,
+        :id => self.get_id(house),
         :label => house_label
       },
       :question_member => {
-        :id => question_member_id,
+        :id => self.get_id(question_member),
         :name => question_member_name
       },
       :date => question_date,
       :text => question_text,
       :answer => {
+        :id => self.get_id(answer),
         :date => answer_date,
         :text => answer_text,
         :member => {
-          :id => answer_member_id,
+          :id => self.get_id(answer_member),
           :name => answer_member_name        
         }
       },
