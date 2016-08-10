@@ -1,5 +1,4 @@
 class WrittenAnswer < QueryObject
-	include Vocabulary
 
  	def self.find_question(uri)
  		result = self.query("
@@ -52,25 +51,15 @@ class WrittenAnswer < QueryObject
  			:text)
 
  		written_answers = result.query(written_answers_pattern).subjects.map do |subject|
- 			text_pattern = RDF::Query::Pattern.new(
- 				subject,
- 				Schema.text,
- 				:text)
-
- 			text = result.first_literal(text_pattern)
+ 			text = self.get_object(result, subject, Schema.text).to_s
 
  			{
  				:id => self.get_id(subject),
- 				:text => text.to_s
+ 				:text => text
  			}
  		end
 
- 		person_name_pattern = RDF::Query::Pattern.new(
- 			RDF::URI.new(person_uri),
- 			Schema.name,
- 			:name)
-
- 		person_name = result.first_literal(person_name_pattern)
+ 		person_name = self.get_object(result, RDF::URI.new(person_uri), Schema.name)
 
 		hierarchy = 
       		{

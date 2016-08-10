@@ -23,13 +23,9 @@ class Committee < QueryObject
 			')
 
 		hierarchy = result.subjects.map do |subject|
-			committee_name_pattern = RDF::Query::Pattern.new(
-				subject,
-				Parl.committeeName,
-				:committee_name)
-			committee_name = result.first_literal(committee_name_pattern).to_s
-			indexed_property = self.map_indexed_property(result, subject)
-			junk_property = self.map_junk_property(result, subject)
+			committee_name = self.get_object(result, subject, Parl.committeeName).to_s
+			indexed_property = self.get_object(result, subject, Parl.indexed).to_s
+			junk_property = self.get_object(result, subject, Parl.junk).to_s
 			{
 				:id => self.get_id(subject),
 				:name => committee_name,
@@ -117,27 +113,15 @@ class Committee < QueryObject
 
 		id = self.get_id(uri)
 		subject_uri = RDF::URI.new(uri)
-		committee_name_pattern = RDF::Query::Pattern.new(
-				subject_uri,
-				Parl.committeeName,
-				:committee_name)
-		house_pattern = RDF::Query::Pattern.new(
-				subject_uri,
-				Parl.house,
-				:house)
-		house_label_pattern = RDF::Query::Pattern.new(
-				subject_uri,
-				Parl.houseLabel,
-				:house_label)
 
-		committee_name = result.first_literal(committee_name_pattern).to_s
-		house = result.first_object(house_pattern)
+		committee_name = self.get_object(result, subject_uri, Parl.committeeName).to_s
+		house = self.get_object(result, subject_uri, Parl.house)
 		house_id = self.get_id(house)
-		house_label = result.first_literal(house_label_pattern).to_s
+		house_label = self.get_object(result, subject_uri, Parl.houseLabel).to_s
 
 		concepts = self.map_linked_concepts(result)
-		indexed_property = self.map_indexed_property(result, subject_uri)
-		junk_property = self.map_junk_property(result, subject_uri)
+		indexed_property = self.get_object(result, subject_uri, Parl.indexed).to_s
+		junk_property = self.get_object(result, subject_uri, Parl.junk).to_s
 
 		hierarchy = {
 				:id => id,
@@ -265,14 +249,8 @@ class Committee < QueryObject
 			}
 			")
 
-
-		concept_label_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(concept_uri),
-				Skos.prefLabel,
-				:label)
-
 		concept_id = self.get_id(concept_uri)
-		label = result.first_literal(concept_label_pattern).to_s
+		label = self.get_object(result, RDF::URI.new(concept_uri), Skos.prefLabel).to_s
 
 		committee_pattern = RDF::Query::Pattern.new(
 			:subject,
