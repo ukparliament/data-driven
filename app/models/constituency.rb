@@ -3,19 +3,17 @@ class Constituency < QueryObject
 
   def self.all
     result = self.query('
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX parl: <http://data.parliament.uk/schema/parl#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX osadm: <http://data.ordnancesurvey.co.uk/ontology/admingeo/>
-      PREFIX schema: <http://schema.org/>
       CONSTRUCT {
         ?constituency
-          a ?constituencyLabel ;
+          rdfs:label ?constituencyLabel ;
           osadm:gssCode ?gssCode ;
       }
       WHERE {
         ?constituency a parl:Constituency ;
-          a ?constituencyLabel ;
+          rdfs:label ?constituencyLabel ;
           osadm:gssCode ?gssCode .
       }
     ')
@@ -43,7 +41,7 @@ class Constituency < QueryObject
       PREFIX dcterms: <http://purl.org/dc/terms/>
       CONSTRUCT{
           ?constituency
-              a ?label ;
+              rdfs:label ?label ;
               osadm:gssCode ?gssCode .
           ?member
               schema:name ?member_name .
@@ -53,7 +51,7 @@ class Constituency < QueryObject
       }
       WHERE {
         ?constituency
-              a ?label ;
+              rdfs:label ?label ;
               osadm:gssCode ?gssCode .
         ?member
               parl:constituency ?constituency ;

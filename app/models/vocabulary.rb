@@ -95,6 +95,14 @@ module Vocabulary
 			RDF::URI.new("#{@@prefix}WrittenParliamentaryAnswer")
 		end
 
+		def self.answer
+			RDF::URI.new("#{@@prefix}answer")
+		end
+
+		def self.answeringMember
+			RDF::URI.new("#{@@prefix}answeringMember")
+		end
+
 		def self.member
 			RDF::URI.new("#{@@prefix}member")
 		end
