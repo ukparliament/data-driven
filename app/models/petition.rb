@@ -1,5 +1,4 @@
 class Petition < QueryObject
-	include Vocabulary
 
 	def self.all
 		result = self.query("
@@ -31,8 +30,8 @@ class Petition < QueryObject
 			  	subject, 
 			  	Parl.indexed, 
 			  	:index_label)
-			title = result.first_literal(title_pattern).to_s
-			index_label = result.first_literal(indexed_pattern).to_s
+			title = self.get_object(result, subject, Dcterms.title).to_s
+			index_label = self.get_object(result, subject, Parl.indexed).to_s
 
 			{
 				:id => self.get_id(subject),
@@ -104,59 +103,23 @@ class Petition < QueryObject
 			ORDER BY ASC(?constituencyLabel)
 		")
 
-		title_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
-		  	Dcterms.title, 
-		  	:title)
-		summary_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
-		  	Dcterms.abstract, 
-		  	:abstract)
-		external_url_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
-		  	Schema.url, 
-		  	:url)
-		status_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
-		  	Parl.status, 
-		  	:status)
-		date_created_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
-		  	Dcterms.created, 
-		  	:created_date)
-		date_modified_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
-		  	Dcterms.modified, 
-		  	:modified_date)
+		petition_uri = RDF::URI.new(uri)
+		title = self.get_object(result, petition_uri, Dcterms.title).to_s
+		summary = self.get_object(result, petition_uri, Dcterms.abstract).to_s
+		external_url = self.get_object(result, petition_uri, Schema.url).to_s
+		status = self.get_object(result, petition_uri, Parl.status).to_s
+		index_label = self.get_object(result, petition_uri, Parl.indexed).to_s
+		date_created = self.get_object(result, petition_uri, Dcterms.created).to_s.to_datetime.strftime("%d %B %Y")
+		date_modified = self.get_object(result, petition_uri, Dcterms.modified).to_s.to_datetime.strftime("%d %B %Y")
+
 		constituency_pattern = RDF::Query::Pattern.new(
 		  	:constituency, 
 		  	Rdfs.label, 
 		  	:constituency_label)
-		indexed_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(uri), 
-		  	Parl.indexed, 
-		  	:index_label)
-
-		title = result.first_literal(title_pattern).to_s
-		summary = result.first_literal(summary_pattern).to_s
-		external_url = result.first_object(external_url_pattern).to_s
-		status = result.first_literal(status_pattern).to_s
-		index_label = result.first_literal(indexed_pattern).to_s
-		date_created = result.first_object(date_created_pattern).to_s.to_datetime.strftime("%d %B %Y")
-		date_modified = result.first_object(date_modified_pattern).to_s.to_datetime.strftime("%d %B %Y")
 
 		constituencies = result.query(constituency_pattern).subjects.map do |subject|
-			constituency_label_pattern = RDF::Query::Pattern.new(
-		  	subject, 
-		  	Rdfs.label, 
-		  	:constituency_label)
-			number_of_signatures_pattern = RDF::Query::Pattern.new(
-		  	subject, 
-		  	Parl.numberOfSignatures, 
-		  	:number_of_signatures)
-
-			constituency_label = result.first_literal(constituency_label_pattern).to_s
-			number_of_signatures = result.first_literal(number_of_signatures_pattern).to_i
+			constituency_label = self.get_object(result, subject, Rdfs.label).to_s
+			number_of_signatures = self.get_object(result, subject, Parl.numberOfSignatures).to_i
 
 			{
 				:id => self.get_id(subject),
@@ -171,11 +134,7 @@ class Petition < QueryObject
 		  	:concept_label)
 
 		concepts = result.query(concept_pattern).subjects.map do |subject|
-			concept_label_pattern = RDF::Query::Pattern.new(
-		  	subject, 
-		  	Skos.prefLabel, 
-		  	:concept_label)
-			concept_label = result.first_literal(concept_label_pattern).to_s
+			concept_label = self.get_object(result, subject, Skos.prefLabel).to_s
 
 			{
 				:id => self.get_id(subject),
@@ -229,11 +188,7 @@ class Petition < QueryObject
 			}
 		")
 
-		label_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(concept_uri), 
-		  	Skos.prefLabel, 
-		  	:label)
-		label = result.first_literal(label_pattern).to_s
+		label = self.get_object(result, RDF::URI.new(concept_uri), Skos.prefLabel).to_s
 
 		petition_pattern = RDF::Query::Pattern.new(
 		  	:petition, 
@@ -241,16 +196,8 @@ class Petition < QueryObject
 		  	:title)
 
 		petitions = result.query(petition_pattern).subjects.map do |subject|
-			title_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Dcterms.title, 
-		  		:title)
-			indexed_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Parl.indexed, 
-		  		:index_label)
-			title = result.first_literal(title_pattern).to_s
-			index_label = result.first_literal(indexed_pattern).to_s
+			title = self.get_object(result, subject, Dcterms.title).to_s
+			index_label = self.get_object(result, subject, Parl.indexed).to_s
 
 			{
 				:id => self.get_id(subject),
