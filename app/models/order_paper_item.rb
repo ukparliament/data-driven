@@ -164,49 +164,20 @@ class OrderPaperItem < QueryObject
 		)
 
 		subject_uri = RDF::URI.new(uri)
-
-		date_pattern = RDF::Query::Pattern.new(
-		  	subject_uri, 
-		  	Dcterms.date, 
-		  	:date)
-		date = result.first_object(date_pattern).to_s.to_datetime
-		title_pattern = RDF::Query::Pattern.new(
-		  	subject_uri, 
-		  	Dcterms.title, 
-		  	:title)
-		title = result.first_literal(title_pattern).to_s
+		date = self.get_object(result, subject_uri, Dcterms.date).to_s.to_datetime
+		title = self.get_object(result, subject_uri, Dcterms.title).to_s
 		person_pattern = RDF::Query::Pattern.new(
 		  	:person, 
 		  	Schema.name, 
 		  	:name)
 		person = result.first_subject(person_pattern)
 		person_name = result.first_literal(person_pattern).to_s
-		abstract_pattern = RDF::Query::Pattern.new(
-		  	subject_uri, 
-		  	Dcterms.abstract, 
-		  	:abstract)
-		abstract = result.first_literal(abstract_pattern).to_s
-		previous_pattern = RDF::Query::Pattern.new(
-		  	subject_uri, 
-		  	Schema.previousItem, 
-		  	:previousItem)
-		previousItemURI = result.first_object(previous_pattern)
-
-		indexed_property = self.map_indexed_property(result, subject_uri)
-
-		junk_property = self.map_junk_property(result, subject_uri)
-
-		business_item_type_pattern = RDF::Query::Pattern.new(
-			subject_uri,
-			Parl.businessItemType,
-			:businessItemType)
-		business_item_type_property = result.first_object(business_item_type_pattern).to_s
-		member_role_pattern = RDF::Query::Pattern.new(
-			subject_uri,
-			Parl.memberRole,
-			:memberRole)
-		member_role = result.first_object(member_role_pattern).to_s
-
+		abstract = self.get_object(result, subject_uri, Dcterms.abstract).to_s
+		previousItemURI = self.get_object(result, subject_uri, Schema.previousItem)
+		indexed_property = self.get_object(result, subject_uri, Parl.indexed).to_s
+		junk_property = self.get_object(result, subject_uri, Parl.junk).to_s
+		business_item_type_property = self.get_object(result, subject_uri, Parl.businessItemType).to_s
+		member_role = self.get_object(result, subject_uri, Parl.memberRole).to_s
 		concepts = self.map_linked_concepts(result)
 
 		hierarchy = 
@@ -272,12 +243,8 @@ class OrderPaperItem < QueryObject
 		  	:date)
 
 		order_paper_items = OrderPaperItem.order_paper_items_mapper(result, result.query(order_paper_items_pattern).subjects)
-
-		label_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(concept_uri), 
-		  	Skos.prefLabel, 
-		  	:label)
-		label = result.first_literal(label_pattern).to_s
+		subject_uri = RDF::URI.new(concept_uri)
+		label = self.get_object(result, concept_uri, Skos.prefLabel).to_s
 
 		hierarchy = {
 			:id => self.get_id(concept_uri),
@@ -324,18 +291,13 @@ class OrderPaperItem < QueryObject
          		FILTER(?person = <#{person_uri}>)
 			}
 		")
-
-		name_pattern = RDF::Query::Pattern.new(
-		  	RDF::URI.new(person_uri), 
-		  	Schema.name, 
-		  	:name)
-		name = result.first_literal(name_pattern).to_s
+		subject_uri = RDF::URI.new(person_uri)
+		name = self.get_object(result, subject_uri, Schema.name).to_s
 
 		order_paper_items_pattern = RDF::Query::Pattern.new(
 		  	:item, 
 		  	Dcterms.date, 
 		  	:date)
-
 		order_paper_items = OrderPaperItem.order_paper_items_mapper(result, result.query(order_paper_items_pattern).subjects)
 
 		hierarchy = {
@@ -352,18 +314,10 @@ class OrderPaperItem < QueryObject
 
 	def self.order_paper_items_mapper(result, subjects)
 		subjects.map do |subject|
-			title_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Dcterms.title, 
-		  		:title)
-			title = result.first_literal(title_pattern).to_s
-			previous_pattern = RDF::Query::Pattern.new(
-		  		subject, 
-		  		Schema.previousItem, 
-		  		:previousItem)
-			previousItemURI = result.first_object(previous_pattern)
-			indexed_property = self.map_indexed_property(result, subject)
-			junk_property = self.map_junk_property(result, subject)
+			title = self.get_object(result, subject, Dcterms.title).to_s
+			previousItemURI = self.get_object(result, subject, Schema.previousItem)
+			indexed_property = self.get_object(result, subject, Parl.indexed).to_s
+			junk_property = self.get_object(result, subject, Parl.junk).to_s
 			{
 				:id => self.get_id(subject),
 				:title => title,

@@ -1,5 +1,4 @@
 class Search < QueryObject
-	include Vocabulary
 
 	def self.find(q, filters)
 		if filters
@@ -51,23 +50,10 @@ class Search < QueryObject
 			:search_result,
 			Rdf.type,
 			:type)
-		search_results = result_graph.query(search_results_pattern)
 
-		hierarchy = search_results.map do |result| 
-			type_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(result.subject),
-				Rdf.type,
-				:type)
-
-			score_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(result.subject),
-				Parl.score,
-				:score)
-
-			id = self.get_id(result.subject)
-			type = result_graph.first_object(type_pattern)
-
-			score = result_graph.first_object(score_pattern)
+		hierarchy = result_graph.query(search_results_pattern).map do |result| 
+			type = self.get_object(result_graph, RDF::URI.new(result.subject), Rdf.type).to_s
+			score = self.get_object(result_graph, RDF::URI.new(result.subject), Parl.score).to_f
 
 			text_property = 
 				case type
@@ -129,29 +115,17 @@ class Search < QueryObject
 					"Order Paper Item"
 				end
 
-			text_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(result.subject),
-				text_property,
-				:text)
-
-			text = result_graph.first_literal(text_pattern)
-
-			date_pattern = RDF::Query::Pattern.new(
-				RDF::URI.new(result.subject),
-				Dcterms.date,
-				:date
-				)
-
-			date = result_graph.first_literal(date_pattern)
+			text = self.get_object(result_graph, RDF::URI.new(result.subject), text_property).to_s
+			date = self.get_object(result_graph, RDF::URI.new(result.subject), Dcterms.date).to_s.to_datetime
 
 			{
-				:id => id,
-				:type => type.to_s,
-				:score => score.to_f,
-				:text => text.to_s,
+				:id => self.get_id(result.subject),
+				:type => type,
+				:score => score,
+				:text => text,
 				:controller => controller,
 				:friendly_type => friendly_type,
-				:date => date.to_s.to_datetime
+				:date => date
 			}
 		end
 
