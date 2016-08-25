@@ -244,7 +244,7 @@ class OrderPaperItem < QueryObject
 
 		order_paper_items = OrderPaperItem.order_paper_items_mapper(result, result.query(order_paper_items_pattern).subjects)
 		subject_uri = RDF::URI.new(concept_uri)
-		label = self.get_object(result, concept_uri, Skos.prefLabel).to_s
+		label = self.get_object(result, subject_uri, Skos.prefLabel).to_s
 
 		hierarchy = {
 			:id => self.get_id(concept_uri),
