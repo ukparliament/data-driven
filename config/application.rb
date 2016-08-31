@@ -14,10 +14,10 @@ require "rails/test_unit/railtie"
 # require "rspec-rails"
 
 # Cluster
-DATABASE = 'http://52.178.30.214/repositories/Master'
+# DATABASE = 'http://52.178.30.214/repositories/Master'
 
 # Single
-# DATABASE = 'http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06'
+DATABASE = 'http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06'
 PETITIONS = 'http://petitions-data-driven.ukpds.org'
 
 # Require the gems listed in Gemfile, including any gems
