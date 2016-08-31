@@ -53,7 +53,7 @@ class Search < QueryObject
 
 		hierarchy = result_graph.query(search_results_pattern).map do |result| 
 			type = self.get_object(result_graph, RDF::URI.new(result.subject), Rdf.type).to_s
-			score = self.get_object(result_graph, RDF::URI.new(result.subject), Parl.score).to_f
+			score = self.get_object(result_graph, RDF::URI.new(result.subject), Parl.score).to_s.to_f
 
 			text_property = 
 				case type
