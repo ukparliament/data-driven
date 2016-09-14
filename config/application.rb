@@ -19,7 +19,7 @@ require "rails/test_unit/railtie"
 # Single
 # DATABASE = 'http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06'
 
-DATABASE = '13.95.91.76/DataDriven'
+DATABASE = 'http://13.95.91.76/repositories/DataDriven'
 PETITIONS = 'http://petitions-data-driven.ukpds.org'
 
 # Require the gems listed in Gemfile, including any gems
