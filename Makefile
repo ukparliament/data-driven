@@ -1,4 +1,4 @@
-IMAGE = ukpds/data-driven
+IMAGE = 165162103257.dkr.ecr.eu-west-1.amazonaws.com/datadriven
 
 # GO_PIPELINE_COUNTER is the pipeline number, passed from our build agent.
 GO_PIPELINE_COUNTER?="unknown"
