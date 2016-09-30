@@ -2,7 +2,7 @@
   "containerDefinitions": [
     {
       "name": "DataDriven",
-      "image": "ukpds/data-driven",
+      "image": "165162103257.dkr.ecr.eu-west-1.amazonaws.com/datadriven",
       "cpu": 10,
       "memory": 1024,
       "essential": true,
