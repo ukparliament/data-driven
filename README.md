@@ -1,44 +1,20 @@
-# Data-driven app
+# Data-driven
+Data-driven was a Rails prototype created to explore using RDF with Ruby.  It was created as part of exploration for the new [parliament](www.parliament.uk) website.   
 
-## Installation
+The current [parliament](www.parliament.uk) application can be found [here](https://github.com/ukparliament/parliament.uk-prototype).
+## Requirements
+Data-driven prototype requires the following:
+* [Ruby](https://www.ruby-lang.org/en)
 
-Install Docker for Mac from here - https://docs.docker.com/docker-for-mac/
-
-Install Docker for Windows from here - https://docs.docker.com/docker-for-windows/
-
-## Setup
-
-Edit your host file and add the following line
-
-| O.S           | Location                                          |
-| ------------- |:-------------------------------------------------:|
-| OSX           | /etc/host                                         |
-| Windows       | C:\Windows\System32\drivers\etc\hosts             |
-| Ubuntu        | Put a line address=/docker.localhost/127.0.0.1 in /etc/NetworkManager/dnsmasq.d/hosts.conf, then restart [NetworkManager](http://serverfault.com/questions/118378/in-my-etc-hosts-file-on-linux-osx-how-do-i-do-a-wildcard-subdomain) |
-
+## Getting Started
+Setup the main application repository:
 ```bash
-$ *.docker.localhost localhost
+git clone https://github.com/ukparliament/data-driven
+cd data-driven
+bundle install
 ```
 
-Execute the following commands:
-
+### Running the application
 ```bash
-$ make build
-$ make run
+bundle exec rails s
 ```
-
-Now browse to http://data-driven.docker.localhost
-
-### Destroy
-```bash
-$ make destroy
-```
-
-### Rebuild
-
-In order to rebuild the application:
-
-```
-$ make rebuild
-```
-
